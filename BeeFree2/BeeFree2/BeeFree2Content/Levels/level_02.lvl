@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Level>
+    <Name>Level 1</Name>
+    <StartTime>0:00:00:00.00</StartTime>
+    <EndTime>0:00:00:20.00</EndTime>
+
+    <!-- Diamond -->
+    <!-- Diamond -->
+    <!-- Diamond -->
+    <Bird>
+        <Type>0</Type>
+        <ReleaseTime>0:00:00:02.00</ReleaseTime>
+        <Position x="800" y="200" />
+    </Bird>
+    <Bird>
+        <Type>0</Type>
+        <ReleaseTime>0:00:00:00.30</ReleaseTime>
+        <Position x="800" y="225" />
+    </Bird>
+    <Bird>
+        <Type>0</Type>
+        <ReleaseTime>0:00:00:00.00</ReleaseTime>
+        <Position x="800" y="175" />
+    </Bird>
+    <Bird>
+        <Type>0</Type>
+        <ReleaseTime>0:00:00:00.30</ReleaseTime>
+        <Position x="800" y="200" />
+    </Bird>
+
+    <!-- Diamond -->
+    <!-- Diamond -->
+    <!-- Diamond -->
+    <Bird>
+        <Type>0</Type>
+        <ReleaseTime>0:00:00:02.00</ReleaseTime>
+        <Position x="800" y="400" />
+    </Bird>
+    <Bird>
+        <Type>0</Type>
+        <ReleaseTime>0:00:00:00.30</ReleaseTime>
+        <Position x="800" y="425" />
+    </Bird>
+    <Bird>
+        <Type>0</Type>
+        <ReleaseTime>0:00:00:00.00</ReleaseTime>
+        <Position x="800" y="375" />
+    </Bird>
+    <Bird>
+        <Type>0</Type>
+        <ReleaseTime>0:00:00:00.30</ReleaseTime>
+        <Position x="800" y="400" />
+    </Bird>
+
+    <!-- Diamond -->
+    <!-- Diamond -->
+    <!-- Diamond -->
+    <Bird>
+        <Type>0</Type>
+        <ReleaseTime>0:00:00:02.00</ReleaseTime>
+        <Position x="800" y="300" />
+    </Bird>
+    <Bird>
+        <Type>0</Type>
+        <ReleaseTime>0:00:00:00.30</ReleaseTime>
+        <Position x="800" y="325" />
+    </Bird>
+    <Bird>
+        <Type>0</Type>
+        <ReleaseTime>0:00:00:00.00</ReleaseTime>
+        <Position x="800" y="275" />
+    </Bird>
+    <Bird>
+        <Type>0</Type>
+        <ReleaseTime>0:00:00:00.30</ReleaseTime>
+        <Position x="800" y="300" />
+    </Bird>
+
+    <Bird>
+        <Type>1</Type>
+        <ReleaseTime>0:00:00:00.30</ReleaseTime>
+        <Position x="800" y="250" />
+    </Bird>
+    <Bird>
+        <Type>1</Type>
+        <ReleaseTime>0:00:00:00.00</ReleaseTime>
+        <Position x="800" y="300" />
+    </Bird>
+    <Bird>
+        <Type>1</Type>
+        <ReleaseTime>0:00:00:00.00</ReleaseTime>
+        <Position x="800" y="350" />
+    </Bird>
+    
+</Level>

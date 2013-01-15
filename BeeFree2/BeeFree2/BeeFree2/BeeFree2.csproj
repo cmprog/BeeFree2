@@ -1,0 +1,238 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ProjectGuid>{6E37B9BA-9D6F-453C-B3C6-9C3A7177F5E0}</ProjectGuid>
+    <ProjectTypeGuids>{6D335F3A-9D43-41b4-9D22-F6F17C4BE596};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>BeeFree2</RootNamespace>
+    <AssemblyName>BeeFree2</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <XnaFrameworkVersion>v4.0</XnaFrameworkVersion>
+    <XnaPlatform>Windows</XnaPlatform>
+    <XnaProfile>HiDef</XnaProfile>
+    <XnaCrossPlatformGroupID>e64b0f90-65d4-4306-be59-84dd939d2b6e</XnaCrossPlatformGroupID>
+    <XnaOutputType>Game</XnaOutputType>
+    <ApplicationIcon>Game.ico</ApplicationIcon>
+    <Thumbnail>GameThumbnail.png</Thumbnail>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.0</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <PublishWizardCompleted>true</PublishWizardCompleted>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <BootstrapperComponentsLocation>Relative</BootstrapperComponentsLocation>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\x86\Debug</OutputPath>
+    <DefineConstants>DEBUG;TRACE;WINDOWS</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <NoStdLib>true</NoStdLib>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <PlatformTarget>x86</PlatformTarget>
+    <XnaCompressContent>false</XnaCompressContent>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\x86\Release</OutputPath>
+    <DefineConstants>TRACE;WINDOWS</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <NoStdLib>true</NoStdLib>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <PlatformTarget>x86</PlatformTarget>
+    <XnaCompressContent>true</XnaCompressContent>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestCertificateThumbprint>0C2BF28A5384469F986367AFA1A32C80113C8FC8</ManifestCertificateThumbprint>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestKeyFile>BeeFree2_TemporaryKey.pfx</ManifestKeyFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <GenerateManifests>true</GenerateManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignManifests>true</SignManifests>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.Xna.Framework.Game, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.Xna.Framework.Graphics, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.Xna.Framework.GamerServices, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.Xna.Framework.Xact, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.Xna.Framework.Video, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.Xna.Framework.Avatar, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.Xna.Framework.Net, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.Xna.Framework.Storage, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="mscorlib">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Xml">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Core">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Xml.Linq">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="System.Net">
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BirdFactory.cs" />
+    <Compile Include="EntityManagers\BeeManager.cs" />
+    <Compile Include="EntityManagers\BirdManager.cs" />
+    <Compile Include="EntityManagers\BulletManager.cs" />
+    <Compile Include="EntityManagers\CoinManager.cs" />
+    <Compile Include="EntityManagers\LevelManager.cs" />
+    <Compile Include="EntityManagers\PlayerManager.cs" />
+    <Compile Include="BatchCollectionRemover.cs" />
+    <Compile Include="GameEntities\BeeEntity.cs" />
+    <Compile Include="GameEntities\BirdEntity.cs" />
+    <Compile Include="GameEntities\Extensions\ComponentExtensions.cs" />
+    <Compile Include="GameEntities\HeadsUpDisplayEntity.cs" />
+    <Compile Include="GameEntities\IDamagingEntity.cs" />
+    <Compile Include="GameEntities\IKillableEntity.cs" />
+    <Compile Include="GameEntities\BulletEntity.cs" />
+    <Compile Include="GameEntities\Movement\ChaserMovementBehavior.cs" />
+    <Compile Include="GameEntities\Movement\GravityMovementBehavior.cs" />
+    <Compile Include="GameEntities\Movement\IMovableEntity.cs" />
+    <Compile Include="GameEntities\Movement\StaticMovementBehavior.cs" />
+    <Compile Include="GameEntities\Movement\WaveyMovementBehavior.cs" />
+    <Compile Include="GameEntities\Rendering\AnimatedRenderer.cs" />
+    <Compile Include="GameEntities\Rendering\BasicRenderer.cs" />
+    <Compile Include="GameEntities\Rendering\CompositeRenderer.cs" />
+    <Compile Include="GameEntities\Rendering\IRenderableEntity.cs" />
+    <Compile Include="GameEntities\Rendering\IRenderer.cs" />
+    <Compile Include="GameEntities\Shooting\DoubleBulletShooting.cs" />
+    <Compile Include="GameEntities\Shooting\IShootingEntity.cs" />
+    <Compile Include="GameEntities\LevelSelectionButton.cs" />
+    <Compile Include="GameEntities\Movement\IMovementBehavior.cs" />
+    <Compile Include="GameEntities\Movement\MouseMovementBehavior.cs" />
+    <Compile Include="GameEntities\Movement\StraightMovementBehavior.cs" />
+    <Compile Include="GameEntities\Shooting\IShootingBehavior.cs" />
+    <Compile Include="GameEntities\MainMenuButton.cs" />
+    <Compile Include="GameEntities\Player.cs" />
+    <Compile Include="EntityManagers\CloudManager.cs" />
+    <Compile Include="EntityManagers\EntityManager.cs" />
+    <Compile Include="GameEntities\Shooting\SingleBulletShooting.cs" />
+    <Compile Include="GameEntities\Shooting\PassiveShooting.cs" />
+    <Compile Include="GameEntities\Shooting\TrackingShooting.cs" />
+    <Compile Include="GameEntities\Shooting\TripleBulletShooting.cs" />
+    <Compile Include="GameEntities\ShopButtonEntity.cs" />
+    <Compile Include="GameEntities\SimpleGameEntity.cs" />
+    <Compile Include="GameScreens\GameplayScreen.cs" />
+    <Compile Include="GameScreens\LevelSelectionScreen.cs" />
+    <Compile Include="GameScreens\LoadingScreen.cs" />
+    <Compile Include="GameScreens\MainMenuScreen.cs" />
+    <Compile Include="GameScreens\ShopScreen.cs" />
+    <Compile Include="GraphicsUtilities.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="BeeFreeGame.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Game.ico" />
+    <Content Include="GameThumbnail.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\TccLib\TccLib.Xna.GameStateManagement\TccLib.Xna.GameStateManagement.csproj">
+      <Project>{219629E4-CCB9-45C0-A25E-C5C338798B81}</Project>
+      <Name>TccLib.Xna.GameStateManagement</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\TccLib\TccLib\TccLib.csproj">
+      <Project>{A3EF9DBE-14A6-4EAF-8238-513903387DD7}</Project>
+      <Name>TccLib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\BeeFree2.ContentData\BeeFree2.ContentData.csproj">
+      <Project>{1F78B775-0BEC-452B-9FBA-CCC8CF683C2D}</Project>
+      <Name>BeeFree2.ContentData</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\BeeFree2Content\BeeFree2Content.contentproj">
+      <Name>BeeFree2Content</Name>
+      <XnaReferenceType>Content</XnaReferenceType>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.0,Profile=Client">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4 Client Profile %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Xna.Framework.4.0">
+      <Visible>False</Visible>
+      <ProductName>Microsoft XNA Framework Redistributable 4.0</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="BeeFree2_TemporaryKey.pfx" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\XNA Game Studio\Microsoft.Xna.GameStudio.targets" />
+  <!--
+      To modify your build process, add your task inside one of the targets below and uncomment it. 
+      Other similar extension points exist, see Microsoft.Common.targets.
+      <Target Name="BeforeBuild">
+      </Target>
+      <Target Name="AfterBuild">
+      </Target>
+    -->
+</Project>

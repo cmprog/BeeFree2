@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Level>
+    
+    <!-- Screen Size: 800 x 480 -->
+    <!-- Birds Types
+            0: Passive, Basic movement
+    -->
+    
+    <Name>Level 1</Name>
+    <StartTime>0:00:00:00.00</StartTime>
+    <EndTime>0:00:00:13.00</EndTime>
+
+    <!-- BackSlash Slash -->
+    <!-- BackSlash Slash -->
+    <!-- BackSlash Slash -->
+    <Bird>
+        <Type>0</Type>
+        <ReleaseTime>0:00:00:02.00</ReleaseTime>
+        <Position x="800" y="50" />
+    </Bird>
+
+    <Bird>
+        <Type>0</Type>
+        <ReleaseTime>0:00:00:01.00</ReleaseTime>
+        <Position x="800" y="125" />
+    </Bird>
+
+    <Bird>
+        <Type>0</Type>
+        <ReleaseTime>0:00:00:01.00</ReleaseTime>
+        <Position x="800" y="200" />
+    </Bird>
+
+    <Bird>
+        <Type>0</Type>
+        <ReleaseTime>0:00:00:01.00</ReleaseTime>
+        <Position x="800" y="275" />
+    </Bird>
+
+    <Bird>
+        <Type>0</Type>
+        <ReleaseTime>0:00:00:01.00</ReleaseTime>
+        <Position x="800" y="350" />
+    </Bird>
+
+    <Bird>
+        <Type>0</Type>
+        <ReleaseTime>0:00:00:01.00</ReleaseTime>
+        <Position x="800" y="425" />
+    </Bird>
+    
+</Level>

@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Level>
+
+    <Name>Level 2</Name>
+    <StartTime>0:00:00:00.00</StartTime>
+    <EndTime>0:00:00:25.00</EndTime>
+
+    <!-- BackSlash Slash -->
+    <!-- BackSlash Slash -->
+    <!-- BackSlash Slash -->
+    <Bird>
+        <Type>0</Type>
+        <ReleaseTime>0:00:00:02.00</ReleaseTime>
+        <Position x="800" y="50" />
+    </Bird>
+
+    <Bird>
+        <Type>0</Type>
+        <ReleaseTime>0:00:00:01.00</ReleaseTime>
+        <Position x="800" y="125" />
+    </Bird>
+
+    <Bird>
+        <Type>0</Type>
+        <ReleaseTime>0:00:00:01.00</ReleaseTime>
+        <Position x="800" y="200" />
+    </Bird>
+
+    <Bird>
+        <Type>0</Type>
+        <ReleaseTime>0:00:00:01.00</ReleaseTime>
+        <Position x="800" y="275" />
+    </Bird>
+
+    <Bird>
+        <Type>0</Type>
+        <ReleaseTime>0:00:00:01.00</ReleaseTime>
+        <Position x="800" y="350" />
+    </Bird>
+
+    <Bird>
+        <Type>0</Type>
+        <ReleaseTime>0:00:00:01.00</ReleaseTime>
+        <Position x="800" y="425" />
+    </Bird>
+
+    <!-- Forward Slash -->
+    <!-- Forward Slash -->
+    <!-- Forward Slash -->
+    <Bird>
+        <Type>0</Type>
+        <ReleaseTime>0:00:00:01.00</ReleaseTime>
+        <Position x="800" y="425" />
+    </Bird>
+
+    <Bird>
+        <Type>0</Type>
+        <ReleaseTime>0:00:00:01.00</ReleaseTime>
+        <Position x="800" y="350" />
+    </Bird>
+
+    <Bird>
+        <Type>0</Type>
+        <ReleaseTime>0:00:00:01.00</ReleaseTime>
+        <Position x="800" y="275" />
+    </Bird>
+
+    <Bird>
+        <Type>0</Type>
+        <ReleaseTime>0:00:00:01.00</ReleaseTime>
+        <Position x="800" y="200" />
+    </Bird>
+
+    <Bird>
+        <Type>0</Type>
+        <ReleaseTime>0:00:00:01.00</ReleaseTime>
+        <Position x="800" y="125" />
+    </Bird>
+
+    <Bird>
+        <Type>0</Type>
+        <ReleaseTime>0:00:00:01.00</ReleaseTime>
+        <Position x="800" y="50" />
+    </Bird>
+
+    <!-- Wall -->
+    <!-- Wall -->
+    <!-- Wall -->
+    <Bird>
+        <Type>0</Type>
+        <ReleaseTime>0:00:00:01.00</ReleaseTime>
+        <Position x="800" y="425" />
+    </Bird>
+
+    <Bird>
+        <Type>0</Type>
+        <ReleaseTime>0:00:00:01.00</ReleaseTime>
+        <Position x="800" y="350" />
+    </Bird>
+
+    <Bird>
+        <Type>0</Type>
+        <ReleaseTime>0:00:00:01.00</ReleaseTime>
+        <Position x="800" y="275" />
+    </Bird>
+
+    <Bird>
+        <Type>0</Type>
+        <ReleaseTime>0:00:00:01.00</ReleaseTime>
+        <Position x="800" y="200" />
+    </Bird>
+
+    <Bird>
+        <Type>0</Type>
+        <ReleaseTime>0:00:00:01.00</ReleaseTime>
+        <Position x="800" y="125" />
+    </Bird>
+
+    <Bird>
+        <Type>0</Type>
+        <ReleaseTime>0:00:00:01.00</ReleaseTime>
+        <Position x="800" y="50" />
+    </Bird>
+    
+</Level>

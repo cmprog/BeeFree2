@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Level>
+    <Name>Level 11</Name>
+    <StartTime>0:00:00:00.00</StartTime>
+    <EndTime>0:00:00:15.00</EndTime>
+
+    <Bird>
+        <Type>0</Type>
+        <ReleaseTime>0:00:00:01.00</ReleaseTime>
+        <Position x="800" y="20" />
+    </Bird>
+    <Bird>
+        <Type>0</Type>
+        <ReleaseTime>0:00:00:00.00</ReleaseTime>
+        <Position x="800" y="120" />
+    </Bird>
+    <Bird>
+        <Type>0</Type>
+        <ReleaseTime>0:00:00:00.00</ReleaseTime>
+        <Position x="800" y="220" />
+    </Bird>
+    <Bird>
+        <Type>0</Type>
+        <ReleaseTime>0:00:00:00.00</ReleaseTime>
+        <Position x="800" y="320" />
+    </Bird>
+    <Bird>
+        <Type>0</Type>
+        <ReleaseTime>0:00:00:00.00</ReleaseTime>
+        <Position x="800" y="420" />
+    </Bird>
+
+    <Bird>
+        <Type>0</Type>
+        <ReleaseTime>0:00:00:01.00</ReleaseTime>
+        <Position x="800" y="70" />
+    </Bird>
+    <Bird>
+        <Type>0</Type>
+        <ReleaseTime>0:00:00:00.00</ReleaseTime>
+        <Position x="800" y="170" />
+    </Bird>
+    <Bird>
+        <Type>0</Type>
+        <ReleaseTime>0:00:00:00.00</ReleaseTime>
+        <Position x="800" y="270" />
+    </Bird>
+    <Bird>
+        <Type>0</Type>
+        <ReleaseTime>0:00:00:00.00</ReleaseTime>
+        <Position x="800" y="370" />
+    </Bird>
+
+    <Bird>
+        <Type>1</Type>
+        <ReleaseTime>0:00:00:01.00</ReleaseTime>
+        <Position x="800" y="20" />
+    </Bird>
+    <Bird>
+        <Type>1</Type>
+        <ReleaseTime>0:00:00:00.00</ReleaseTime>
+        <Position x="800" y="120" />
+    </Bird>
+    <Bird>
+        <Type>1</Type>
+        <ReleaseTime>0:00:00:00.00</ReleaseTime>
+        <Position x="800" y="220" />
+    </Bird>
+    <Bird>
+        <Type>1</Type>
+        <ReleaseTime>0:00:00:00.00</ReleaseTime>
+        <Position x="800" y="320" />
+    </Bird>
+    <Bird>
+        <Type>1</Type>
+        <ReleaseTime>0:00:00:00.00</ReleaseTime>
+        <Position x="800" y="420" />
+    </Bird>
+
+    <Bird>
+        <Type>0</Type>
+        <ReleaseTime>0:00:00:01.00</ReleaseTime>
+        <Position x="800" y="70" />
+    </Bird>
+    <Bird>
+        <Type>0</Type>
+        <ReleaseTime>0:00:00:00.00</ReleaseTime>
+        <Position x="800" y="170" />
+    </Bird>
+    <Bird>
+        <Type>0</Type>
+        <ReleaseTime>0:00:00:00.00</ReleaseTime>
+        <Position x="800" y="270" />
+    </Bird>
+    <Bird>
+        <Type>0</Type>
+        <ReleaseTime>0:00:00:00.00</ReleaseTime>
+        <Position x="800" y="370" />
+    </Bird>
+
+    <Bird>
+        <Type>1</Type>
+        <ReleaseTime>0:00:00:01.00</ReleaseTime>
+        <Position x="800" y="20" />
+    </Bird>
+    <Bird>
+        <Type>1</Type>
+        <ReleaseTime>0:00:00:00.00</ReleaseTime>
+        <Position x="800" y="120" />
+    </Bird>
+    <Bird>
+        <Type>1</Type>
+        <ReleaseTime>0:00:00:00.00</ReleaseTime>
+        <Position x="800" y="220" />
+    </Bird>
+    <Bird>
+        <Type>1</Type>
+        <ReleaseTime>0:00:00:00.00</ReleaseTime>
+        <Position x="800" y="320" />
+    </Bird>
+    <Bird>
+        <Type>1</Type>
+        <ReleaseTime>0:00:00:00.00</ReleaseTime>
+        <Position x="800" y="420" />
+    </Bird>
+
+    <Bird>
+        <Type>1</Type>
+        <ReleaseTime>0:00:00:01.00</ReleaseTime>
+        <Position x="800" y="70" />
+    </Bird>
+    <Bird>
+        <Type>1</Type>
+        <ReleaseTime>0:00:00:00.00</ReleaseTime>
+        <Position x="800" y="170" />
+    </Bird>
+    <Bird>
+        <Type>1</Type>
+        <ReleaseTime>0:00:00:00.00</ReleaseTime>
+        <Position x="800" y="270" />
+    </Bird>
+    <Bird>
+        <Type>1</Type>
+        <ReleaseTime>0:00:00:00.00</ReleaseTime>
+        <Position x="800" y="370" />
+    </Bird>
+    <Bird>
+        <Type>8</Type>
+        <ReleaseTime>0:00:00:00.00</ReleaseTime>
+        <Position x="800" y="20" />
+    </Bird>
+    <Bird>
+        <Type>8</Type>
+        <ReleaseTime>0:00:00:00.00</ReleaseTime>
+        <Position x="800" y="420" />
+    </Bird>
+    
+</Level>
