@@ -20,7 +20,7 @@ namespace BeeFree2.GameEntities
         /// <summary>
         /// Gets or sets the ID for the upgrade this button represents.
         /// </summary>
-        public int ID { get; set; }
+        public int Id { get; set; }
 
         /// <summary>
         /// Gets or sets the name of the upgrade.

@@ -10,8 +10,6 @@
 
 #-------------------------------- References --------------------------------#
 
-/reference:..\..\BeeFree2Content\bin\Debug\net8.0\BeeFree2.ContentData.dll
-/reference:..\..\BeeFree2Content\bin\Debug\net8.0\BeeFree2Content.dll
 
 #---------------------------------- Content ---------------------------------#
 

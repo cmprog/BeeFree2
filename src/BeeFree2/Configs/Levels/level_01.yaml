@@ -1,0 +1,65 @@
+Name: Level 2
+StartTime: 0:00:00:00.00
+EndTime: 0:00:00:25.00
+
+Birds:
+
+# A 'backward slash' formation
+- Type: 0
+  ReleaseTime: 0:00:00:02.00
+  Position: { x: 800, y: 50 }
+- Type: 0
+  ReleaseTime: 0:00:00:01.00
+  Position: { x: 800, y: 125 }
+- Type: 0
+  ReleaseTime: 0:00:00:01.00
+  Position: { x: 800, y: 200 }
+- Type: 0
+  ReleaseTime: 0:00:00:01.00
+  Position: { x: 800, y: 275 }
+- Type: 0
+  ReleaseTime: 0:00:00:01.00
+  Position: { x: 800, y: 350 }
+- Type: 0
+  ReleaseTime: 0:00:00:01.00
+  Position: { x: 800, y: 425 }
+
+# A 'forward slash' formation
+- Type: 0
+  ReleaseTime: 0:00:00:02.00
+  Position: { x: 800, y: 425 }
+- Type: 0
+  ReleaseTime: 0:00:00:01.00
+  Position: { x: 800, y: 350 }
+- Type: 0
+  ReleaseTime: 0:00:00:01.00
+  Position: { x: 800, y: 275 }
+- Type: 0
+  ReleaseTime: 0:00:00:01.00
+  Position: { x: 800, y: 200 }
+- Type: 0
+  ReleaseTime: 0:00:00:01.00
+  Position: { x: 800, y: 125 }
+- Type: 0
+  ReleaseTime: 0:00:00:01.00
+  Position: { x: 800, y: 50 }
+
+# A 'forward slash' formation
+- Type: 0
+  ReleaseTime: 0:00:00:02.00
+  Position: { x: 800, y: 425 }
+- Type: 0
+  ReleaseTime: 0:00:00:01.00
+  Position: { x: 800, y: 350 }
+- Type: 0
+  ReleaseTime: 0:00:00:01.00
+  Position: { x: 800, y: 275 }
+- Type: 0
+  ReleaseTime: 0:00:00:01.00
+  Position: { x: 800, y: 200 }
+- Type: 0
+  ReleaseTime: 0:00:00:01.00
+  Position: { x: 800, y: 125 }
+- Type: 0
+  ReleaseTime: 0:00:00:01.00
+  Position: { x: 800, y: 50 }
