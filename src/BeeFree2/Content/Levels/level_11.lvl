@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Level>
+    <Name>Level 12</Name>
+    <StartTime>0:00:00:00.00</StartTime>
+    <EndTime>0:00:00:15.00</EndTime>
+
+    <Bird>
+        <Type>9</Type>
+        <ReleaseTime>0:00:00:01.00</ReleaseTime>
+        <Position x="800" y="110" />
+    </Bird>
+    <Bird>
+        <Type>9</Type>
+        <ReleaseTime>0:00:00:00.00</ReleaseTime>
+        <Position x="800" y="220" />
+    </Bird>
+    <Bird>
+        <Type>9</Type>
+        <ReleaseTime>0:00:00:00.00</ReleaseTime>
+        <Position x="800" y="330" />
+    </Bird>
+
+    <Bird>
+        <Type>7</Type>
+        <ReleaseTime>0:00:00:01.00</ReleaseTime>
+        <Position x="800" y="165" />
+    </Bird>
+    <Bird>
+        <Type>7</Type>
+        <ReleaseTime>0:00:00:00.00</ReleaseTime>
+        <Position x="800" y="275" />
+    </Bird>
+    <Bird>
+        <Type>7</Type>
+        <ReleaseTime>0:00:00:00.00</ReleaseTime>
+        <Position x="800" y="385" />
+    </Bird>
+    <Bird>
+        <Type>7</Type>
+        <ReleaseTime>0:00:00:00.00</ReleaseTime>
+        <Position x="800" y="55" />
+    </Bird>
+
+    <Bird>
+        <Type>9</Type>
+        <ReleaseTime>0:00:00:02.00</ReleaseTime>
+        <Position x="800" y="50" />
+    </Bird>
+    <Bird>
+        <Type>9</Type>
+        <ReleaseTime>0:00:00:00.00</ReleaseTime>
+        <Position x="800" y="390" />
+    </Bird>
+
+    <Bird>
+        <Type>9</Type>
+        <ReleaseTime>0:00:00:00.85</ReleaseTime>
+        <Position x="800" y="50" />
+    </Bird>
+    <Bird>
+        <Type>9</Type>
+        <ReleaseTime>0:00:00:00.00</ReleaseTime>
+        <Position x="800" y="390" />
+    </Bird>
+
+    <Bird>
+        <Type>9</Type>
+        <ReleaseTime>0:00:00:00.70</ReleaseTime>
+        <Position x="800" y="50" />
+    </Bird>
+    <Bird>
+        <Type>9</Type>
+        <ReleaseTime>0:00:00:00.00</ReleaseTime>
+        <Position x="800" y="390" />
+    </Bird>
+
+    <Bird>
+        <Type>9</Type>
+        <ReleaseTime>0:00:00:00.55</ReleaseTime>
+        <Position x="800" y="50" />
+    </Bird>
+    <Bird>
+        <Type>9</Type>
+        <ReleaseTime>0:00:00:00.00</ReleaseTime>
+        <Position x="800" y="390" />
+    </Bird>
+
+    <Bird>
+        <Type>9</Type>
+        <ReleaseTime>0:00:00:00.40</ReleaseTime>
+        <Position x="800" y="50" />
+    </Bird>
+    <Bird>
+        <Type>9</Type>
+        <ReleaseTime>0:00:00:00.00</ReleaseTime>
+        <Position x="800" y="390" />
+    </Bird>
+
+    <Bird>
+        <Type>9</Type>
+        <ReleaseTime>0:00:00:00.25</ReleaseTime>
+        <Position x="800" y="50" />
+    </Bird>
+    <Bird>
+        <Type>9</Type>
+        <ReleaseTime>0:00:00:00.00</ReleaseTime>
+        <Position x="800" y="390" />
+    </Bird>
+    
+</Level>
