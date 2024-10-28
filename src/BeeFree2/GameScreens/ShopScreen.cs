@@ -72,8 +72,6 @@ namespace BeeFree2.GameScreens
 
             this.AvailableMoneyPosition = new Vector2(649, 426);
             this.AvailableMoneySize = new Vector2(146, 50);
-
-            this.PlayerManager = new PlayerManager();
             this.ShopButtons = new List<ShopButtonEntity>();
         }              
 
@@ -251,6 +249,8 @@ namespace BeeFree2.GameScreens
             {
                 this.PlayerUpgradeSetters[this.ActiveButton.Id](this.ActiveButton.Level);
                 this.PlayerManager.Player.AvailableHoneycombToSpend -= this.ActiveButton.Price;
+                this.PlayerManager.SavePlayer();
+
                 this.UpdateButton(this.ActiveButton);
             }
         }

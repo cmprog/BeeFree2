@@ -1,5 +1,6 @@
 using System;
 using BeeFree2.Config;
+using BeeFree2.EntityManagers;
 using BeeFree2.GameScreens;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -38,8 +39,21 @@ namespace BeeFree2
         protected override void Initialize()
         {
             this.Services.AddService(new ConfigurationManager());
+            this.Services.AddService(new GamePersistanceService());
 
-            this.mScreenManager.AddScreen(new MainMenuScreen(), null);            
+            var lPlayerManager = new PlayerManager();
+            lPlayerManager.Activate(this);
+            this.Services.AddService(lPlayerManager);
+
+            var lIsTesting = false;
+            if (lIsTesting)
+            {
+                this.mScreenManager.AddScreen(new CustomExamplMenuScreen(), null);
+            }
+            else
+            {
+                this.mScreenManager.AddScreen(new MainMenuScreen(), null); 
+            }
 
             base.Initialize();
         }

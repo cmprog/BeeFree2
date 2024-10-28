@@ -14,7 +14,8 @@ namespace BeeFree2.GameScreens
     /// </summary>
     internal class LevelSelectionScreen : GameScreen
     {
-        private ContentManager ContentManager { get; set; }
+        private ContentManager ContentManager => this.ScreenManager.Game.Content;
+
         private PlayerManager PlayerManager { get; set; }
         private LevelSelectionButton[] Buttons { get; set; }
 
@@ -47,17 +48,13 @@ namespace BeeFree2.GameScreens
         {
             base.Activate(instancePreserved);
 
-            this.ContentManager = new ContentManager(this.ScreenManager.Game.Content.ServiceProvider);
-            this.ContentManager.RootDirectory = "content";
-
             var lViewport = this.ScreenManager.Game.GraphicsDevice.Viewport;
             var lScreenSize = new Vector2(lViewport.Width, lViewport.Height);
             
             this.BackgroundTexture = this.ContentManager.Load<Texture2D>("Sprites/LevelSelectBackground");
             this.BasicFont = this.ContentManager.Load<SpriteFont>("Fonts/MainMenuFont");
 
-            this.PlayerManager = new PlayerManager();
-            this.PlayerManager.Activate(this.ScreenManager.Game);
+            this.PlayerManager = this.ScreenManager.Game.Services.GetService<PlayerManager>();
 
             this.BlankTexture = new Texture2D(this.ScreenManager.GraphicsDevice, 1, 1);
             this.BlankTexture.SetData(new[] { Color.White });
@@ -73,23 +70,26 @@ namespace BeeFree2.GameScreens
             var lFlawlessTexture = this.ContentManager.Load<Texture2D>("Sprites/Flawless");
             var lButtonSize = new Vector2(lButtonTexture.Width, lButtonTexture.Height);
 
-            this.Buttons =
-                Enumerable.Range(0, 20)
-                    .Select(x => new LevelSelectionButton
-                    {
-                        Text = lButtonTexts[x],
-                        LevelIndex = x,
-                        ActiveFont = this.BasicFont,
-                        InactiveFont = this.BasicFont,
-                        Texture = lButtonTexture,
-                        PerfectTexture = lPerfectTexture,
-                        FlawlessTexture = lFlawlessTexture,
-                        Size = lButtonSize,
-                        IsAvailable = this.PlayerManager.Player.LevelStats[x].IsAvailable,
-                        IsFlawless = this.PlayerManager.Player.LevelStats[x].CompletedFlawlessly,
-                        IsPerfect = this.PlayerManager.Player.LevelStats[x].CompletedPerfectly,
-                    })
-                    .ToArray();
+            this.Buttons = Enumerable.Range(0, 20).Select(x => {
+
+                var lLevelData = this.PlayerManager.Player.GetLevelData(x);
+
+                return new LevelSelectionButton
+                {
+                    Text = lButtonTexts[x],
+                    LevelIndex = x,
+                    ActiveFont = this.BasicFont,
+                    InactiveFont = this.BasicFont,
+                    Texture = lButtonTexture,
+                    PerfectTexture = lPerfectTexture,
+                    FlawlessTexture = lFlawlessTexture,
+                    Size = lButtonSize,
+                    IsAvailable = lLevelData.IsAvailable,
+                    IsFlawless = lLevelData.CompletedFlawlessly,
+                    IsPerfect = lLevelData.CompletedPerfectly,
+                };
+            })
+            .ToArray();
 
             this.ShopButton = new MainMenuButton
             {
@@ -142,7 +142,8 @@ namespace BeeFree2.GameScreens
             var lGameplayScreen = new GameplayScreen(lButton.LevelIndex);
             lGameplayScreen.GamePlayOver += this.GamePlayScreen_GamePlayOver;
 
-            this.PlayerManager.Player.LevelStats[lButton.LevelIndex].PlayCount++;
+            this.PlayerManager.Player.MarkLevelPlayed(lButton.LevelIndex);
+            this.PlayerManager.SavePlayer();
 
             LoadingScreen.Load(this.ScreenManager, true, lGameplayScreen);
         }

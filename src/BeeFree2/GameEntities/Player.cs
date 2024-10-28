@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace BeeFree2.GameEntities
 {
-    [Serializable]
-    public class Player
+    public sealed class Player
     {
         public Player()
         {
-            this.LevelStats = Enumerable.Range(0, 25).Select(x => new LevelData()).ToArray();
+            this.Levels = new Dictionary<int, LevelData>();
         }
 
         public string Name { get; set; }
@@ -30,18 +27,27 @@ namespace BeeFree2.GameEntities
         public int BeeHoneycombAttraction { get; set; }
         public int BeeBulletSpeed { get; set; }
 
-        public LevelData[] LevelStats { get; set; }
+        [JsonInclude]
+        private Dictionary<int, LevelData> Levels { get; init; }
 
-        [Serializable]
-        public class LevelData
+        public void MarkLevelCompleted(int levelIndex, bool wasFlawlessCompletion, bool wasPerfectCompeltion)
+            => this.GetLevelData(levelIndex).MarkComplete(wasFlawlessCompletion, wasPerfectCompeltion);
+
+        public void MarkLevelAvailable(int levelIndex)
+            => this.GetLevelData(levelIndex).MarkAvailable();
+
+        public void MarkLevelPlayed(int levelIndex)
+            => this.GetLevelData(levelIndex).MarkPlayed();
+        
+        public LevelData GetLevelData(int levelIndex)
         {
-            public bool IsAvailable { get; set; }
-            public bool Completed { get; set; }
-            public bool CompletedFlawlessly { get; set; }
-            public bool CompletedPerfectly { get; set; }
+            if (!this.Levels.TryGetValue(levelIndex, out var lLevelData))
+            {
+                lLevelData = new LevelData();
+                this.Levels.Add(levelIndex, lLevelData);
+            }
 
-            public int PlayCount { get; set; }
-            public int FailCount { get; set; }
+            return lLevelData;
         }
     }
 }

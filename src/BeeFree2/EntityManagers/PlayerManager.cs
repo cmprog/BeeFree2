@@ -1,74 +1,60 @@
-﻿using System;
-using System.IO;
-using System.Xml.Serialization;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using BeeFree2.GameEntities;
 namespace BeeFree2.EntityManagers
 {
-    class PlayerManager : EntityManager
+    public sealed class PlayerManager : EntityManager
     {
-        /// <summary>
-        /// Gets or sets the name of the save file.
-        /// </summary>
-        private string FileName { get; set; }
+        public SaveSlot SaveSlot { get; private set; }
 
         /// <summary>
         /// Gets the Player associated with the game.
         /// </summary>
         public Player Player { get; private set; }
 
-        /// <summary>
-        /// Gets whether or not a saved game exists.
-        /// </summary>
-        public bool SaveGameExists { get; private set; }
+        private GamePersistanceService PersistanceService { get; set; }
 
         public PlayerManager()
         {
-            this.FileName = "BeeFree.bee";
-        }
-
-        private string GetSaveFilePath()
-        {
-            var lApplicationDataDirectoryPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            var lBeeFreeDirectoryPath = Path.Combine(lApplicationDataDirectoryPath, "BeeFree2");
-            if (!Directory.Exists(lBeeFreeDirectoryPath))
-            {
-                Directory.CreateDirectory(lBeeFreeDirectoryPath);
-            }
-
-            var lFilePath = Path.Combine(lBeeFreeDirectoryPath, this.FileName);
-            return lFilePath;
-        }
-
-        public void CreateNewPlayer()
-        {
-            this.Player = new Player();
-            this.Player.LevelStats[0].IsAvailable = true;
+            this.SaveSlot = SaveSlot.Max;
         }
 
         public override void Activate(Game game)
         {
-            var lFilePath = this.GetSaveFilePath();
-            this.SaveGameExists = File.Exists(lFilePath);
+            this.PersistanceService = game.Services.GetService<GamePersistanceService>();
+        }
 
-            if (this.SaveGameExists)
+        public void CreateNewPlayer(SaveSlot saveSlot)
+        {
+            this.SaveSlot = saveSlot;
+
+            this.Player = new Player();
+            this.Player.MarkLevelAvailable(0);
+        }
+
+        public void LoadPlayer(SaveSlot saveSlot)
+        {
+            this.SaveSlot = saveSlot;
+
+            if (!this.PersistanceService.TryLoad(this.SaveSlot, out var lPlayer))
             {
-                using (var lTextReader = new StreamReader(lFilePath))
-                {
-                    var lSerializer = new XmlSerializer(typeof(Player));
-                    this.Player = (Player)lSerializer.Deserialize(lTextReader);
-                }
+                this.CreateNewPlayer(saveSlot);
+                return;
+            }
+
+            this.Player = lPlayer;
+        }
+
+        public void SavePlayer()
+        {
+            if (this.Player != null)
+            {
+                this.PersistanceService.Save(this.SaveSlot, this.Player);
             }
         }
 
         public override void Unload()
         {
-            var lFilePath = this.GetSaveFilePath();
-            using (var lTextWriter = new StreamWriter(lFilePath))
-            {
-                var lSerializer = new XmlSerializer(typeof(Player));
-                lSerializer.Serialize(lTextWriter, this.Player);
-            }
+            this.SavePlayer();
         }
     }
 }
