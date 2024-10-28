@@ -1,0 +1,205 @@
+Upgrades:
+
+- Id: 1
+  Text: Bee Speed
+  Prices:
+  - Level: 1
+    Price: 5
+    Description: Now, your stingers move faster!
+    TexturePath: Sprites/Shop_BulletSpeed_1
+  - Level: 2
+    Price: 10    
+    Description: Faster stingers are harder for the birds to dodge!
+    TexturePath: Sprites/Shop_BulletSpeed_2
+  - Level: 3
+    Price: 25
+    Description: Starting to pick up more speed!
+    TexturePath: Sprites/Shop_BulletSpeed_3
+  - Level: 4
+    Price: 50
+    Description: Your stingers could compete in NASCAR at this point!
+    TexturePath: Sprites/Shop_BulletSpeed_4
+  - Level: 5
+    Price: 100
+    Description: It's a bird! It's a plane! Nope, just your stingers!
+    TexturePath: Sprites/Shop_BulletSpeed_5
+
+- Id: 2
+  Text: Sting Rate
+  Prices:
+  - Level: 1
+    Price: 5
+    Description: Sting faster!
+    TexturePath: Sprites/Shop_FireRate_1
+  - Level: 2
+    Price: 10    
+    Description: Stinging this fast must work your abdominals!
+    TexturePath: Sprites/Shop_FireRate_2
+  - Level: 3
+    Price: 30
+    Description: In reality - you should only be able to sting once...
+    TexturePath: Sprites/Shop_FireRate_3
+  - Level: 4
+    Price: 50
+    Description: This looks painful - for the birds!
+    TexturePath: Sprites/Shop_FireRate_4
+  - Level: 5
+    Price: 100
+    Description: Hope the enemies won't blink, these bullets are coming fast!
+    TexturePath: Sprites/Shop_FireRate_5
+    
+- Id: 3
+  Text: Damage
+  Prices:
+  - Level: 1
+    Price: 10
+    Description: More potent stingers - its better than before at least...
+    TexturePath: Sprites/Shop_BulletDamage_1
+  - Level: 2
+    Price: 25    
+    Description: Now you're starting to do some damage!
+    TexturePath: Sprites/Shop_BulletDamage_2
+  - Level: 3
+    Price: 50
+    Description: Someone's been working out their stinger!
+    TexturePath: Sprites/Shop_BulletDamage_3
+  - Level: 4
+    Price: 75
+    Description: Did you sharpen the point on your stinger?
+    TexturePath: Sprites/Shop_BulletDamage_4
+  - Level: 5
+    Price: 100
+    Description: You must be packing a load of bricks behind those stings!
+    TexturePath: Sprites/Shop_BulletDamage_5
+  - Level: 6
+    Price: -1
+    Description: There's just no way you could sting better!
+    TexturePath: Sprites/Shop_BulletDamage_Max
+    
+- Id: 4
+  Text: Stringer Count
+  Prices:
+  - Level: 1
+    Price: 75
+    Description: Through the miracle of science, shoot 2 stingers with each sting!
+    TexturePath: Sprites/Shop_BulletCount_1
+  - Level: 2
+    Price: 200    
+    Description: Allows the bee to sting with 3 stingers at once, we're not sure how this is possible...
+    TexturePath: Sprites/Shop_BulletCount_2
+  - Level: 3
+    Price: -1
+    Description: When all else fails, shoot more stingers, one of them will hit!
+    TexturePath: Sprites/Shop_BulletCount_Max
+    
+- Id: 5
+  Text: Stinger Speed
+  Prices:
+  - Level: 1
+    Price: 5
+    Description: More potent stingers - its better than before at least...
+    TexturePath: Sprites/Shop_BulletSpeed_1
+  - Level: 2
+    Price: 10    
+    Description: Faster stingers are harder for the birds to dodge!
+    TexturePath: Sprites/Shop_BulletSpeed_2
+  - Level: 3
+    Price: 25
+    Description: Starting to pick up more speed!
+    TexturePath: Sprites/Shop_BulletSpeed_3
+  - Level: 4
+    Price: 50
+    Description: Your stingers could compete in NASCAR at this point!
+    TexturePath: Sprites/Shop_BulletSpeed_4
+  - Level: 5
+    Price: 100
+    Description: It's a bird! It's a plane! Nope, just your stingers!
+    TexturePath: Sprites/Shop_BulletSpeed_5
+  - Level: 6
+    Price: -1
+    Description: Any faster would break the laws of bee-physics!
+    TexturePath: Sprites/Shop_BulletSpeed_Max
+    
+- Id: 6
+  Text: Magnets
+  Prices:
+  - Level: 1
+    Price: 5
+    Description: The honeycomb will become slightly attracted to you with this magnet!
+    TexturePath: Sprites/Shop_Magnet_1
+  - Level: 2
+    Price: 15    
+    Description: Isn't it nice the honeycomb comes to you?
+    TexturePath: Sprites/Shop_Magnet_2
+  - Level: 3
+    Price: 25
+    Description: The honeycomb is addictive isn't it?
+    TexturePath: Sprites/Shop_Magnet_3
+  - Level: 4
+    Price: 40
+    Description: In Soviet Russia, honeycomb collects you!
+    TexturePath: Sprites/Shop_Magnet_4
+  - Level: 5
+    Price: 60
+    Description: Who even needs to collect honeycomb at this point?
+    TexturePath: Sprites/Shop_Magnet_5
+  - Level: 6
+    Price: -1
+    Description: Any more attractive and I'd be drawn to you!
+    TexturePath: Sprites/Shop_Magnet_Max
+    
+- Id: 7
+  Text: Health
+  Prices:
+  - Level: 1
+    Price: 5
+    Description: Gives your more health - more health makes it harder for the birds to pick you off!
+    TexturePath: Sprites/Shop_Health_1
+  - Level: 2
+    Price: 15    
+    Description: A apples weight of honey a day - or something like that...
+    TexturePath: Sprites/Shop_Health_2
+  - Level: 3
+    Price: 25
+    Description: This should help keep the birds from picking you off quickly!
+    TexturePath: Sprites/Shop_Health_3
+  - Level: 4
+    Price: 45
+    Description: Help, I'm running out of witty descriptions!
+    TexturePath: Sprites/Shop_Health_4
+  - Level: 5
+    Price: 60
+    Description: You're gonna have While E. Coyote health!
+    TexturePath: Sprites/Shop_Health_5
+  - Level: 6
+    Price: -1
+    Description: You're fit as a fiddle - I'm assuming fiddles are very fit.
+    TexturePath: Sprites/Shop_Health_Max
+    
+- Id: 8
+  Text: Regen
+  Prices:
+  - Level: 1
+    Price: 5
+    Description: Incraeses the rate at which your health regenerates.
+    TexturePath: Sprites/Shop_Regen_1
+  - Level: 2
+    Price: 15    
+    Description: Just make sure you don't get killed in a single hit...
+    TexturePath: Sprites/Shop_Regen_2
+  - Level: 3
+    Price: 25
+    Description: We're not sure how you're able to regen your health, but its pretty awesome!
+    TexturePath: Sprites/Shop_Regen_3
+  - Level: 4
+    Price: 45
+    Description: It's almost as if your skin is healing before our very eyes!
+    TexturePath: Sprites/Shop_Regen_4
+  - Level: 5
+    Price: 60
+    Description: Who needs health when you have health regenerating abilities?
+    TexturePath: Sprites/Shop_Regen_5
+  - Level: 6
+    Price: -1
+    Description: If you regenerated any faster, you would have a clone!
+    TexturePath: Sprites/Shop_Health_Max

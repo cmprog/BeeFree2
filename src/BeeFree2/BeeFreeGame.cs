@@ -1,4 +1,6 @@
 using System;
+using BeeFree2.Config;
+using BeeFree2.EntityManagers;
 using BeeFree2.GameScreens;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -9,10 +11,9 @@ namespace BeeFree2
     /// <summary>
     /// This is the main type for your game
     /// </summary>
-    public class BeeFreeGame : Microsoft.Xna.Framework.Game
+    public class BeeFreeGame : Game
     {
         GraphicsDeviceManager mGraphics;
-        RenderTarget2D mNativeRenderTarget;
 
         ScreenManager mScreenManager;
 
@@ -21,11 +22,7 @@ namespace BeeFree2
             this.IsMouseVisible = true;
             this.Content.RootDirectory = "Content";
 
-            var lDisplayMode = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode;
-
-            this.mGraphics = new GraphicsDeviceManager(this);
-            this.mNativeRenderTarget = new RenderTarget2D(this.GraphicsDevice, this.GraphicsDevice.Viewport.Width, this.GraphicsDevice.Viewport.Height);
-                        
+            this.mGraphics = new GraphicsDeviceManager(this);                       
 
             this.TargetElapsedTime = TimeSpan.FromTicks(333333);
 
@@ -41,7 +38,23 @@ namespace BeeFree2
         /// </summary>
         protected override void Initialize()
         {
-            this.mScreenManager.AddScreen(new MainMenuScreen(), null);
+            this.Services.AddService(new ConfigurationManager());
+            this.Services.AddService(new GamePersistanceService());
+
+            var lPlayerManager = new PlayerManager();
+            lPlayerManager.Activate(this);
+            this.Services.AddService(lPlayerManager);
+
+            var lIsTesting = false;
+            if (lIsTesting)
+            {
+                this.mScreenManager.AddScreen(new CustomExamplMenuScreen(), null);
+            }
+            else
+            {
+                this.mScreenManager.AddScreen(new MainMenuScreen(), null); 
+            }
+
             base.Initialize();
         }
 
@@ -51,15 +64,7 @@ namespace BeeFree2
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            var lNativeRenderTarget = new RenderTarget2D(this.GraphicsDevice, 100, 100);
-
-
-            this.GraphicsDevice.SetRenderTarget(this.mNativeRenderTarget);
             GraphicsDevice.Clear(Color.SkyBlue);
-
-            
-
-
             base.Draw(gameTime);
         }
     }

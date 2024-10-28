@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.Graphics;
 using BeeFree2.GameEntities;
 using BeeFree2.EntityManagers;
 using BeeFree2.ContentData;
+using BeeFree2.Config;
 
 namespace BeeFree2.GameScreens
 {
@@ -71,10 +72,8 @@ namespace BeeFree2.GameScreens
 
             this.AvailableMoneyPosition = new Vector2(649, 426);
             this.AvailableMoneySize = new Vector2(146, 50);
-
-            this.PlayerManager = new PlayerManager();
             this.ShopButtons = new List<ShopButtonEntity>();
-        }
+        }              
 
         public override void Activate(bool instancePreserved)
         {
@@ -114,7 +113,9 @@ namespace BeeFree2.GameScreens
 
             this.BackgroundTexture = this.ContentManager.Load<Texture2D>("Sprites/ShopBackground");
 
-            this.ShopData = this.ContentManager.Load<ShopData>("shop");
+            var lConfigurationManager = this.ScreenManager.Game.Services.GetService<ConfigurationManager>();
+            this.ShopData = lConfigurationManager.LoadShopData();
+
             this.TextureByPriceData = 
                 this.ShopData.Upgrades
                     .SelectMany(x => x.Prices)
@@ -157,7 +158,7 @@ namespace BeeFree2.GameScreens
         /// <returns>The new ShopButtonEntity</returns>
         private ShopButtonEntity CreateButton(int upgradeID, int playerLevel)
         {
-            var lUpgrade = this.ShopData.Upgrades.Single(x => x.ID == upgradeID);
+            var lUpgrade = this.ShopData.Upgrades.Single(x => x.Id == upgradeID);
             var lPrice = lUpgrade.Prices.SingleOrDefault(x => x.Level == playerLevel + 1);
 
             var lButton = new ShopButtonEntity();
@@ -171,7 +172,7 @@ namespace BeeFree2.GameScreens
         /// <param name="button"></param>
         public void UpdateButton(ShopButtonEntity button)
         {
-            var lUpgrade = this.ShopData.Upgrades.Single(x => x.ID == button.ID);
+            var lUpgrade = this.ShopData.Upgrades.Single(x => x.Id == button.Id);
             var lPrice = lUpgrade.Prices.SingleOrDefault(x => x.Level == button.Level + 1);
             this.LoadButton(button, lUpgrade, lPrice);
         }
@@ -186,7 +187,7 @@ namespace BeeFree2.GameScreens
         {
             var lTexture = this.TextureByPriceData[price];
 
-            button.ID = upgrade.ID;
+            button.Id = upgrade.Id;
             button.NameText = upgrade.Text;
             button.Level = price.Level;
             button.LevelText = this.GetLevelText(upgrade, price);
@@ -246,8 +247,10 @@ namespace BeeFree2.GameScreens
                 && (this.ActiveButton.Price >= 0)
                 && (this.PlayerManager.Player.AvailableHoneycombToSpend >= this.ActiveButton.Price))
             {
-                this.PlayerUpgradeSetters[this.ActiveButton.ID](this.ActiveButton.Level);
+                this.PlayerUpgradeSetters[this.ActiveButton.Id](this.ActiveButton.Level);
                 this.PlayerManager.Player.AvailableHoneycombToSpend -= this.ActiveButton.Price;
+                this.PlayerManager.SavePlayer();
+
                 this.UpdateButton(this.ActiveButton);
             }
         }

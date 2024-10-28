@@ -10,15 +10,8 @@
 
 #-------------------------------- References --------------------------------#
 
-/reference:..\..\BeeFree2Content\bin\Debug\net8.0\BeeFree2.ContentData.dll
-/reference:..\..\BeeFree2Content\bin\Debug\net8.0\BeeFree2Content.dll
 
 #---------------------------------- Content ---------------------------------#
-
-#begin birdtypes.brd
-/importer:BirdMetaDataImporter
-/processor:BirdMataDataProcessor
-/build:birdtypes.brd
 
 #begin Fonts/loadingfont.spritefont
 /importer:FontDescriptionImporter
@@ -75,111 +68,6 @@
 /processorParam:PremultiplyAlpha=True
 /processorParam:TextureFormat=Compressed
 /build:Fonts/ShopMoneyFont.spritefont
-
-#begin Levels/level_00.lvl
-/importer:LevelDataImporter
-/processor:LevelDataProcessor
-/build:Levels/level_00.lvl
-
-#begin Levels/level_01.lvl
-/importer:LevelDataImporter
-/processor:LevelDataProcessor
-/build:Levels/level_01.lvl
-
-#begin Levels/level_02.lvl
-/importer:LevelDataImporter
-/processor:LevelDataProcessor
-/build:Levels/level_02.lvl
-
-#begin Levels/level_03.lvl
-/importer:LevelDataImporter
-/processor:LevelDataProcessor
-/build:Levels/level_03.lvl
-
-#begin Levels/level_04.lvl
-/importer:LevelDataImporter
-/processor:LevelDataProcessor
-/build:Levels/level_04.lvl
-
-#begin Levels/level_05.lvl
-/importer:LevelDataImporter
-/processor:LevelDataProcessor
-/build:Levels/level_05.lvl
-
-#begin Levels/level_06.lvl
-/importer:LevelDataImporter
-/processor:LevelDataProcessor
-/build:Levels/level_06.lvl
-
-#begin Levels/level_07.lvl
-/importer:LevelDataImporter
-/processor:LevelDataProcessor
-/build:Levels/level_07.lvl
-
-#begin Levels/level_08.lvl
-/importer:LevelDataImporter
-/processor:LevelDataProcessor
-/build:Levels/level_08.lvl
-
-#begin Levels/level_09.lvl
-/importer:LevelDataImporter
-/processor:LevelDataProcessor
-/build:Levels/level_09.lvl
-
-#begin Levels/level_10.lvl
-/importer:LevelDataImporter
-/processor:LevelDataProcessor
-/build:Levels/level_10.lvl
-
-#begin Levels/level_11.lvl
-/importer:LevelDataImporter
-/processor:LevelDataProcessor
-/build:Levels/level_11.lvl
-
-#begin Levels/level_12.lvl
-/importer:LevelDataImporter
-/processor:LevelDataProcessor
-/build:Levels/level_12.lvl
-
-#begin Levels/level_13.lvl
-/importer:LevelDataImporter
-/processor:LevelDataProcessor
-/build:Levels/level_13.lvl
-
-#begin Levels/level_14.lvl
-/importer:LevelDataImporter
-/processor:LevelDataProcessor
-/build:Levels/level_14.lvl
-
-#begin Levels/level_15.lvl
-/importer:LevelDataImporter
-/processor:LevelDataProcessor
-/build:Levels/level_15.lvl
-
-#begin Levels/level_16.lvl
-/importer:LevelDataImporter
-/processor:LevelDataProcessor
-/build:Levels/level_16.lvl
-
-#begin Levels/level_17.lvl
-/importer:LevelDataImporter
-/processor:LevelDataProcessor
-/build:Levels/level_17.lvl
-
-#begin Levels/level_18.lvl
-/importer:LevelDataImporter
-/processor:LevelDataProcessor
-/build:Levels/level_18.lvl
-
-#begin Levels/level_19.lvl
-/importer:LevelDataImporter
-/processor:LevelDataProcessor
-/build:Levels/level_19.lvl
-
-#begin shop.bsp
-/importer:ShopDataImporter
-/processor:ShopDataProcessor
-/build:shop.bsp
 
 #begin Sprites/bee1.png
 /importer:TextureImporter

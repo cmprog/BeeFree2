@@ -81,10 +81,9 @@ namespace BeeFree2.GameScreens
         {
             base.Activate(instancePreserved);
 
-            this.ContentManager = new ContentManager(this.ScreenManager.Game.Content.ServiceProvider);
-            this.ContentManager.RootDirectory = "content";
+            this.ContentManager = this.ScreenManager.Game.Content;
 
-            this.PlayerManager = new PlayerManager();
+            this.PlayerManager = this.ScreenManager.Game.Services.GetService<PlayerManager>();
             this.PlayerManager.Activate(this.ScreenManager.Game);
 
             var lBeeMovement = new MouseMovementBehavior(this.ScreenManager.InputState)
@@ -164,14 +163,12 @@ namespace BeeFree2.GameScreens
 
         private void LevelManager_LevelOver()
         {
-            this.PlayerManager.Player.LevelStats[this.LevelIndex].Completed = true;
-            if (this.LevelIndex + 1 < this.PlayerManager.Player.LevelStats.Length)
-            {
-                this.PlayerManager.Player.LevelStats[this.LevelIndex + 1].IsAvailable = true;
-            }
+            var lWasFlawlessCompletion = !this.BeeManager.Bee.HasTakenDamage;
+            var lWasPerfectCompletion = this.BirdsKilled == this.LevelManager.TotalBirdCount;
 
-            if (!this.BeeManager.Bee.HasTakenDamage) this.PlayerManager.Player.LevelStats[this.LevelIndex].CompletedFlawlessly = true;
-            if (this.BirdsKilled == this.LevelManager.TotalBirdCount) this.PlayerManager.Player.LevelStats[this.LevelIndex].CompletedPerfectly = true;
+            this.PlayerManager.Player.MarkLevelCompleted(this.LevelIndex, lWasFlawlessCompletion, lWasPerfectCompletion);
+            this.PlayerManager.Player.MarkLevelAvailable(this.LevelIndex + 1);
+            this.PlayerManager.SavePlayer();
 
             this.GamePlayOver();
         }

@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using BeeFree2.EntityManagers;
 using BeeFree2.GameEntities;
+using BeeFree2.Controls;
 
 namespace BeeFree2.GameScreens
 {
@@ -13,26 +12,17 @@ namespace BeeFree2.GameScreens
     /// </summary>
     internal class MainMenuScreen : GameScreen
     {
-        private MainMenuButton mNewGameButton;
-        private MainMenuButton mContinueGameButton;
-        private MainMenuButton mExitButton;
+        private GraphicalUserInterface mUserInterface;
 
         private SpriteFont MainMenuFont { get; set; }
         private SpriteFont MainMenuFontBold { get; set; }
 
-        private List<MainMenuButton> mButtons;
+        private PlayerManager mPlayerManager;
 
         /// <summary>
         /// Gets or sets the texture for the background.
         /// </summary>
         private Texture2D BackgroundTexture { get; set; }
-
-        private PlayerManager PlayerManager { get; set; }
-
-        public MainMenuScreen()
-        {
-            this.PlayerManager = new PlayerManager();
-        }
 
         public override void Activate(bool instancePreserved)
         {
@@ -40,99 +30,40 @@ namespace BeeFree2.GameScreens
 
             var lContent = this.ScreenManager.Game.Content;
 
+            this.mPlayerManager = this.ScreenManager.Game.Services.GetService<PlayerManager>();
+
+            var lGamePersistanceService = this.ScreenManager.Game.Services.GetService<GamePersistanceService>();
+
             this.MainMenuFont = lContent.Load<SpriteFont>("Fonts/MainMenuFont");
             this.MainMenuFontBold = lContent.Load<SpriteFont>("Fonts/MainMenuFontBold");
 
-            var lButtonSize = new Vector2(250, 50);
+            var lStackPanel = new HorizontalStackPanel();
+            lStackPanel.Margin = new Thickness(50, 250, 0, 0);
+            lStackPanel.Add(new SaveSlotGroup(this, 0));
+            lStackPanel.Add(new SaveSlotGroup(this, 1));
+
+            this.mUserInterface = new GraphicalUserInterface(this.ScreenManager.SpriteBatch, this.ScreenManager.InputState);
+            this.mUserInterface.Add(lStackPanel);
 
             this.BackgroundTexture = lContent.Load<Texture2D>("sprites/mainmenubackground");
-
-            var lBlankTexture = new Texture2D(this.ScreenManager.GraphicsDevice, 1, 1);
-            lBlankTexture.SetData(new[] { Color.White });
-
-            var lCurrentPosition = new Vector2(50f, 275f);
-
-            this.PlayerManager.Activate(this.ScreenManager.Game);
-
-            this.mNewGameButton = new MainMenuButton
-            {
-                Text = "New Game",
-                InactiveFont = this.MainMenuFont,
-                ActiveFont = this.MainMenuFontBold,
-                BlankTexture = lBlankTexture,
-                Position = lCurrentPosition,
-                Size = lButtonSize,
-                IsActive = false,
-                IsEnabled = true,
-            };
-            this.mNewGameButton.Selected += (s, e) => this.StartNewGame();
-
-            lCurrentPosition.Y += lButtonSize.Y + 10;
-
-            this.mContinueGameButton = new MainMenuButton
-            {
-                Text = "Continue Game",
-                InactiveFont = this.MainMenuFont,
-                ActiveFont = this.MainMenuFontBold,
-                BlankTexture = lBlankTexture,
-                Position = lCurrentPosition,
-                Size = lButtonSize,
-                IsActive = false,
-                IsEnabled = this.PlayerManager.SaveGameExists,
-            };
-            this.mContinueGameButton.Selected += (s, e) => this.ContinuePreviousGame();
-
-            lCurrentPosition.Y += lButtonSize.Y + 10;
-
-            this.mExitButton = new MainMenuButton
-            {
-                Text = "Exit",
-                InactiveFont = this.MainMenuFont,
-                ActiveFont = this.MainMenuFontBold,
-                BlankTexture = lBlankTexture,
-                Position = lCurrentPosition,
-                Size = lButtonSize,
-                IsActive = false,
-                IsEnabled = this.PlayerManager.SaveGameExists,
-            };
-            this.mExitButton.Selected += (s, e) => this.ScreenManager.Game.Exit();
-
-            this.mButtons = new List<MainMenuButton>();
-            this.mButtons.Add(this.mNewGameButton);
-            this.mButtons.Add(this.mContinueGameButton);
-            this.mButtons.Add(this.mExitButton);
         }
 
-        public override void Unload()
+        private void ContinuePreviousGame(SaveSlot saveSlot)
         {
-            base.Unload();
-            this.PlayerManager.Unload();
-        }
-
-        private void ContinuePreviousGame()
-        {
+            this.mPlayerManager.LoadPlayer(saveSlot);
             LoadingScreen.Load(this.ScreenManager, true, new LevelSelectionScreen());
         }
 
-        private void StartNewGame()
+        private void StartNewGame(SaveSlot saveSlot)
         {
-            this.PlayerManager.CreateNewPlayer();
+            this.mPlayerManager.CreateNewPlayer(saveSlot);
             LoadingScreen.Load(this.ScreenManager, true, new LevelSelectionScreen());
         }
 
-        public override void HandleInput(GameTime gameTime, InputState input)
+        public override void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen)
         {
-            base.HandleInput(gameTime, input);
-
-            foreach (var lButton in this.mButtons)
-            {
-                lButton.IsActive = lButton.Bounds.Contains(input.CurrentMouseState.X, input.CurrentMouseState.Y);
-
-                if (lButton.IsActive && input.IsLeftMouseClick)
-                {
-                    lButton.OnSelectEntry();
-                }
-            }
+            base.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
+            this.mUserInterface.Update(gameTime, !otherScreenHasFocus && !coveredByOtherScreen);
         }
 
         public override void Draw(GameTime gameTime)
@@ -140,13 +71,108 @@ namespace BeeFree2.GameScreens
             this.ScreenManager.SpriteBatch.Begin();
 
             this.ScreenManager.SpriteBatch.Draw(this.BackgroundTexture, Vector2.Zero, null, Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
+
             base.Draw(gameTime);
-            foreach (var lButton in this.mButtons)
-            {
-                lButton.Draw(this.ScreenManager.SpriteBatch);
-            }
 
             this.ScreenManager.SpriteBatch.End();
+
+            this.mUserInterface.Draw(gameTime);
+        }
+
+        private sealed class SaveSlotGroup : GraphicsContainer
+        {
+            private readonly MainMenuScreen mScreen;
+            private readonly SaveSlot mSaveSlot;
+
+            private readonly Button mButton_NewGame;
+            private readonly Button mButton_ContinueGame;
+            private readonly Button mButton_ExitGame;
+
+            private readonly TextBlock mTextBlock_NewGame;
+            private readonly TextBlock mTextBlock_ContinueGame;
+            private readonly TextBlock mTextBlock_ExitGame;
+
+            public SaveSlotGroup(MainMenuScreen screen, SaveSlot saveSlot)
+            {
+                this.mScreen = screen;
+                this.mSaveSlot = saveSlot;
+
+                this.Margin = new Thickness(5, 0);
+                this.BorderColor = Color.Black;
+                this.BackgroundColor = Color.White;
+                this.Padding = new Thickness(5);
+
+                this.mTextBlock_NewGame = new TextBlock("New Game", this.mScreen.MainMenuFont);
+                this.mTextBlock_ContinueGame = new TextBlock("Continue Game", this.mScreen.MainMenuFont);
+                this.mTextBlock_ExitGame = new TextBlock("Exit", this.mScreen.MainMenuFont);
+
+                this.mButton_NewGame = new Button(this.mTextBlock_NewGame);
+                this.mButton_ContinueGame = new Button(this.mTextBlock_ContinueGame);
+                this.mButton_ExitGame = new Button(this.mTextBlock_ExitGame);
+
+                this.InitializeButton(this.mButton_NewGame, this.mTextBlock_NewGame);
+                this.InitializeButton(this.mButton_ContinueGame, this.mTextBlock_ContinueGame);
+                this.InitializeButton(this.mButton_ExitGame, this.mTextBlock_ExitGame);
+
+                var lHeader = new TextBlock($"Slot {this.mSaveSlot}", this.mScreen.MainMenuFont);
+                lHeader.HorizontalAlignment = HorizontalAlignment.Center;
+
+                var lStackPanel = new VerticalStackPanel();
+                lStackPanel.Add(lHeader);
+                lStackPanel.Add(this.mButton_NewGame);
+                lStackPanel.Add(this.mButton_ContinueGame);
+                lStackPanel.Add(this.mButton_ExitGame);
+
+                this.Add(lStackPanel);
+            }
+
+            public override void UpdateFinalize(GameTime gameTime)
+            {
+                base.UpdateFinalize(gameTime);
+
+                this.UpdateButton(this.mButton_NewGame, this.mTextBlock_NewGame);
+                this.UpdateButton(this.mButton_ContinueGame, this.mTextBlock_ContinueGame);
+                this.UpdateButton(this.mButton_ExitGame, this.mTextBlock_ExitGame);
+
+                if (this.mButton_NewGame.WasClicked) this.mScreen.StartNewGame(this.mSaveSlot);
+                else if (this.mButton_ContinueGame.WasClicked) this.mScreen.ContinuePreviousGame(this.mSaveSlot);
+                else if (this.mButton_ExitGame.WasClicked) this.mScreen.ScreenManager.Game.Exit();
+            }
+
+            private void UpdateButton(Button b, TextBlock t)
+            {
+                if (b.IsMouseOver)
+                {
+                    t.Font = this.mScreen.MainMenuFontBold;
+                    t.ForeColor = Color.White;
+
+                    b.BorderColor = Color.White;
+                    b.BorderThickness = new Thickness(6);
+                    b.BackgroundColor = Color.DarkGoldenrod;
+                }
+                else
+                {
+                    t.Font = this.mScreen.MainMenuFont;
+                    t.ForeColor = Color.Black;
+
+                    b.BorderColor = Color.Black;
+                    b.BorderThickness = new Thickness(4);
+                    b.BackgroundColor = Color.Gold;
+                }
+            }
+
+            private void InitializeButton(Button b, TextBlock t)
+            {
+                this.UpdateButton(b, t);
+
+                b.HorizontalAlignment = HorizontalAlignment.Stretch;
+                b.Margin = new Thickness(0, 5);
+                b.Width = 250;
+                b.Height = 50;
+
+                t.HorizontalAlignment = HorizontalAlignment.Center;
+                t.VerticalAlignment = VerticalAlignment.Center;
+            }
         }
     }
 }

@@ -87,10 +87,10 @@ namespace BeeFree2.EntityManagers
             this.TextureHead = this.ContentManager.Load<Texture2D>("sprites/bird_head");
             this.TextureEyelids = this.ContentManager.Load<Texture2D>("sprites/bird_eyelids");
 
-            var lLevelData = this.ContentManager.Load<LevelData>("levels/level_" + this.CurrentLevel.ToString("00"));
+            var lLevelData = this.ConfigurationManager.LoadLevelData(this.CurrentLevel);
 
-            var lBirdFactory = new BirdFactory(this.ContentManager, this.BulletFired, this.Bee);
-            this.Birds = lLevelData.BirdData.Select(x => lBirdFactory.CreateBird(x)).ToArray();
+            var lBirdFactory = new BirdFactory(game, this.BulletFired, this.Bee);
+            this.Birds = lLevelData.Birds.Select(x => lBirdFactory.CreateBird(x)).ToArray();
             this.TotalBirdCount = this.Birds.Count;
             this.LevelDuration = lLevelData.EndTime;
             
