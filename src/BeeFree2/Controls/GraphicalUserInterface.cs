@@ -13,6 +13,18 @@ namespace BeeFree2.Controls
 
         private Texture2D mPixelTexture;
 
+        public GraphicalUserInterface(GameScreen gameScreen)
+            : this(gameScreen.ScreenManager)
+        {
+
+        }
+
+        public GraphicalUserInterface(ScreenManager screenManager)
+            : this(screenManager.SpriteBatch, screenManager.InputState)
+        {
+
+        }
+
         public GraphicalUserInterface(SpriteBatch spriteBatch, InputState inputState)
         {
             this.SpriteBatch = spriteBatch;
@@ -43,10 +55,12 @@ namespace BeeFree2.Controls
             }
 
             var lIntClip = new Rectangle();
-            lIntClip.X = (int)clip.X;
+            lIntClip.X = (int) clip.X;
             lIntClip.Y = (int) clip.Y;
-            lIntClip.Width = (int) clip.Width;
-            lIntClip.Height = (int) clip.Height;
+
+            // Add 1 to prevent truncating the size
+            lIntClip.Width = (int) (clip.Width + 1);
+            lIntClip.Height = (int) (clip.Height + 1);
 
 
             this.mScissorStack.Push((this.SpriteBatch.GraphicsDevice.ScissorRectangle, lIsInSpriteBatch));
@@ -115,12 +129,7 @@ namespace BeeFree2.Controls
             if (this.Child != null)
             {
                 this.Child.Measure(gameTime);
-
-                this.Child.X = this.X;
-                this.Child.Y = this.Y;
-
-                this.Child.ActualWidth = MathHelper.Min(this.ActualWidth, this.Child.DesiredWidth);
-                this.Child.ActualHeight = MathHelper.Min(this.ActualHeight, this.Child.DesiredHeight);
+                this.Child.ApplyAlignment(this.Bounds);
 
                 if (this.Child is IGraphicsContainer lContainer)
                 {

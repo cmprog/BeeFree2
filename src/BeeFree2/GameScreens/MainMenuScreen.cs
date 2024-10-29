@@ -1,8 +1,6 @@
-﻿using System.Collections.Generic;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using BeeFree2.EntityManagers;
-using BeeFree2.GameEntities;
 using BeeFree2.Controls;
 
 namespace BeeFree2.GameScreens
@@ -10,12 +8,12 @@ namespace BeeFree2.GameScreens
     /// <summary>
     /// Defines the screen which works as the main menu.
     /// </summary>
-    internal class MainMenuScreen : GameScreen
+    internal sealed class MainMenuScreen : GameScreen
     {
         private GraphicalUserInterface mUserInterface;
 
-        private SpriteFont MainMenuFont { get; set; }
-        private SpriteFont MainMenuFontBold { get; set; }
+        private SpriteFont StandardMenuFont { get; set; }
+        private SpriteFont ActiveMenuFont { get; set; }
 
         private PlayerManager mPlayerManager;
 
@@ -34,18 +32,18 @@ namespace BeeFree2.GameScreens
 
             var lGamePersistanceService = this.ScreenManager.Game.Services.GetService<GamePersistanceService>();
 
-            this.MainMenuFont = lContent.Load<SpriteFont>("Fonts/MainMenuFont");
-            this.MainMenuFontBold = lContent.Load<SpriteFont>("Fonts/MainMenuFontBold");
+            this.StandardMenuFont = lContent.Load<SpriteFont>(AssetNames.Fonts.Standard_14);
+            this.ActiveMenuFont = lContent.Load<SpriteFont>(AssetNames.Fonts.Standard_18);
 
             var lStackPanel = new HorizontalStackPanel();
             lStackPanel.Margin = new Thickness(50, 250, 0, 0);
             lStackPanel.Add(new SaveSlotGroup(this, 0));
             lStackPanel.Add(new SaveSlotGroup(this, 1));
 
-            this.mUserInterface = new GraphicalUserInterface(this.ScreenManager.SpriteBatch, this.ScreenManager.InputState);
+            this.mUserInterface = new GraphicalUserInterface(this);
             this.mUserInterface.Add(lStackPanel);
 
-            this.BackgroundTexture = lContent.Load<Texture2D>("sprites/mainmenubackground");
+            this.BackgroundTexture = lContent.Load<Texture2D>(AssetNames.Sprites.MainMenuBackground);
         }
 
         private void ContinuePreviousGame(SaveSlot saveSlot)
@@ -102,9 +100,9 @@ namespace BeeFree2.GameScreens
                 this.BackgroundColor = Color.White;
                 this.Padding = new Thickness(5);
 
-                this.mTextBlock_NewGame = new TextBlock("New Game", this.mScreen.MainMenuFont);
-                this.mTextBlock_ContinueGame = new TextBlock("Continue Game", this.mScreen.MainMenuFont);
-                this.mTextBlock_ExitGame = new TextBlock("Exit", this.mScreen.MainMenuFont);
+                this.mTextBlock_NewGame = new TextBlock("New Game", this.mScreen.StandardMenuFont);
+                this.mTextBlock_ContinueGame = new TextBlock("Continue Game", this.mScreen.StandardMenuFont);
+                this.mTextBlock_ExitGame = new TextBlock("Exit", this.mScreen.StandardMenuFont);
 
                 this.mButton_NewGame = new Button(this.mTextBlock_NewGame);
                 this.mButton_ContinueGame = new Button(this.mTextBlock_ContinueGame);
@@ -114,7 +112,7 @@ namespace BeeFree2.GameScreens
                 this.InitializeButton(this.mButton_ContinueGame, this.mTextBlock_ContinueGame);
                 this.InitializeButton(this.mButton_ExitGame, this.mTextBlock_ExitGame);
 
-                var lHeader = new TextBlock($"Slot {this.mSaveSlot}", this.mScreen.MainMenuFont);
+                var lHeader = new TextBlock($"Slot {this.mSaveSlot}", this.mScreen.StandardMenuFont);
                 lHeader.HorizontalAlignment = HorizontalAlignment.Center;
 
                 var lStackPanel = new VerticalStackPanel();
@@ -143,7 +141,7 @@ namespace BeeFree2.GameScreens
             {
                 if (b.IsMouseOver)
                 {
-                    t.Font = this.mScreen.MainMenuFontBold;
+                    t.Font = this.mScreen.ActiveMenuFont;
                     t.ForeColor = Color.White;
 
                     b.BorderColor = Color.White;
@@ -152,7 +150,7 @@ namespace BeeFree2.GameScreens
                 }
                 else
                 {
-                    t.Font = this.mScreen.MainMenuFont;
+                    t.Font = this.mScreen.StandardMenuFont;
                     t.ForeColor = Color.Black;
 
                     b.BorderColor = Color.Black;

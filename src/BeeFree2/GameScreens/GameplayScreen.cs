@@ -30,11 +30,6 @@ namespace BeeFree2.GameScreens
 
         private int BirdsKilled { get; set; }
 
-        /// <summary>
-        /// Fired when the game play is over.
-        /// </summary>
-        public event Action GamePlayOver;
-
         public GameplayScreen(int levelIndex)
         {
             this.LevelIndex = levelIndex;
@@ -170,13 +165,19 @@ namespace BeeFree2.GameScreens
             this.PlayerManager.Player.MarkLevelAvailable(this.LevelIndex + 1);
             this.PlayerManager.SavePlayer();
 
-            this.GamePlayOver();
+            this.OnGamePlayOver();
         }
 
         private void Bee_OnDeath(BeeEntity bee)
         {
             this.PlayerManager.Player.DeathCount++;
-            this.GamePlayOver();
+
+            this.OnGamePlayOver();
+        }
+
+        private void OnGamePlayOver()
+        {
+            LoadingScreen.Load(this.ScreenManager, false, new LevelSelectionScreen());
         }
 
         public override void HandleInput(GameTime gameTime, InputState input)

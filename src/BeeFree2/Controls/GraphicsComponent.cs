@@ -4,6 +4,15 @@ namespace BeeFree2.Controls
 {
     public abstract class GraphicsComponent : IGraphicsComponent
     {
+        /// <summary>
+        /// Can be used to attach additional information to a component.
+        /// </summary>
+        /// <remarks>
+        /// Sometimes this is useful when debugging when trying to get a specific instance of
+        /// a <see cref="GraphicsComponent"/>.
+        /// </remarks>
+        public object Tag { get; set; }
+
         public float X { get; set; }
 
         public float Y { get; set; } = 0;
@@ -135,6 +144,8 @@ namespace BeeFree2.Controls
 
         public float Height { get; set; } = float.NaN;
 
+        public Visibility Visibility { get; set; } = Visibility.Visible;
+
         public virtual void UpdateInitialize(GameTime gameTime) { }
         public virtual void UpdateInput(GraphicalUserInterface ui, GameTime gameTime)
         {
@@ -145,6 +156,12 @@ namespace BeeFree2.Controls
 
         public void Measure(GameTime gameTime)
         {
+            if (this.Visibility == Visibility.Collapsed)
+            {
+                this.DesiredSize = Vector2.Zero;
+                return;
+            }
+
             var lDesiredSize = this.MeasureCore(gameTime);
             
             if (double.IsNaN(this.Width))
@@ -178,6 +195,8 @@ namespace BeeFree2.Controls
 
         public void Draw(GraphicalUserInterface ui, GameTime gameTime)
         {
+            if (this.Visibility != Visibility.Visible) return;
+
             ui.PushScissorClip(this.Clip);
 
             if (this.BackgroundColor != Color.Transparent)
@@ -207,5 +226,63 @@ namespace BeeFree2.Controls
             => this.Parent?.GetNextComponent(this) ?? this;
 
         public virtual IGraphicsComponent GetLastComponent() => this;
+
+        public void ApplyAlignment(RectangleF contentBounds)
+        {
+            this.ApplyHorizontalAlignment(contentBounds);
+            this.ApplyVerticalAlignment(contentBounds);
+        }
+
+        public void ApplyHorizontalAlignment(RectangleF contentBounds)
+        {
+            switch (this.HorizontalAlignment)
+            {
+                case HorizontalAlignment.Left:
+                    this.ActualWidth = MathHelper.Min(this.DesiredWidth, contentBounds.Width);
+                    this.X = contentBounds.X;
+                    break;
+
+                case HorizontalAlignment.Right:
+                    this.ActualWidth = MathHelper.Min(this.DesiredWidth, contentBounds.Width);
+                    this.X = contentBounds.Right - this.ActualWidth;
+                    break;
+
+                case HorizontalAlignment.Center:
+                    this.ActualWidth = MathHelper.Min(this.DesiredWidth, contentBounds.Width);
+                    this.X = contentBounds.X + ((contentBounds.Width - this.ActualWidth) / 2f);
+                    break;
+
+                case HorizontalAlignment.Stretch:
+                    this.ActualWidth = contentBounds.Width;
+                    this.X = contentBounds.X;
+                    break;
+            }
+        }
+
+        public void ApplyVerticalAlignment(RectangleF contentBounds)
+        {
+            switch (this.VerticalAlignment)
+            {
+                case VerticalAlignment.Top:
+                    this.ActualHeight = MathHelper.Min(this.DesiredHeight, contentBounds.Height);
+                    this.Y = contentBounds.Y;
+                    break;
+
+                case VerticalAlignment.Bottom:
+                    this.ActualHeight = MathHelper.Min(this.DesiredHeight, contentBounds.Height);
+                    this.Y = contentBounds.Bottom - this.ActualHeight;
+                    break;
+
+                case VerticalAlignment.Center:
+                    this.ActualHeight = MathHelper.Min(this.DesiredHeight, contentBounds.Height);
+                    this.Y = contentBounds.Y + ((contentBounds.Height - this.ActualHeight) / 2f);
+                    break;
+
+                case VerticalAlignment.Stretch:
+                    this.ActualHeight = contentBounds.Height;
+                    this.Y = contentBounds.Y;
+                    break;
+            }
+        }
     }
 }

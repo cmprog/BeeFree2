@@ -31,27 +31,11 @@ namespace BeeFree2.Controls
                 lChild.X = lCurrentX;
                 lChild.ActualWidth = lChild.DesiredWidth;
 
-                switch (lChild.VerticalAlignment)
+                lChild.ApplyVerticalAlignment(lContentBounds);
+
+                if (lChild is IGraphicsContainer lChildContainer)
                 {
-                    case VerticalAlignment.Top:
-                        lChild.ActualHeight = MathHelper.Min(lChild.DesiredHeight, lContentBounds.Height);
-                        lChild.Y = lContentBounds.Y;
-                        break;
-
-                    case VerticalAlignment.Bottom:
-                        lChild.ActualHeight = MathHelper.Min(lChild.DesiredHeight, lContentBounds.Height);
-                        lChild.Y = lContentBounds.Y + lChild.ActualHeight;
-                        break;
-
-                    case VerticalAlignment.Center:
-                        lChild.ActualHeight = MathHelper.Min(lChild.DesiredHeight, this.ActualHeight);
-                        lChild.Y = lContentBounds.Y + ((lContentBounds.Height - lChild.ActualHeight) / 2f);
-                        break;
-
-                    case VerticalAlignment.Stretch:
-                        lChild.ActualHeight = lContentBounds.Height;
-                        lChild.Y = lContentBounds.Y;
-                        break;
+                    lChildContainer.LayoutChildren(gameTime);
                 }
 
                 lCurrentX += lChild.ActualWidth;

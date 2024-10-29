@@ -73,6 +73,8 @@ namespace BeeFree2.Controls
             }
         }
 
+        protected virtual void OnChildAdded(IGraphicsComponent child) { }
+
         public void Remove(IGraphicsComponent child)
         {
             if (this.mChildren.Remove(child))
@@ -80,6 +82,8 @@ namespace BeeFree2.Controls
                 child.Parent = null;                
             }
         }
+
+        protected virtual void OnChildRemoved(IGraphicsComponent child) { }
 
         public override IGraphicsComponent GetPreviousComponent()
         {

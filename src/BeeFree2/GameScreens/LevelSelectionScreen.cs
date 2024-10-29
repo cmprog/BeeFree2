@@ -5,6 +5,8 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using BeeFree2.GameEntities;
 using BeeFree2.EntityManagers;
+using BeeFree2.Controls;
+using System.Collections.Generic;
 
 namespace BeeFree2.GameScreens
 {
@@ -12,188 +14,152 @@ namespace BeeFree2.GameScreens
     /// This screen allows the user to select the level they want to play. It also lets them shop and
     /// view some of their information.
     /// </summary>
-    internal class LevelSelectionScreen : GameScreen
+    internal sealed class LevelSelectionScreen : GameScreen
     {
-        private ContentManager ContentManager => this.ScreenManager.Game.Content;
+        private MenuButton mMenuButton_Back;
+        private MenuButton mMenuButton_Shop;
 
-        private PlayerManager PlayerManager { get; set; }
-        private LevelSelectionButton[] Buttons { get; set; }
+        private GraphicalUserInterface mUserInterface;
 
-        /// <summary>
-        /// Gets or sets the back button - this will go back to the main menu screen.
-        /// </summary>
-        private MainMenuButton BackButton { get; set; }
+        private PlayerManager mPlayerManager;
 
-        /// <summary>
-        /// Gets or sets the button to access the shop.
-        /// </summary>
-        private MainMenuButton ShopButton { get; set; }
-
-        /// <summary>
-        /// Gets or sets the background texture.
-        /// </summary>
-        private Texture2D BackgroundTexture { get; set; }
-
-        /// <summary>
-        /// Gets or sets a blank texture which can be used for drawing basic shapes. Tint it for flavor.
-        /// </summary>
-        private Texture2D BlankTexture { get; set; }
-
-        /// <summary>
-        /// Gets or sets the basic font to use for text.
-        /// </summary>
-        private SpriteFont BasicFont { get; set; }
+        private readonly List<LevelButton> mLevelButtons = new();
         
         public override void Activate(bool instancePreserved)
         {
             base.Activate(instancePreserved);
 
-            var lViewport = this.ScreenManager.Game.GraphicsDevice.Viewport;
-            var lScreenSize = new Vector2(lViewport.Width, lViewport.Height);
-            
-            this.BackgroundTexture = this.ContentManager.Load<Texture2D>("Sprites/LevelSelectBackground");
-            this.BasicFont = this.ContentManager.Load<SpriteFont>("Fonts/MainMenuFont");
+            this.mPlayerManager = this.ScreenManager.Game.Services.GetService<PlayerManager>();
 
-            this.PlayerManager = this.ScreenManager.Game.Services.GetService<PlayerManager>();
+            var lStandardFont = this.ScreenManager.Game.Content.Load<SpriteFont>(AssetNames.Fonts.Standard_16);
+            var lActiveFont = this.ScreenManager.Game.Content.Load<SpriteFont>(AssetNames.Fonts.Standard_20);
 
-            this.BlankTexture = new Texture2D(this.ScreenManager.GraphicsDevice, 1, 1);
-            this.BlankTexture.SetData(new[] { Color.White });
+            var lPerfectTexture = this.ScreenManager.Game.Content.Load<Texture2D>(AssetNames.Sprites.Perfect);
+            var lFlawlessTexture = this.ScreenManager.Game.Content.Load<Texture2D>(AssetNames.Sprites.Flawless);
 
-            var lButtonTexts = new[] { 
-                "I", "II", "III", "IV", "V",
-                "VI", "VII", "VIII", "IX", "X",
-                "XI", "XII", "XIII", "XIV", "XV",
-                "XVI", "XVII", "XVIII", "IXX", "XX" }; ;
+            var lUniformGrid = new UniformGrid();
+            lUniformGrid.HorizontalAlignment = HorizontalAlignment.Left;
+            lUniformGrid.VerticalAlignment = VerticalAlignment.Center;
+            lUniformGrid.ColumnCount = 5;
+            lUniformGrid.RowCount = 4;
 
-            var lButtonTexture = this.ContentManager.Load<Texture2D>("Sprites/LevelSelectionButton");
-            var lPerfectTexture = this.ContentManager.Load<Texture2D>("Sprites/Perfect");
-            var lFlawlessTexture = this.ContentManager.Load<Texture2D>("Sprites/Flawless");
-            var lButtonSize = new Vector2(lButtonTexture.Width, lButtonTexture.Height);
-
-            this.Buttons = Enumerable.Range(0, 20).Select(x => {
-
-                var lLevelData = this.PlayerManager.Player.GetLevelData(x);
-
-                return new LevelSelectionButton
+            for (int lRowIndex = 0; lRowIndex < lUniformGrid.RowCount; lRowIndex++)
+            {
+                for (int lColumnIndex = 0; lColumnIndex < lUniformGrid.ColumnCount; lColumnIndex++)
                 {
-                    Text = lButtonTexts[x],
-                    LevelIndex = x,
-                    ActiveFont = this.BasicFont,
-                    InactiveFont = this.BasicFont,
-                    Texture = lButtonTexture,
-                    PerfectTexture = lPerfectTexture,
-                    FlawlessTexture = lFlawlessTexture,
-                    Size = lButtonSize,
-                    IsAvailable = lLevelData.IsAvailable,
-                    IsFlawless = lLevelData.CompletedFlawlessly,
-                    IsPerfect = lLevelData.CompletedPerfectly,
-                };
-            })
-            .ToArray();
+                    var lLevelIndex = (lRowIndex * 5) + lColumnIndex;
+                    
+                    var lButton = new LevelButton();
+                    lButton.LevelIndex = lLevelIndex;
+                    lButton.BorderThickness = new Thickness(2);
+                    lButton.BorderColor = Color.Black;
+                    lButton.Margin = new Thickness(5);
+                    lButton.Width = 75;
+                    lButton.Height = 75;
 
-            this.ShopButton = new MainMenuButton
-            {
-                Position = new Vector2(635, 410),
-                Size = new Vector2(150, 60),
-                BlankTexture = this.BlankTexture,
-                ActiveFont = this.BasicFont,
-                InactiveFont = this.BasicFont,
-                Text = "Shop",
-            };
+                    lButton.Font = lStandardFont;
 
-            this.BackButton = new MainMenuButton
-            {
-                Position = new Vector2(465, 410),
-                Size = new Vector2(150, 60),
-                BlankTexture = this.BlankTexture,
-                ActiveFont = this.BasicFont,
-                InactiveFont = this.BasicFont,
-                Text = "Back",
-            };
-            
-            for (int lRowIndex = 0; lRowIndex < 4; lRowIndex++)
-            {
-                for (int lColumnIndex = 0; lColumnIndex < 5; lColumnIndex++)
-                {
-                    var lButton = this.Buttons[(lRowIndex * 5) + lColumnIndex];
+                    var lLevelData = this.mPlayerManager.Player.GetLevelData(lLevelIndex);
 
-                    lButton.Position = new Vector2(5 + (lColumnIndex * (lButton.Size.X + 5)), 17 + (lRowIndex * (lButton.Size.Y + 17)));
-                    lButton.Selected += this.Button_Selected;
+                    lButton.IsUnlocked = lLevelData.IsAvailable;
+
+                    lButton.IsFlawless = lLevelData.CompletedFlawlessly;
+                    lButton.FlawlessTexture = lFlawlessTexture;
+
+                    lButton.IsPerfect = lLevelData.CompletedPerfectly;
+                    lButton.PerfectTexture = lPerfectTexture;
+
+                    lUniformGrid.Add(lButton);
+
+                    this.mLevelButtons.Add(lButton);
                 }
             }
-        }
 
-        public override void Unload()
-        {
-            base.Unload();
-            this.ContentManager.Unload();
-            this.PlayerManager.Unload();
-        }
+            var lInfoPanel = new VerticalStackPanel();
+            lInfoPanel.Add(new TextBlock("Bee Free 2", lStandardFont));
+            lInfoPanel.Add(new TextBlock("Earn honeycomb as you play", lStandardFont));
+            lInfoPanel.Add(new TextBlock("and then check out the shop.", lStandardFont));
+            lInfoPanel.Add(new TextBlock("Honeycomb 0", lStandardFont));
 
-        private void GamePlayScreen_GamePlayOver()
-        {
-            LoadingScreen.Load(this.ScreenManager, false, this);
-        }
+            var lTopPanel = new DockPanel();
+            lTopPanel.Add(lUniformGrid, Dock.Left);
+            lTopPanel.Add(lInfoPanel);
 
-        private void Button_Selected(object sender, EventArgs e)
-        {
-            var lButton = (LevelSelectionButton)sender;
-            
-            var lGameplayScreen = new GameplayScreen(lButton.LevelIndex);
-            lGameplayScreen.GamePlayOver += this.GamePlayScreen_GamePlayOver;
+            this.mMenuButton_Back = new MenuButton("Back", lStandardFont, lActiveFont);
+            this.mMenuButton_Back.Margin = new Thickness(10);
+            this.mMenuButton_Back.Width = 150;
+            this.mMenuButton_Back.Height = 50;
 
-            this.PlayerManager.Player.MarkLevelPlayed(lButton.LevelIndex);
-            this.PlayerManager.SavePlayer();
+            this.mMenuButton_Shop = new MenuButton("Shop", lStandardFont, lActiveFont);
+            this.mMenuButton_Shop.Margin = new Thickness(10);
+            this.mMenuButton_Shop.Width = 150;
+            this.mMenuButton_Shop.Height = 50;
 
-            LoadingScreen.Load(this.ScreenManager, true, lGameplayScreen);
+            var lButtonPanel = new HorizontalStackPanel();
+            lButtonPanel.Add(this.mMenuButton_Back);
+            lButtonPanel.Add(this.mMenuButton_Shop);
+
+            var lBottomInfoPanel = new VerticalStackPanel();
+            lBottomInfoPanel.Add(new TextBlock("Choose a level to begin.", lStandardFont));
+            lBottomInfoPanel.Add(new TextBlock("Don't worry, you can replay levels.", lStandardFont));
+
+            var lBottomPanel = new DockPanel();
+            lBottomPanel.Add(lButtonPanel, Dock.Right);
+            lBottomPanel.Add(lBottomInfoPanel);
+
+            var lScreenPanel = new DockPanel();
+            lScreenPanel.BackgroundColor = Color.SkyBlue;
+            lScreenPanel.HorizontalAlignment = HorizontalAlignment.Stretch;
+            lScreenPanel.VerticalAlignment = VerticalAlignment.Stretch;
+            lScreenPanel.Add(lBottomPanel, Dock.Bottom);
+            lScreenPanel.Add(lTopPanel);
+
+            this.mUserInterface = new GraphicalUserInterface(this);
+            this.mUserInterface.Add(lScreenPanel);
         }
 
         public override void HandleInput(GameTime gameTime, InputState input)
         {
             base.HandleInput(gameTime, input);
 
-            if (input.IsLeftMouseClick)
+            if (this.mMenuButton_Back.WasClicked)
             {
-                foreach (var lButton in this.Buttons.Where(x => x.IsAvailable))
+                LoadingScreen.Load(this.ScreenManager, false, new MainMenuScreen());
+            }
+            else if (this.mMenuButton_Shop.WasClicked)
+            {
+                LoadingScreen.Load(this.ScreenManager, true, new ShopScreen());
+            }
+            else
+            {
+                foreach (var lLevelButton in this.mLevelButtons)
                 {
-                    if (GraphicsUtilities.RectangleContains(
-                        lButton.Position, lButton.Size, 
-                        input.CurrentMouseState.X, input.CurrentMouseState.Y))
+                    if (lLevelButton.WasClicked)
                     {
-                        lButton.OnSelected();
+                        var lGameplayScreen = new GameplayScreen(lLevelButton.LevelIndex);
+
+                        this.mPlayerManager.Player.MarkLevelPlayed(lLevelButton.LevelIndex);
+                        this.mPlayerManager.SavePlayer();
+
+                        LoadingScreen.Load(this.ScreenManager, true, lGameplayScreen);
+
+                        return;
                     }
                 }
-
-                if (this.ShopButton.Bounds.Contains(input.CurrentMouseState.X, input.CurrentMouseState.Y))
-                {
-                    LoadingScreen.Load(this.ScreenManager, true, new ShopScreen());
-                }
-
-                if (this.BackButton.Bounds.Contains(input.CurrentMouseState.X, input.CurrentMouseState.Y))
-                {
-                    LoadingScreen.Load(this.ScreenManager, false, new MainMenuScreen());
-                }
             }
+        }
+
+        public override void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen)
+        {
+            base.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
+            this.mUserInterface.Update(gameTime, !otherScreenHasFocus && !coveredByOtherScreen);
         }
 
         public override void Draw(GameTime gameTime)
         {
             base.Draw(gameTime);
 
-            var lSpriteBatch = this.ScreenManager.SpriteBatch;
-            lSpriteBatch.Begin();
-
-            lSpriteBatch.Draw(this.BackgroundTexture, Vector2.Zero, null, Color.White);
-
-            foreach (var lButton in this.Buttons) lButton.Draw(lSpriteBatch);
-
-            this.BackButton.Draw(lSpriteBatch);
-            this.ShopButton.Draw(lSpriteBatch);
-
-            var lHoneycombText = this.PlayerManager.Player.AvailableHoneycombToSpend.ToString();
-            lSpriteBatch.DrawString(this.BasicFont, lHoneycombText, new Vector2(615, 260), Color.DarkGreen);
-
-            lSpriteBatch.End();
+            this.mUserInterface.Draw(gameTime);
         }
     }
 }
