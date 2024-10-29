@@ -65,6 +65,8 @@ namespace BeeFree2.Controls
 
         HorizontalAlignment HorizontalAlignment { get; set; }
 
+        Visibility Visibility { get; set; }
+
         IGraphicsContainer Parent { get; set; }
 
         /// <summary>
@@ -133,5 +135,9 @@ namespace BeeFree2.Controls
         /// Used for input cycling.
         /// </summary>
         IGraphicsComponent GetLastComponent();
+
+        void ApplyAlignment(RectangleF contentBounds);
+        void ApplyHorizontalAlignment(RectangleF contentBounds);
+        void ApplyVerticalAlignment(RectangleF contentBounds);
     }
 }

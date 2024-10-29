@@ -41,53 +41,7 @@ namespace BeeFree2.Controls
 
             if (this.Child != null)
             {
-                var lContentBounds = this.ContentBounds;
-
-                switch (this.Child.HorizontalAlignment)
-                {
-                    case HorizontalAlignment.Left:
-                        this.Child.ActualWidth = MathHelper.Min(this.Child.DesiredWidth, lContentBounds.Width);
-                        this.Child.X = lContentBounds.X;
-                        break;
-
-                    case HorizontalAlignment.Right:
-                        this.Child.ActualWidth = MathHelper.Min(this.Child.DesiredWidth, lContentBounds.Width);
-                        this.Child.X = lContentBounds.X + this.Child.ActualWidth;
-                        break;
-
-                    case HorizontalAlignment.Center:
-                        this.Child.ActualWidth = MathHelper.Min(this.Child.DesiredWidth, lContentBounds.Width);
-                        this.Child.X = lContentBounds.X + ((lContentBounds.Width - this.Child.ActualWidth) / 2f);
-                        break;
-
-                    case HorizontalAlignment.Stretch:
-                        this.Child.ActualWidth = lContentBounds.Width;
-                        this.Child.X = lContentBounds.X;
-                        break;
-                }
-
-                switch (this.Child.VerticalAlignment)
-                {
-                    case VerticalAlignment.Top:
-                        this.Child.ActualHeight = MathHelper.Min(this.Child.DesiredHeight, lContentBounds.Height);
-                        this.Child.Y = lContentBounds.Y;                        
-                        break;
-
-                    case VerticalAlignment.Bottom:
-                        this.Child.ActualHeight = MathHelper.Min(this.Child.DesiredHeight, lContentBounds.Height);
-                        this.Child.Y = lContentBounds.Y + this.Child.ActualHeight;
-                        break;
-
-                    case VerticalAlignment.Center:
-                        this.Child.ActualHeight = MathHelper.Min(this.Child.DesiredHeight, this.ActualHeight);
-                        this.Child.Y = lContentBounds.Y + ((lContentBounds.Height - this.Child.ActualHeight) / 2f);
-                        break;
-
-                    case VerticalAlignment.Stretch:
-                        this.Child.ActualHeight = lContentBounds.Height;
-                        this.Child.Y = lContentBounds.Y;
-                        break;
-                }
+                this.Child.ApplyAlignment(this.ContentBounds);
             }
 
             if (this.Child is IGraphicsContainer lChildContainer)

@@ -1,9 +1,11 @@
 using System;
 using BeeFree2.Config;
+using BeeFree2.Controls;
 using BeeFree2.EntityManagers;
 using BeeFree2.GameScreens;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 
 namespace BeeFree2
 {
@@ -14,6 +16,12 @@ namespace BeeFree2
     public class BeeFreeGame : Game
     {
         GraphicsDeviceManager mGraphics;
+
+        private bool mShowPerformanceMetrics;
+
+        private GraphicalUserInterface mUserInterface;
+
+        private TextBlock mTextBlock_FrameRate;
 
         ScreenManager mScreenManager;
 
@@ -45,27 +53,67 @@ namespace BeeFree2
             lPlayerManager.Activate(this);
             this.Services.AddService(lPlayerManager);
 
-            var lIsTesting = false;
+            var lIsTesting = true;
             if (lIsTesting)
             {
-                this.mScreenManager.AddScreen(new CustomExamplMenuScreen(), null);
+                lPlayerManager.LoadPlayer(0);
+
+                this.mScreenManager.AddScreen(new LevelSelectionScreen(), null);
             }
             else
             {
-                this.mScreenManager.AddScreen(new MainMenuScreen(), null); 
+                this.mScreenManager.AddScreen(new MainMenuScreen(), null);
             }
 
             base.Initialize();
         }
 
-        /// <summary>
-        /// This is called when the game should draw itself.
-        /// </summary>
-        /// <param name="gameTime">Provides a snapshot of timing values.</param>
+        protected override void LoadContent()
+        {
+            base.LoadContent();
+
+            var lFont = this.Content.Load<SpriteFont>(AssetNames.Fonts.Standard_12);
+
+            this.mTextBlock_FrameRate = new TextBlock();
+            this.mTextBlock_FrameRate.Font = lFont;
+
+            var lStackPanel = new HorizontalStackPanel();
+            lStackPanel.VerticalAlignment = VerticalAlignment.Top;
+            lStackPanel.HorizontalAlignment = HorizontalAlignment.Right;
+            lStackPanel.Add(new TextBlock("Frame Rate: ", lFont));
+            lStackPanel.Add(this.mTextBlock_FrameRate);
+
+            this.mUserInterface = new GraphicalUserInterface(this.mScreenManager);
+            this.mUserInterface.Add(lStackPanel);
+        }
+
+        protected override void Update(GameTime gameTime)
+        {
+            base.Update(gameTime);
+
+            if (this.mScreenManager.InputState.IsNewKeyPress(Keys.F11, null, out _))
+            {
+                this.mShowPerformanceMetrics = !this.mShowPerformanceMetrics;
+            }
+
+            if (this.mShowPerformanceMetrics)
+            {
+                var lFrameRate = 1.0 / gameTime.ElapsedGameTime.TotalSeconds;
+                this.mTextBlock_FrameRate.Text = lFrameRate.ToString("0.0");
+
+                this.mUserInterface.Update(gameTime, false);
+            }
+        }
+
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.SkyBlue);
+            this.GraphicsDevice.Clear(Color.SkyBlue);
             base.Draw(gameTime);
+
+            if (this.mShowPerformanceMetrics)
+            {
+                this.mUserInterface.Draw(gameTime);
+            }
         }
     }
 }

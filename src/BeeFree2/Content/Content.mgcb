@@ -69,6 +69,55 @@
 /processorParam:TextureFormat=Compressed
 /build:Fonts/ShopMoneyFont.spritefont
 
+#begin Fonts/Standard_12.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Fonts/Standard_12.spritefont
+
+#begin Fonts/Standard_14.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Fonts/Standard_14.spritefont
+
+#begin Fonts/Standard_16.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Fonts/Standard_16.spritefont
+
+#begin Fonts/Standard_18.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Fonts/Standard_18.spritefont
+
+#begin Fonts/Standard_20.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Fonts/Standard_20.spritefont
+
+#begin Fonts/Standard_22.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Fonts/Standard_22.spritefont
+
+#begin Fonts/Standard_24.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Fonts/Standard_24.spritefont
+
 #begin Sprites/bee1.png
 /importer:TextureImporter
 /processor:TextureProcessor

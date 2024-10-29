@@ -15,6 +15,13 @@ namespace BeeFree2.Controls
 
         }
 
+
+        public RectangleF(Vector2 position, Vector2 size)
+            : this(position.X, position.Y, size.X, size.Y)
+        {
+
+        }
+
         public RectangleF(float x, float y, float width, float height)
         {
             this.X = x;

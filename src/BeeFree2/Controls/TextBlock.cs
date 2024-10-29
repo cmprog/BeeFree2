@@ -72,7 +72,10 @@ namespace BeeFree2.Controls
 
             base.DrawContent(ui, gameTime);
 
-            ui.SpriteBatch.DrawString(this.Font, this.Text, this.Position, this.ForeColor);
+            if ((this.Font != null) && (this.Text != null))
+            {
+                ui.SpriteBatch.DrawString(this.Font, this.Text, this.Position, this.ForeColor);
+            }            
 
             ui.PopScissorClip();
         }
