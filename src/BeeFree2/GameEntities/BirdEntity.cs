@@ -3,9 +3,6 @@ using BeeFree2.GameEntities.Movement;
 using BeeFree2.GameEntities.Shooting;
 using BeeFree2.GameEntities.Rendering;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 
 namespace BeeFree2.GameEntities
 {
