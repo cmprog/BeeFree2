@@ -113,17 +113,19 @@ namespace BeeFree2.Controls
             }
         }
 
-        public RectangleF ContentBounds
-        {
-            get
-            {
-                return new RectangleF(
-                    this.X + this.Margin.Left + this.BorderThickness.Left + this.Padding.Left,
-                    this.Y + this.Margin.Top + this.BorderThickness.Top + this.Padding.Top,
-                    this.ActualWidth - (this.Margin.Horizontal + this.BorderThickness.Horizontal + this.Padding.Horizontal),
-                    this.ActualHeight - (this.Margin.Vertical + this.BorderThickness.Vertical + this.Padding.Vertical));
-            }
-        }
+        public float ContentX => this.X + this.Margin.Left + this.BorderThickness.Left + this.Padding.Left;
+
+        public float ConentY => this.Y + this.Margin.Top + this.BorderThickness.Top + this.Padding.Top;
+
+        public float ContentWidth => this.ActualWidth - (this.Margin.Horizontal + this.BorderThickness.Horizontal + this.Padding.Horizontal);
+
+        public float ContentHeight => this.ActualHeight - (this.Margin.Vertical + this.BorderThickness.Vertical + this.Padding.Vertical);
+
+        public Vector2 ContentPosition => new Vector2(this.ContentX, this.ConentY);
+
+        public Vector2 ContentSize => new Vector2(this.ContentWidth, this.ContentHeight);
+
+        public RectangleF ContentBounds => new RectangleF(this.ContentX, this.ConentY, this.ContentWidth, this.ContentHeight);
 
         public RectangleF Clip { get; set; }
 

@@ -77,5 +77,10 @@ namespace BeeFree2.GameEntities
                 this.mButton.BackgroundColor = Color.Gold;
             }
         }
+
+        public override void LayoutChildren(GameTime gameTime)
+        {
+            base.LayoutChildren(gameTime);
+        }
     }
 }

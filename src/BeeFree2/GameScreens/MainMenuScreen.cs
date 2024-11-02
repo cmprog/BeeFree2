@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using BeeFree2.EntityManagers;
 using BeeFree2.Controls;
+using BeeFree2.GameEntities;
 
 namespace BeeFree2.GameScreens
 {
@@ -82,13 +83,8 @@ namespace BeeFree2.GameScreens
             private readonly MainMenuScreen mScreen;
             private readonly SaveSlot mSaveSlot;
 
-            private readonly Button mButton_NewGame;
-            private readonly Button mButton_ContinueGame;
-            private readonly Button mButton_ExitGame;
-
-            private readonly TextBlock mTextBlock_NewGame;
-            private readonly TextBlock mTextBlock_ContinueGame;
-            private readonly TextBlock mTextBlock_ExitGame;
+            private readonly MenuButton mMenuButton_NewGame;
+            private readonly MenuButton mMenuButton_ContinueGame;
 
             public SaveSlotGroup(MainMenuScreen screen, SaveSlot saveSlot)
             {
@@ -100,26 +96,16 @@ namespace BeeFree2.GameScreens
                 this.BackgroundColor = Color.White;
                 this.Padding = new Thickness(5);
 
-                this.mTextBlock_NewGame = new TextBlock("New Game", this.mScreen.StandardMenuFont);
-                this.mTextBlock_ContinueGame = new TextBlock("Continue Game", this.mScreen.StandardMenuFont);
-                this.mTextBlock_ExitGame = new TextBlock("Exit", this.mScreen.StandardMenuFont);
-
-                this.mButton_NewGame = new Button(this.mTextBlock_NewGame);
-                this.mButton_ContinueGame = new Button(this.mTextBlock_ContinueGame);
-                this.mButton_ExitGame = new Button(this.mTextBlock_ExitGame);
-
-                this.InitializeButton(this.mButton_NewGame, this.mTextBlock_NewGame);
-                this.InitializeButton(this.mButton_ContinueGame, this.mTextBlock_ContinueGame);
-                this.InitializeButton(this.mButton_ExitGame, this.mTextBlock_ExitGame);
+                this.mMenuButton_NewGame = this.CreateMenuButton("New Game");
+                this.mMenuButton_ContinueGame = this.CreateMenuButton("Continue");
 
                 var lHeader = new TextBlock($"Slot {this.mSaveSlot}", this.mScreen.StandardMenuFont);
                 lHeader.HorizontalAlignment = HorizontalAlignment.Center;
 
                 var lStackPanel = new VerticalStackPanel();
                 lStackPanel.Add(lHeader);
-                lStackPanel.Add(this.mButton_NewGame);
-                lStackPanel.Add(this.mButton_ContinueGame);
-                lStackPanel.Add(this.mButton_ExitGame);
+                lStackPanel.Add(this.mMenuButton_NewGame);
+                lStackPanel.Add(this.mMenuButton_ContinueGame);
 
                 this.Add(lStackPanel);
             }
@@ -128,48 +114,17 @@ namespace BeeFree2.GameScreens
             {
                 base.UpdateFinalize(gameTime);
 
-                this.UpdateButton(this.mButton_NewGame, this.mTextBlock_NewGame);
-                this.UpdateButton(this.mButton_ContinueGame, this.mTextBlock_ContinueGame);
-                this.UpdateButton(this.mButton_ExitGame, this.mTextBlock_ExitGame);
-
-                if (this.mButton_NewGame.WasClicked) this.mScreen.StartNewGame(this.mSaveSlot);
-                else if (this.mButton_ContinueGame.WasClicked) this.mScreen.ContinuePreviousGame(this.mSaveSlot);
-                else if (this.mButton_ExitGame.WasClicked) this.mScreen.ScreenManager.Game.Exit();
+                if (this.mMenuButton_NewGame.WasClicked) this.mScreen.StartNewGame(this.mSaveSlot);
+                else if (this.mMenuButton_ContinueGame.WasClicked) this.mScreen.ContinuePreviousGame(this.mSaveSlot);
             }
 
-            private void UpdateButton(Button b, TextBlock t)
+            private MenuButton CreateMenuButton(string text)
             {
-                if (b.IsMouseOver)
-                {
-                    t.Font = this.mScreen.ActiveMenuFont;
-                    t.ForeColor = Color.White;
-
-                    b.BorderColor = Color.White;
-                    b.BorderThickness = new Thickness(6);
-                    b.BackgroundColor = Color.DarkGoldenrod;
-                }
-                else
-                {
-                    t.Font = this.mScreen.StandardMenuFont;
-                    t.ForeColor = Color.Black;
-
-                    b.BorderColor = Color.Black;
-                    b.BorderThickness = new Thickness(4);
-                    b.BackgroundColor = Color.Gold;
-                }
-            }
-
-            private void InitializeButton(Button b, TextBlock t)
-            {
-                this.UpdateButton(b, t);
-
-                b.HorizontalAlignment = HorizontalAlignment.Stretch;
-                b.Margin = new Thickness(0, 5);
-                b.Width = 250;
-                b.Height = 50;
-
-                t.HorizontalAlignment = HorizontalAlignment.Center;
-                t.VerticalAlignment = VerticalAlignment.Center;
+                var lMenuButton = new MenuButton(text, this.mScreen.StandardMenuFont, this.mScreen.ActiveMenuFont);
+                lMenuButton.Margin = new Thickness(0, 5);
+                lMenuButton.MinWidth = 150;
+                lMenuButton.MinHeight = 60;
+                return lMenuButton;
             }
         }
     }

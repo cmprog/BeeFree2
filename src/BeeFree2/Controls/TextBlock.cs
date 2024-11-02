@@ -74,7 +74,7 @@ namespace BeeFree2.Controls
 
             if ((this.Font != null) && (this.Text != null))
             {
-                ui.SpriteBatch.DrawString(this.Font, this.Text, this.Position, this.ForeColor);
+                ui.SpriteBatch.DrawString(this.Font, this.Text, this.ContentPosition, this.ForeColor);
             }            
 
             ui.PopScissorClip();

@@ -20,6 +20,27 @@
 /processorParam:TextureFormat=Compressed
 /build:Fonts/loadingfont.spritefont
 
+#begin Fonts/Logo_128.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Fonts/Logo_128.spritefont
+
+#begin Fonts/Logo_64.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Fonts/Logo_64.spritefont
+
+#begin Fonts/Logo_96.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Fonts/Logo_96.spritefont
+
 #begin Fonts/MainMenuFont.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor

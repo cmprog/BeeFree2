@@ -76,7 +76,7 @@ namespace BeeFree2.GameScreens
             }
 
             var lInfoPanel = new VerticalStackPanel();
-            lInfoPanel.Add(new TextBlock("Bee Free 2", lStandardFont));
+            lInfoPanel.Add(new Logo(this.ScreenManager.Game.Content) { HorizontalAlignment = HorizontalAlignment.Center });
             lInfoPanel.Add(new TextBlock("Earn honeycomb as you play", lStandardFont));
             lInfoPanel.Add(new TextBlock("and then check out the shop.", lStandardFont));
             lInfoPanel.Add(new TextBlock("Honeycomb 0", lStandardFont));

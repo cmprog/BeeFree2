@@ -17,6 +17,10 @@
         {
             private const string sPrefix = "Fonts/";
 
+            public const string Logo_64 = $"{sPrefix}Logo_64";
+            public const string Logo_96 = $"{sPrefix}Logo_96";
+            public const string Logo_128 = $"{sPrefix}Logo_128";
+
             public const string Standard_12 = $"{sPrefix}Standard_12";
             public const string Standard_14 = $"{sPrefix}Standard_14";
             public const string Standard_16 = $"{sPrefix}Standard_16";

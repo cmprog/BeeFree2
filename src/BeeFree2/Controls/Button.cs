@@ -28,8 +28,15 @@ namespace BeeFree2.Controls
         {
             base.LayoutChildren(gameTime);
 
-            this.Child.X += this.BorderThickness.Left;
-            this.Child.Y += this.BorderThickness.Top;
+            if (this.Child != null)
+            {
+                this.ApplyAlignment(this.ContentBounds);
+
+                if (this.Child is IGraphicsContainer lContainer)
+                {
+                    lContainer.LayoutChildren(gameTime);
+                }
+            }
         }
 
         public override void UpdateInput(GraphicalUserInterface ui, GameTime gameTime)

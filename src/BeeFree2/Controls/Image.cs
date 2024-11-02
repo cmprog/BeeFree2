@@ -34,9 +34,9 @@ namespace BeeFree2.Controls
             if (this.Texture != null)
             {
                 var lTextureSize = new Vector2(this.Texture.Width, this.Texture.Height);
-                var lScale = (this.ActualSize / lTextureSize);
+                var lScale = (this.ContentSize / lTextureSize);
 
-                ui.SpriteBatch.Draw(this.Texture, this.Position, null, this.Color, 0, Vector2.Zero, lScale, SpriteEffects.None, 0);
+                ui.SpriteBatch.Draw(this.Texture, this.ContentPosition, null, this.Color, 0, Vector2.Zero, lScale, SpriteEffects.None, 0);
             }
 
             ui.PopScissorClip();
