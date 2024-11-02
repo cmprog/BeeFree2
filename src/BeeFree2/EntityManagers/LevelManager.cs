@@ -53,6 +53,8 @@ namespace BeeFree2.EntityManagers
         /// </summary>
         public BeeEntity Bee { get; set; }
 
+        public TimeSpan RemainingTime => this.LevelDuration - this.ElapsedTime;
+
         /// <summary>
         /// Fired when a bird should be released.
         /// </summary>

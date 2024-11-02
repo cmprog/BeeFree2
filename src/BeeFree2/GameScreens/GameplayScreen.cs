@@ -10,11 +10,17 @@ using BeeFree2.GameEntities.Movement;
 using BeeFree2.GameEntities.Shooting;
 using BeeFree2.GameEntities.Extensions;
 using BeeFree2.EntityManagers;
+using BeeFree2.Controls;
 
 namespace BeeFree2.GameScreens
 {
-    class GameplayScreen : GameScreen
+    /// <summary>
+    /// This is the primary gameplay screen when playing a specific level.
+    /// </summary>
+    public sealed class GameplayScreen : GameScreen
     {
+        private GraphicalUserInterface mUserInterface;
+
         private ContentManager ContentManager { get; set; }
 
         private BulletManager BulletManager { get; set; }
@@ -24,7 +30,7 @@ namespace BeeFree2.GameScreens
         private CloudManager CloudManager { get; set; }
         private PlayerManager PlayerManager { get; set; }
         private LevelManager LevelManager { get; set; }
-        private HeadsUpDisplayEntity HeadsUpDisplay { get; set; }
+        private HeadsUpDisplay HeadsUpDisplay { get; set; }
 
         private int LevelIndex { get; set; }
 
@@ -38,8 +44,6 @@ namespace BeeFree2.GameScreens
             this.BirdManager = new BirdManager();
             this.BulletManager = new BulletManager();
             this.CoinManager = new CoinManager();
-
-            this.HeadsUpDisplay = new HeadsUpDisplayEntity();
         }
 
         /// <summary>
@@ -75,6 +79,13 @@ namespace BeeFree2.GameScreens
         public override void Activate(bool instancePreserved)
         {
             base.Activate(instancePreserved);
+
+            this.ContentManager = this.ScreenManager.Game.Content;
+
+            this.HeadsUpDisplay = new HeadsUpDisplay(this.ContentManager, this.LevelIndex);         
+
+            this.mUserInterface = new GraphicalUserInterface(this);
+            this.mUserInterface.Add(this.HeadsUpDisplay);
 
             this.ContentManager = this.ScreenManager.Game.Content;
 
@@ -116,9 +127,8 @@ namespace BeeFree2.GameScreens
             this.LevelManager.Bee = this.BeeManager.Bee;
             this.LevelManager.BulletFired = this.BulletManager.Add;
 
-            this.HeadsUpDisplay.GraphicsDevice = this.ScreenManager.GraphicsDevice;
-            this.HeadsUpDisplay.HealthPercentage = 1;
-            this.HeadsUpDisplay.HealthBarSize = new Vector2(12 * this.BeeManager.Bee.MaximumHealth, 25);
+            this.HeadsUpDisplay.CurrentHealth = this.BeeManager.Bee.MaximumHealth;
+            this.HeadsUpDisplay.MaximumHealth = this.BeeManager.Bee.MaximumHealth;
 
             this.CoinManager.Activate(this.ScreenManager.Game);
             this.BulletManager.Activate(this.ScreenManager.Game);
@@ -126,7 +136,6 @@ namespace BeeFree2.GameScreens
             this.BeeManager.Activate(this.ScreenManager.Game);
             this.CloudManager.Activate(this.ScreenManager.Game);
             this.LevelManager.Activate(this.ScreenManager.Game);
-            this.HeadsUpDisplay.Activate();
         }
 
         /// <summary>
@@ -216,11 +225,13 @@ namespace BeeFree2.GameScreens
             this.LevelManager.Update(gameTime);
             this.BirdManager.Update(gameTime);
 
-            this.HeadsUpDisplay.HealthPercentage = this.BeeManager.Bee.CurrentHealth / this.BeeManager.Bee.MaximumHealth;
-
             this.DetectBulletHits();
             this.DetectBirdHits();
             this.CollectCoins();
+
+            this.HeadsUpDisplay.RemainingSeconds = this.LevelManager.RemainingTime.TotalSeconds;
+
+            this.mUserInterface.Update(gameTime, !otherScreenHasFocus && !coveredByOtherScreen);
         }
 
         /// <summary>
@@ -266,11 +277,18 @@ namespace BeeFree2.GameScreens
                 if (GraphicsUtilities.CircleCollides(lBirdCenter, lBirdRadius, lBeeCenter, lBeeRadius))
                 {
                     this.BeeManager.Bee.TakeDamage(lBird);
+                    this.UpdateHealth();
                     lDeadBirds.Add(lBird);
                 }
             }
 
             foreach (var lDeadBird in lDeadBirds) this.BirdManager.Remove(lDeadBird);
+        }
+
+        private void UpdateHealth()
+        {
+            this.HeadsUpDisplay.CurrentHealth = this.BeeManager.Bee.CurrentHealth;
+            this.HeadsUpDisplay.MaximumHealth = this.BeeManager.Bee.MaximumHealth;
         }
 
         /// <summary>
@@ -291,6 +309,7 @@ namespace BeeFree2.GameScreens
                 if (GraphicsUtilities.CircleCollides(lBulletCenter, lBulletRadius, lBeeCenter, lBeeRadius))
                 {
                     this.BeeManager.Bee.TakeDamage(lBadBullet);
+                    this.UpdateHealth();
                     lDeadBullets.Add(lBadBullet);
                 }
             }
@@ -331,8 +350,9 @@ namespace BeeFree2.GameScreens
             this.BirdManager.Draw(lSpriteBatch, gameTime);            
             this.CoinManager.Draw(lSpriteBatch, gameTime);
             this.BeeManager.Draw(lSpriteBatch, gameTime);
-            this.HeadsUpDisplay.Draw(lSpriteBatch, gameTime);
             lSpriteBatch.End();
+
+            this.mUserInterface.Draw(gameTime);
         }
     }
 }

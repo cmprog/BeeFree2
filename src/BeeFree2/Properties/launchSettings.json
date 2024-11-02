@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "BeeFree2": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "BEEFREE_ENVIRONMENT": "DEVELOPMENT"
+      }
+    }
+  }
+}

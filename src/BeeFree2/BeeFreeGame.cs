@@ -51,14 +51,13 @@ namespace BeeFree2
 
             var lPlayerManager = new PlayerManager();
             lPlayerManager.Activate(this);
-            this.Services.AddService(lPlayerManager);
+            this.Services.AddService(lPlayerManager);            
 
-            var lIsTesting = true;
-            if (lIsTesting)
+            if (string.Equals(Environment.GetEnvironmentVariable("BEEFREE_ENVIRONMENT"), "DEVELOPMENT", StringComparison.OrdinalIgnoreCase))
             {
                 lPlayerManager.LoadPlayer(0);
 
-                this.mScreenManager.AddScreen(new LevelSelectionScreen(), null);
+                this.mScreenManager.AddScreen(new GameplayScreen(0), null);
             }
             else
             {
