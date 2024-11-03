@@ -69,7 +69,9 @@ namespace BeeFree2.Controls
             if (!this.mChildren.Contains(child))
             {
                 this.mChildren.Add(child);
-                child.Parent = this;                
+                child.Parent = this;
+
+                this.OnChildAdded(child);
             }
         }
 
@@ -79,11 +81,27 @@ namespace BeeFree2.Controls
         {
             if (this.mChildren.Remove(child))
             {
-                child.Parent = null;                
+                child.Parent = null;
+
+                this.OnChildRemoved(child);
             }
         }
 
         protected virtual void OnChildRemoved(IGraphicsComponent child) { }
+
+        public void Clear()
+        {
+            for (var lChildIndex = this.Children.Count - 1; lChildIndex >= 0; lChildIndex--)
+            {
+                var lChild = this.mChildren[lChildIndex];
+
+                this.mChildren.RemoveAt(lChildIndex);
+
+                lChild.Parent = null;
+
+                this.OnChildRemoved(lChild);
+            }
+        }
 
         public override IGraphicsComponent GetPreviousComponent()
         {

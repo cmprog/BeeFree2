@@ -1,7 +1,4 @@
-﻿using System;
-using System.Linq;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using BeeFree2.GameEntities;
 using BeeFree2.EntityManagers;
@@ -32,7 +29,6 @@ namespace BeeFree2.GameScreens
             this.mPlayerManager = this.ScreenManager.Game.Services.GetService<PlayerManager>();
 
             var lStandardFont = this.ScreenManager.Game.Content.Load<SpriteFont>(AssetNames.Fonts.Standard_16);
-            var lActiveFont = this.ScreenManager.Game.Content.Load<SpriteFont>(AssetNames.Fonts.Standard_20);
 
             var lPerfectTexture = this.ScreenManager.Game.Content.Load<Texture2D>(AssetNames.Sprites.Perfect);
             var lFlawlessTexture = this.ScreenManager.Game.Content.Load<Texture2D>(AssetNames.Sprites.Flawless);
@@ -79,18 +75,18 @@ namespace BeeFree2.GameScreens
             lInfoPanel.Add(new Logo(this.ScreenManager.Game.Content) { HorizontalAlignment = HorizontalAlignment.Center });
             lInfoPanel.Add(new TextBlock("Earn honeycomb as you play", lStandardFont));
             lInfoPanel.Add(new TextBlock("and then check out the shop.", lStandardFont));
-            lInfoPanel.Add(new TextBlock("Honeycomb 0", lStandardFont));
+            lInfoPanel.Add(new TextBlock($"Honeycomb {this.mPlayerManager.Player.AvailableHoneycombToSpend}", lStandardFont));
 
             var lTopPanel = new DockPanel();
             lTopPanel.Add(lUniformGrid, Dock.Left);
             lTopPanel.Add(lInfoPanel);
 
-            this.mMenuButton_Back = new MenuButton("Back", lStandardFont, lActiveFont);
+            this.mMenuButton_Back = new MenuButton("Back", lStandardFont);
             this.mMenuButton_Back.Margin = new Thickness(10);
             this.mMenuButton_Back.Width = 150;
             this.mMenuButton_Back.Height = 50;
 
-            this.mMenuButton_Shop = new MenuButton("Shop", lStandardFont, lActiveFont);
+            this.mMenuButton_Shop = new MenuButton("Shop", lStandardFont);
             this.mMenuButton_Shop.Margin = new Thickness(10);
             this.mMenuButton_Shop.Width = 150;
             this.mMenuButton_Shop.Height = 50;

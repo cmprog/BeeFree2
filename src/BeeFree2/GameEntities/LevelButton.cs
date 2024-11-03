@@ -18,8 +18,8 @@ namespace BeeFree2.GameEntities
 
         public LevelButton()
         {
-            this.mImage_Perfect = new Image();
-            this.mImage_Flawless = new Image();
+            this.mImage_Perfect = new Image() { Color = Color.Yellow };
+            this.mImage_Flawless = new Image() { Color = Color.Yellow };
 
             this.mBadgePanel = new HorizontalStackPanel();
             this.mBadgePanel.VerticalAlignment = VerticalAlignment.Bottom;

@@ -48,5 +48,7 @@
                     (this.Top == 0) && (this.Bottom == 0);
             }
         }
+
+        public override string ToString() => $"{this.Left}, {this.Top}, {this.Right}, {this.Bottom}";
     }
 }

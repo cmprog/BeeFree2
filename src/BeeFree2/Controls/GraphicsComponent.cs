@@ -101,6 +101,9 @@ namespace BeeFree2.Controls
             }
         }
 
+        /// <summary>
+        /// The bounding rectangle which contains the border and conent. It is the margin-shifted bounds.
+        /// </summary>
         public RectangleF BorderBounds
         {
             get
@@ -125,6 +128,9 @@ namespace BeeFree2.Controls
 
         public Vector2 ContentSize => new Vector2(this.ContentWidth, this.ContentHeight);
 
+        /// <summary>
+        /// The bounding rectangle which contains the content. It is the margin and border shifted bounds.
+        /// </summary>
         public RectangleF ContentBounds => new RectangleF(this.ContentX, this.ConentY, this.ContentWidth, this.ContentHeight);
 
         public RectangleF Clip { get; set; }
@@ -151,7 +157,7 @@ namespace BeeFree2.Controls
         public virtual void UpdateInitialize(GameTime gameTime) { }
         public virtual void UpdateInput(GraphicalUserInterface ui, GameTime gameTime)
         {
-            this.IsMouseOver = this.BorderBounds.Contains(ui.InputState.CurrentMouseState.Position);
+            this.IsMouseOver = this.ContentBounds.Contains(ui.InputState.CurrentMouseState.Position);
         }
 
         public virtual void UpdateFinalize(GameTime gameTime) { }

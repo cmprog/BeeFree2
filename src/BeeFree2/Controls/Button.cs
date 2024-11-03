@@ -30,7 +30,7 @@ namespace BeeFree2.Controls
 
             if (this.Child != null)
             {
-                this.ApplyAlignment(this.ContentBounds);
+                this.Child.ApplyAlignment(this.ContentBounds);
 
                 if (this.Child is IGraphicsContainer lContainer)
                 {

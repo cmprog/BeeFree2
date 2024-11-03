@@ -13,10 +13,14 @@ namespace BeeFree2.GameScreens
     {
         private GraphicalUserInterface mUserInterface;
 
-        private SpriteFont StandardMenuFont { get; set; }
-        private SpriteFont ActiveMenuFont { get; set; }
-
         private PlayerManager mPlayerManager;
+
+        private MenuButton mMenuButton_NewGame;
+        private MenuButton mMenuButton_ContinueGame;
+        private MenuButton mMenuButton_LoadGame;
+        private MenuButton mMenuButton_Quit;
+
+        private TextBlock mTextBlock_MenuDescription;
 
         /// <summary>
         /// Gets or sets the texture for the background.
@@ -31,15 +35,32 @@ namespace BeeFree2.GameScreens
 
             this.mPlayerManager = this.ScreenManager.Game.Services.GetService<PlayerManager>();
 
-            var lGamePersistanceService = this.ScreenManager.Game.Services.GetService<GamePersistanceService>();
+            var lStandardMenuFont = lContent.Load<SpriteFont>(AssetNames.Fonts.Standard_14);
 
-            this.StandardMenuFont = lContent.Load<SpriteFont>(AssetNames.Fonts.Standard_14);
-            this.ActiveMenuFont = lContent.Load<SpriteFont>(AssetNames.Fonts.Standard_18);
+            this.mMenuButton_NewGame = this.CreateMenuButton("New Game", lStandardMenuFont);
+            this.mMenuButton_ContinueGame = this.CreateMenuButton("Continue Game", lStandardMenuFont);
+            this.mMenuButton_LoadGame = this.CreateMenuButton("Load Game", lStandardMenuFont);
+            this.mMenuButton_Quit = this.CreateMenuButton("Quit", lStandardMenuFont);
 
-            var lStackPanel = new HorizontalStackPanel();
-            lStackPanel.Margin = new Thickness(50, 250, 0, 0);
-            lStackPanel.Add(new SaveSlotGroup(this, 0));
-            lStackPanel.Add(new SaveSlotGroup(this, 1));
+            this.mTextBlock_MenuDescription = new TextBlock("", lStandardMenuFont);
+            this.mTextBlock_MenuDescription.VerticalAlignment = VerticalAlignment.Center;
+            this.mTextBlock_MenuDescription.HorizontalAlignment = HorizontalAlignment.Center;
+
+            var lMenuDescriptionBorder = new Border();
+            lMenuDescriptionBorder.BackgroundColor = new Color(1, 1, 1, 0.75f);
+            lMenuDescriptionBorder.Width = 400;
+            lMenuDescriptionBorder.Height = 50;
+            lMenuDescriptionBorder.Margin = new Thickness(10);
+            lMenuDescriptionBorder.Add(this.mTextBlock_MenuDescription);
+
+            var lStackPanel = new VerticalStackPanel();
+            lStackPanel.HorizontalAlignment = HorizontalAlignment.Center;
+            lStackPanel.VerticalAlignment = VerticalAlignment.Bottom;
+            lStackPanel.Add(this.mMenuButton_NewGame);
+            lStackPanel.Add(this.mMenuButton_ContinueGame);
+            lStackPanel.Add(this.mMenuButton_LoadGame);
+            lStackPanel.Add(this.mMenuButton_Quit);
+            lStackPanel.Add(lMenuDescriptionBorder);
 
             this.mUserInterface = new GraphicalUserInterface(this);
             this.mUserInterface.Add(lStackPanel);
@@ -47,15 +68,28 @@ namespace BeeFree2.GameScreens
             this.BackgroundTexture = lContent.Load<Texture2D>(AssetNames.Sprites.MainMenuBackground);
         }
 
-        private void ContinuePreviousGame(SaveSlot saveSlot)
+        private MenuButton CreateMenuButton(string text, SpriteFont standardFont)
         {
-            this.mPlayerManager.LoadPlayer(saveSlot);
-            LoadingScreen.Load(this.ScreenManager, true, new LevelSelectionScreen());
+            var lMenuButton = new MenuButton(text, standardFont);
+            lMenuButton.HorizontalAlignment = HorizontalAlignment.Center;
+            lMenuButton.Margin = new Thickness(0, 5);
+            lMenuButton.Width = 200;
+            lMenuButton.Height = 60;
+            return lMenuButton;
         }
 
-        private void StartNewGame(SaveSlot saveSlot)
+        private void ContinuePreviousGame()
         {
-            this.mPlayerManager.CreateNewPlayer(saveSlot);
+            if (this.mPlayerManager.TryGetPreviousSaveSlot(out var lSaveSlot))
+            {
+                this.mPlayerManager.LoadPlayer(lSaveSlot);
+                LoadingScreen.Load(this.ScreenManager, true, new LevelSelectionScreen());
+            }
+        }
+
+        private void StartNewGame()
+        {
+            this.mPlayerManager.CreateNewPlayer();
             LoadingScreen.Load(this.ScreenManager, true, new LevelSelectionScreen());
         }
 
@@ -63,6 +97,50 @@ namespace BeeFree2.GameScreens
         {
             base.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
             this.mUserInterface.Update(gameTime, !otherScreenHasFocus && !coveredByOtherScreen);
+
+            if (this.mMenuButton_NewGame.IsMouseOver)
+            {
+                this.mTextBlock_MenuDescription.Text = "Create a new game from the beginning.";
+            }
+            else if (this.mMenuButton_ContinueGame.IsMouseOver)
+            {
+                this.mTextBlock_MenuDescription.Text = "Continue playing the last saved game.";
+            }
+            else if (this.mMenuButton_LoadGame.IsMouseOver)
+            {
+                this.mTextBlock_MenuDescription.Text = "Choose a previously saved game to continue.";
+            }
+            else if (this.mMenuButton_Quit.IsMouseOver)
+            {
+                this.mTextBlock_MenuDescription.Text = "Quit the game.";
+            }
+            else
+            {
+                this.mTextBlock_MenuDescription.Text = null;
+            }
+        }
+
+        public override void HandleInput(GameTime gameTime, InputState input)
+        {
+            base.HandleInput(gameTime, input);
+
+            if (this.mMenuButton_NewGame.WasClicked)
+            {
+                this.StartNewGame();
+            }
+            else if (this.mMenuButton_ContinueGame.WasClicked)
+            {
+                this.ContinuePreviousGame();
+            }
+            else if (this.mMenuButton_LoadGame.WasClicked)
+            {
+                LoadingScreen.Load(this.ScreenManager, false, new LoadGameScreen());
+            }
+            else if (this.mMenuButton_Quit.WasClicked)
+            {
+                this.ScreenManager.Game.Exit();
+            }
+
         }
 
         public override void Draw(GameTime gameTime)
@@ -76,56 +154,6 @@ namespace BeeFree2.GameScreens
             this.ScreenManager.SpriteBatch.End();
 
             this.mUserInterface.Draw(gameTime);
-        }
-
-        private sealed class SaveSlotGroup : GraphicsContainer
-        {
-            private readonly MainMenuScreen mScreen;
-            private readonly SaveSlot mSaveSlot;
-
-            private readonly MenuButton mMenuButton_NewGame;
-            private readonly MenuButton mMenuButton_ContinueGame;
-
-            public SaveSlotGroup(MainMenuScreen screen, SaveSlot saveSlot)
-            {
-                this.mScreen = screen;
-                this.mSaveSlot = saveSlot;
-
-                this.Margin = new Thickness(5, 0);
-                this.BorderColor = Color.Black;
-                this.BackgroundColor = Color.White;
-                this.Padding = new Thickness(5);
-
-                this.mMenuButton_NewGame = this.CreateMenuButton("New Game");
-                this.mMenuButton_ContinueGame = this.CreateMenuButton("Continue");
-
-                var lHeader = new TextBlock($"Slot {this.mSaveSlot}", this.mScreen.StandardMenuFont);
-                lHeader.HorizontalAlignment = HorizontalAlignment.Center;
-
-                var lStackPanel = new VerticalStackPanel();
-                lStackPanel.Add(lHeader);
-                lStackPanel.Add(this.mMenuButton_NewGame);
-                lStackPanel.Add(this.mMenuButton_ContinueGame);
-
-                this.Add(lStackPanel);
-            }
-
-            public override void UpdateFinalize(GameTime gameTime)
-            {
-                base.UpdateFinalize(gameTime);
-
-                if (this.mMenuButton_NewGame.WasClicked) this.mScreen.StartNewGame(this.mSaveSlot);
-                else if (this.mMenuButton_ContinueGame.WasClicked) this.mScreen.ContinuePreviousGame(this.mSaveSlot);
-            }
-
-            private MenuButton CreateMenuButton(string text)
-            {
-                var lMenuButton = new MenuButton(text, this.mScreen.StandardMenuFont, this.mScreen.ActiveMenuFont);
-                lMenuButton.Margin = new Thickness(0, 5);
-                lMenuButton.MinWidth = 150;
-                lMenuButton.MinHeight = 60;
-                return lMenuButton;
-            }
         }
     }
 }
