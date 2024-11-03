@@ -1,7 +1,4 @@
-﻿using System;
-using System.Linq;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using BeeFree2.GameEntities;
 using BeeFree2.EntityManagers;
@@ -78,7 +75,7 @@ namespace BeeFree2.GameScreens
             lInfoPanel.Add(new Logo(this.ScreenManager.Game.Content) { HorizontalAlignment = HorizontalAlignment.Center });
             lInfoPanel.Add(new TextBlock("Earn honeycomb as you play", lStandardFont));
             lInfoPanel.Add(new TextBlock("and then check out the shop.", lStandardFont));
-            lInfoPanel.Add(new TextBlock("Honeycomb 0", lStandardFont));
+            lInfoPanel.Add(new TextBlock($"Honeycomb {this.mPlayerManager.Player.AvailableHoneycombToSpend}", lStandardFont));
 
             var lTopPanel = new DockPanel();
             lTopPanel.Add(lUniformGrid, Dock.Left);

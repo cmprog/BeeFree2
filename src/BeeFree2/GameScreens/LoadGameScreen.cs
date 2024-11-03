@@ -15,7 +15,7 @@ namespace BeeFree2.GameScreens
 
         private int mCurrentPageIndex = 0;
         private int mPageCount = 0;
-        private readonly int mPlayersPerPage = 5;
+        private readonly int mPlayersPerPage = 4;
 
         private readonly List<LoadPlayerButton> mPlayerButtons_All = new();
         private readonly List<LoadPlayerButton> mPlayerButtons_Current = new();
@@ -60,8 +60,12 @@ namespace BeeFree2.GameScreens
 
             this.mPageCount = 1 + ((this.mPlayerButtons_All.Count - 1) / this.mPlayersPerPage);
 
+            var lHeaderTextBlock = new TextBlock("Load Game", this.ScreenManager.Game.Content.Load<SpriteFont>(AssetNames.Fonts.Standard_24));
+            lHeaderTextBlock.HorizontalAlignment = HorizontalAlignment.Center;
+
             var lCentralPanel = new VerticalStackPanel();
             lCentralPanel.Margin = new Thickness(40, 40);
+            lCentralPanel.Add(lHeaderTextBlock);
             lCentralPanel.Add(lNavigationPanel);
             lCentralPanel.Add(this.mPanel_PlayerButtons);
 
@@ -78,7 +82,7 @@ namespace BeeFree2.GameScreens
         private void LoadPage(int pageIndex)
         {
             this.mCurrentPageIndex = Math.Clamp(pageIndex, 0, (this.mPageCount == 0 ? 0 : this.mPageCount - 1));
-            this.mTextBlock_CurrentPage.Text = $"Page {(this.mCurrentPageIndex + 1)}";
+            this.mTextBlock_CurrentPage.Text = $"Page {(this.mCurrentPageIndex + 1):N0} of {this.mPageCount:N0}";
 
             this.mMenuButton_NextPage.Visibility = (this.mCurrentPageIndex == this.mPageCount - 1) ? Visibility.Hidden : Visibility.Visible;
             this.mMenuButton_PreviousPage.Visibility = (this.mCurrentPageIndex == 0) ? Visibility.Hidden : Visibility.Visible;
@@ -164,8 +168,6 @@ namespace BeeFree2.GameScreens
             {
                 this.mPlayer = player;
 
-                var lCurrentTime = DateTime.UtcNow;
-
                 var lRightPanel = new VerticalStackPanel();
                 lRightPanel.Add(new TextBlock($"Honeycomb: {player.AvailableHoneycombToSpend:N0}", font));
                 lRightPanel.Add(new TextBlock($"Levels: {player.LevelsAvailable:N0}", font));
@@ -184,6 +186,7 @@ namespace BeeFree2.GameScreens
                 this.mButton = new Button();
                 this.mButton.BackgroundColor = new Color(1, 1, 1, 0.75f);
                 this.mButton.Padding = new Thickness(5);
+                this.mButton.Margin = new Thickness(5);
                 this.mButton.Add(lButtonPanel);
 
                 this.Add(this.mButton);

@@ -80,8 +80,7 @@ namespace BeeFree2.GameScreens
             base.Activate(instancePreserved);
 
             this.ContentManager = this.ScreenManager.Game.Content;
-
-            this.PlayerManager.Activate(this.ScreenManager.Game);
+            this.PlayerManager = this.ScreenManager.Game.Services.GetService<PlayerManager>();
 
             this.PlayerUpgradeGetters = new Dictionary<int, Func<int>>();
             this.PlayerUpgradeGetters[1] = () => this.PlayerManager.Player.BeeSpeed;

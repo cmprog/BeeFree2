@@ -10,21 +10,23 @@ namespace BeeFree2.GameEntities
         private readonly TextBlock mTextBlock;
         private readonly Border mBorder;
 
+        private readonly DockPanel mButtonPanel;
+
         public MenuButton()
         {
             this.mTextBlock = new TextBlock();
             this.mTextBlock.HorizontalAlignment = HorizontalAlignment.Left;
             this.mTextBlock.VerticalAlignment = VerticalAlignment.Center;
             this.mTextBlock.ForeColor = Color.Black;
-            this.mTextBlock.Margin = new Thickness(5);
+            this.mTextBlock.Margin = new Thickness(5, 0, 0, 0);
 
             this.mBorder = new Border();
 
-            var lPanel = new DockPanel();
-            lPanel.Add(this.mBorder, Dock.Left);
-            lPanel.Add(this.mTextBlock);
+            this.mButtonPanel = new DockPanel();
+            this.mButtonPanel.Add(this.mBorder, Dock.Left);
+            this.mButtonPanel.Add(this.mTextBlock);
 
-            this.mButton = new Button(lPanel);
+            this.mButton = new Button(this.mButtonPanel);
             this.mButton.BorderThickness = new Thickness(5);
             this.mButton.HorizontalAlignment = HorizontalAlignment.Stretch;
             this.mButton.VerticalAlignment = VerticalAlignment.Stretch;
@@ -66,22 +68,18 @@ namespace BeeFree2.GameEntities
         private void UpdateStyle()
         {
             this.mBorder.Width = this.mBorder.ActualHeight;
+            this.mButtonPanel.MinWidth = this.mBorder.DesiredWidth + this.mTextBlock.DesiredWidth;
 
             if (this.mButton.IsMouseOver)
             {
                 this.mButton.BackgroundColor = Color.White;
-                this.mBorder.BackgroundColor = Color.Gold;
+                this.mBorder.BackgroundColor = Color.DarkGoldenrod;
             }
             else
             {
                 this.mButton.BackgroundColor = Color.Gold;
                 this.mBorder.BackgroundColor = Color.Transparent;
             }
-        }
-
-        public override void LayoutChildren(GameTime gameTime)
-        {
-            base.LayoutChildren(gameTime);
         }
     }
 }
