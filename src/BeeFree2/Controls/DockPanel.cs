@@ -154,7 +154,7 @@ namespace BeeFree2.Controls
                 }
             }
 
-            if (this.LastChildFill)
+            if (this.LastChildFill && (this.Children.Count != 0))
             {
                 var lChild = this.Children[this.Children.Count - 1];
 

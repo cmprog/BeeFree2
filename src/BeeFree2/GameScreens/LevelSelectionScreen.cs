@@ -32,7 +32,6 @@ namespace BeeFree2.GameScreens
             this.mPlayerManager = this.ScreenManager.Game.Services.GetService<PlayerManager>();
 
             var lStandardFont = this.ScreenManager.Game.Content.Load<SpriteFont>(AssetNames.Fonts.Standard_16);
-            var lActiveFont = this.ScreenManager.Game.Content.Load<SpriteFont>(AssetNames.Fonts.Standard_20);
 
             var lPerfectTexture = this.ScreenManager.Game.Content.Load<Texture2D>(AssetNames.Sprites.Perfect);
             var lFlawlessTexture = this.ScreenManager.Game.Content.Load<Texture2D>(AssetNames.Sprites.Flawless);
@@ -85,12 +84,12 @@ namespace BeeFree2.GameScreens
             lTopPanel.Add(lUniformGrid, Dock.Left);
             lTopPanel.Add(lInfoPanel);
 
-            this.mMenuButton_Back = new MenuButton("Back", lStandardFont, lActiveFont);
+            this.mMenuButton_Back = new MenuButton("Back", lStandardFont);
             this.mMenuButton_Back.Margin = new Thickness(10);
             this.mMenuButton_Back.Width = 150;
             this.mMenuButton_Back.Height = 50;
 
-            this.mMenuButton_Shop = new MenuButton("Shop", lStandardFont, lActiveFont);
+            this.mMenuButton_Shop = new MenuButton("Shop", lStandardFont);
             this.mMenuButton_Shop.Margin = new Thickness(10);
             this.mMenuButton_Shop.Width = 150;
             this.mMenuButton_Shop.Height = 50;

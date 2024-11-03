@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text.Json.Serialization;
 
 namespace BeeFree2.GameEntities
@@ -6,9 +8,25 @@ namespace BeeFree2.GameEntities
     public sealed class Player
     {
         public Player()
+            : this(new SaveSlot())
         {
+
+        }
+
+        [JsonConstructor]
+        public Player(SaveSlot saveSlot)
+        {
+            this.SaveSlot = saveSlot;
+            this.CreatedOn = DateTime.UtcNow;
+
             this.Levels = new Dictionary<int, LevelData>();
         }
+
+        public SaveSlot SaveSlot { get; }
+
+        public DateTime CreatedOn { get; set; }
+
+        public DateTime LastPlayedOn { get; set; }
 
         public string Name { get; set; }
 
@@ -38,6 +56,9 @@ namespace BeeFree2.GameEntities
 
         public void MarkLevelPlayed(int levelIndex)
             => this.GetLevelData(levelIndex).MarkPlayed();
+
+        [JsonIgnore]
+        public int LevelsAvailable => this.Levels.Values.Count(x => x.IsAvailable);
         
         public LevelData GetLevelData(int levelIndex)
         {

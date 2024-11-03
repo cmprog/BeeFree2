@@ -12,6 +12,7 @@ namespace BeeFree2.Controls
         private bool mIsInSpriteBatch;
 
         private Texture2D mPixelTexture;
+        private Dictionary<byte, Texture2D> mAlphaPixelTextureCache = new();
 
         public GraphicalUserInterface(GameScreen gameScreen)
             : this(gameScreen.ScreenManager)
@@ -142,7 +143,26 @@ namespace BeeFree2.Controls
 
         public void FillRectangle(RectangleF bounds, Color color)
         {
-            this.SpriteBatch.Draw(this.mPixelTexture, bounds.Position, null, color, 0f, Vector2.Zero, bounds.Size, SpriteEffects.None, 0);
+            if (color.A == byte.MaxValue)
+            {
+                this.SpriteBatch.Draw(this.mPixelTexture, bounds.Position, null, color, 0f, Vector2.Zero, bounds.Size, SpriteEffects.None, 0);
+            }
+            else
+            {
+                var lTexture = this.GetAlphaTexture(color.A);
+                this.SpriteBatch.Draw(lTexture, bounds.Position, null, color, 0f, Vector2.Zero, bounds.Size, SpriteEffects.None, 0);
+            }
+        }
+
+        private Texture2D GetAlphaTexture(byte alpha)
+        {
+            if (!this.mAlphaPixelTextureCache.TryGetValue(alpha, out var lTexture))
+            {
+                lTexture = new Texture2D(this.SpriteBatch.GraphicsDevice, 1, 1, mipmap: false, SurfaceFormat.Color);                
+                lTexture.SetData(new[] { Color.FromNonPremultiplied(byte.MaxValue, byte.MaxValue, byte.MaxValue, alpha) });
+            }
+
+            return lTexture;
         }
 
         public void DrawRectangle(RectangleF rect, Color color, Thickness thickness)

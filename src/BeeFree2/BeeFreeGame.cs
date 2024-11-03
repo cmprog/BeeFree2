@@ -55,9 +55,8 @@ namespace BeeFree2
 
             if (string.Equals(Environment.GetEnvironmentVariable("BEEFREE_ENVIRONMENT"), "DEVELOPMENT", StringComparison.OrdinalIgnoreCase))
             {
-                lPlayerManager.LoadPlayer(0);
-
-                this.mScreenManager.AddScreen(new GameplayScreen(0), null);
+                this.mScreenManager.AddScreen(new LoadGameScreen(), null);
+                // this.mScreenManager.AddScreen(new MainMenuScreen(), null);
             }
             else
             {

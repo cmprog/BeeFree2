@@ -8,34 +8,39 @@ namespace BeeFree2.GameEntities
     {
         private readonly Button mButton;
         private readonly TextBlock mTextBlock;
+        private readonly Border mBorder;
 
         public MenuButton()
         {
             this.mTextBlock = new TextBlock();
-            this.mTextBlock.HorizontalAlignment = HorizontalAlignment.Center;
+            this.mTextBlock.HorizontalAlignment = HorizontalAlignment.Left;
             this.mTextBlock.VerticalAlignment = VerticalAlignment.Center;
+            this.mTextBlock.ForeColor = Color.Black;
+            this.mTextBlock.Margin = new Thickness(5);
 
-            this.mButton = new Button(this.mTextBlock);
+            this.mBorder = new Border();
+
+            var lPanel = new DockPanel();
+            lPanel.Add(this.mBorder, Dock.Left);
+            lPanel.Add(this.mTextBlock);
+
+            this.mButton = new Button(lPanel);
+            this.mButton.BorderThickness = new Thickness(5);
             this.mButton.HorizontalAlignment = HorizontalAlignment.Stretch;
             this.mButton.VerticalAlignment = VerticalAlignment.Stretch;
+            this.mButton.BorderColor = Color.Black;
 
             this.UpdateStyle();
 
             this.Add(this.mButton);
         }
 
-        public MenuButton(string text, SpriteFont standardFont)
-            : this(text, standardFont, standardFont)
-        {
-
-        }
-
-        public MenuButton(string text, SpriteFont standardFont, SpriteFont activeFont)
+        public MenuButton(string text, SpriteFont font)
             : this()
         {
+
             this.Text = text;
-            this.StandardFont = standardFont;
-            this.ActiveFont = activeFont;
+            this.Font = font;
         }
 
         public string Text
@@ -44,9 +49,11 @@ namespace BeeFree2.GameEntities
             set => this.mTextBlock.Text = value;
         }
 
-        public SpriteFont StandardFont { get; set; }
-
-        public SpriteFont ActiveFont { get; set; }
+        public SpriteFont Font
+        {
+            get => this.mTextBlock.Font;
+            set => this.mTextBlock.Font = value;
+        }
 
         public bool WasClicked => this.mButton.WasClicked;
 
@@ -58,23 +65,17 @@ namespace BeeFree2.GameEntities
 
         private void UpdateStyle()
         {
+            this.mBorder.Width = this.mBorder.ActualHeight;
+
             if (this.mButton.IsMouseOver)
             {
-                this.mTextBlock.Font = this.ActiveFont;
-                this.mTextBlock.ForeColor = Color.White;
-
-                this.mButton.BorderColor = Color.White;
-                this.mButton.BorderThickness = new Thickness(6);
-                this.mButton.BackgroundColor = Color.DarkGoldenrod;
+                this.mButton.BackgroundColor = Color.White;
+                this.mBorder.BackgroundColor = Color.Gold;
             }
             else
             {
-                this.mTextBlock.Font = this.StandardFont;
-                this.mTextBlock.ForeColor = Color.Black;
-
-                this.mButton.BorderColor = Color.Black;
-                this.mButton.BorderThickness = new Thickness(4);
                 this.mButton.BackgroundColor = Color.Gold;
+                this.mBorder.BackgroundColor = Color.Transparent;
             }
         }
 
