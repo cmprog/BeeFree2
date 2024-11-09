@@ -9,6 +9,7 @@ using BeeFree2.GameEntities;
 using BeeFree2.EntityManagers;
 using BeeFree2.ContentData;
 using BeeFree2.Config;
+using System.Drawing.Text;
 
 namespace BeeFree2.GameScreens
 {
@@ -183,20 +184,24 @@ namespace BeeFree2.GameScreens
         /// <param name="upgrade">The upgrade to load it with.</param>
         /// <param name="price">The price to load it with.</param>
         public void LoadButton(ShopButtonEntity button, UpgradeData upgrade, PriceData price)
-        {
-            var lTexture = this.TextureByPriceData[price];
-
+        {        
             button.Id = upgrade.Id;
             button.NameText = upgrade.Text;
-            button.Level = price.Level;
-            button.LevelText = this.GetLevelText(upgrade, price);
-            button.Description = price.Description;
-            button.Price = price.Price;
-            button.PriceText = this.GetPriceText(upgrade, price);
             button.Font = this.ButtonFont;
             button.BoldFont = this.ButtonFontBold;
-            button.IconTexture = lTexture;
-            button.IconSize = new Vector2(lTexture.Width, lTexture.Height);
+
+            if (price != null)
+            {
+                var lTexture = this.TextureByPriceData[price];
+
+                button.Level = price.Level;
+                button.LevelText = this.GetLevelText(upgrade, price);
+                button.Description = price.Description;
+                button.Price = price.Price;
+                button.PriceText = this.GetPriceText(upgrade, price);
+                button.IconTexture = lTexture;
+                button.IconSize = new Vector2(lTexture.Width, lTexture.Height);
+            }
         }
 
         /// <summary>

@@ -11,9 +11,22 @@ namespace BeeFree2.GameEntities
         private readonly Border mGraphic_HealthBar;
         private readonly Border mGraphic_HealthValue;
 
+        private readonly TextBlock mTextBlock_LevelName;
+        private readonly TextBlock mTextBlock_BirdsKilled;
+        private readonly TextBlock mTextBlock_HoneycombCollected;
         private readonly TextBlock mTextBlock_CurrentHealth;
-
         private readonly TextBlock mTextBlock_RemainingSeconds;
+
+        private const string sFieldLabel_BirdsKilled = "Birds Killed";
+        private const string sFieldLabel_HoneycombCollected = "Honeycomb Collected";
+
+        private const float sHealthBarScale = 12;
+
+        private TimeSpan? mTimeRemaining;
+        private float mCurrentHealth;
+        private float mMaximumHealth;
+        private int mBirdsKilled;
+        private int mHoneycombCollected;
 
         public HeadsUpDisplay(ContentManager contentManager, int levelIndex)
         {
@@ -41,35 +54,107 @@ namespace BeeFree2.GameEntities
             lHealthPanel.Add(this.mGraphic_HealthBar);
             lHealthPanel.Add(this.mTextBlock_CurrentHealth);
 
+            this.mTextBlock_LevelName = new TextBlock();
+            this.mTextBlock_LevelName.Font = lFont;
+            this.mTextBlock_LevelName.HorizontalAlignment = HorizontalAlignment.Right;
+
+            this.mTextBlock_BirdsKilled = new TextBlock();
+            this.mTextBlock_BirdsKilled.Text = this.GetFieldText(sFieldLabel_BirdsKilled, 0.ToString());
+            this.mTextBlock_BirdsKilled.Font = lFont;
+
+            this.mTextBlock_HoneycombCollected = new TextBlock();
+            this.mTextBlock_HoneycombCollected.Text = this.GetFieldText(sFieldLabel_HoneycombCollected, 0.ToString());
+            this.mTextBlock_HoneycombCollected.Font = lFont;
+
+            var lStatsPanel = new VerticalStackPanel();
+            lStatsPanel.Margin = new Thickness(5);
+            lStatsPanel.Add(this.mTextBlock_BirdsKilled);
+            lStatsPanel.Add(this.mTextBlock_HoneycombCollected);
+
             var lLevelInfoPanel = new VerticalStackPanel();
-            lLevelInfoPanel.Add(new TextBlock($"Level {(levelIndex + 1)}", lFont) { HorizontalAlignment = HorizontalAlignment.Right });
+            lStatsPanel.Margin = new Thickness(5);
+            lLevelInfoPanel.Add(this.mTextBlock_LevelName);
             lLevelInfoPanel.Add(this.mTextBlock_RemainingSeconds);
 
             var lHudPanel = new DockPanel();
+            lHudPanel.Tag = "DEBUG";
             lHudPanel.VerticalAlignment = VerticalAlignment.Top;
             lHudPanel.HorizontalAlignment = HorizontalAlignment.Stretch;
             lHudPanel.Add(lLevelInfoPanel, Dock.Right);
+            lHudPanel.Add(lStatsPanel, Dock.Right);
             lHudPanel.Add(lHealthPanel);
 
             this.Add(lHudPanel);
         }
 
-        public float CurrentHealth { get; set; }
-
-        public float MaximumHealth { get; set; }
-
-        public double RemainingSeconds { get; set; }
-
-        public override void UpdateFinalize(GameTime gameTime)
+        public string LevelName
         {
-            base.UpdateFinalize(gameTime);
+            get => this.mTextBlock_LevelName.Text;
+            set => this.mTextBlock_LevelName.Text = value;
+        }
 
-            const float lcHealthBarScale = 12;
-            this.mGraphic_HealthBar.Width = lcHealthBarScale * this.MaximumHealth;
-            this.mGraphic_HealthValue.Width = lcHealthBarScale * this.CurrentHealth;
+        public float CurrentHealth
+        {
+            get => this.mCurrentHealth;
+            set
+            {
+                this.mCurrentHealth = value;
+                this.mGraphic_HealthValue.Width = sHealthBarScale * this.CurrentHealth;
+                this.UpdateCurrentHealthText();
+            }
+        }
 
-            this.mTextBlock_RemainingSeconds.Text = $"{Math.Ceiling(this.RemainingSeconds):0}s left";
+        public float MaximumHealth
+        {
+            get => this.mMaximumHealth;
+            set
+            {
+                this.mMaximumHealth = value;
+                this.mGraphic_HealthBar.Width = sHealthBarScale * this.MaximumHealth;
+                this.UpdateCurrentHealthText();
+            }
+        }
+
+        public int BirdsKilled
+        {
+            get => this.mBirdsKilled;
+            set
+            {
+                this.mBirdsKilled = value;
+                this.mTextBlock_BirdsKilled.Text = this.GetFieldText(sFieldLabel_BirdsKilled, value.ToString("N0"));
+            }
+        }
+
+        public int CoinsCollected
+        {
+            get => this.mHoneycombCollected;
+            set
+            {
+                this.mHoneycombCollected = value;
+                this.mTextBlock_HoneycombCollected.Text = this.GetFieldText(sFieldLabel_HoneycombCollected, value.ToString("N0"));
+            }
+        }
+
+        public TimeSpan? TimeRemaining
+        {
+            get => this.mTimeRemaining;
+            set
+            {
+                this.mTimeRemaining = value;
+                this.mTextBlock_RemainingSeconds.Visibility = value.HasValue ? Visibility.Visible : Visibility.Hidden;
+
+                if (value.HasValue)
+                {
+                    this.mTextBlock_RemainingSeconds.Text = $"{Math.Ceiling(value.Value.TotalSeconds):0}s left";
+                }
+            }
+        }
+
+        private void UpdateCurrentHealthText()
+        {
             this.mTextBlock_CurrentHealth.Text = $"{this.CurrentHealth} / {this.MaximumHealth}";
         }
+
+        private string GetFieldText(string fieldLabel, string fieldValue) => $"{fieldLabel}: {fieldValue}";
     }
 }

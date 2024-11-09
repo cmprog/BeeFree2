@@ -122,7 +122,7 @@ namespace BeeFree2.Controls
                         lChildBounds.Width = lChild.DesiredWidth;
                         lChildBounds.Height = lContentBounds.Height;
                         
-                        lContentBounds.Width += lChildBounds.Width;
+                        lContentBounds.Width -= lChildBounds.Width;
                         break;
 
                     case Dock.Top:

@@ -96,10 +96,22 @@ namespace BeeFree2.GameEntities
                 this.Position.X + ((this.Size.X - lNameTextSize.X) / 2),
                 this.Position.Y + this.IconSize.Y);
 
-            spriteBatch.Draw(this.IconTexture, this.Position, Color.White);
+            if (this.IconTexture != null)
+            {
+                spriteBatch.Draw(this.IconTexture, this.Position, Color.White);
+            }
+            
             spriteBatch.DrawString(this.BoldFont, this.NameText, lNamePosition, Color.Black);
-            spriteBatch.DrawString(this.Font, this.LevelText, lLevelPosition, Color.Black);
-            spriteBatch.DrawString(this.Font, this.PriceText, lPricePosition, Color.Black);
+
+            if (this.LevelText != null)
+            {
+                spriteBatch.DrawString(this.Font, this.LevelText, lLevelPosition, Color.Black);
+            }
+
+            if (this.PriceText != null)
+            {
+                spriteBatch.DrawString(this.Font, this.PriceText, lPricePosition, Color.Black);
+            }            
         }
 
         /// <summary>

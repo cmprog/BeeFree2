@@ -19,6 +19,10 @@ namespace BeeFree2.GameScreens
     /// </summary>
     public sealed class GameplayScreen : GameScreen
     {
+        private IGameplayProvider mGameplayProvider;
+
+        private readonly Func<IGameplayController, IGameplayProvider> mGameplayFactory;
+
         private GraphicalUserInterface mUserInterface;
 
         private ContentManager ContentManager { get; set; }
@@ -29,51 +33,18 @@ namespace BeeFree2.GameScreens
         private BirdManager BirdManager { get; set; }
         private CloudManager CloudManager { get; set; }
         private PlayerManager PlayerManager { get; set; }
-        private LevelManager LevelManager { get; set; }
         private HeadsUpDisplay HeadsUpDisplay { get; set; }
 
         private int LevelIndex { get; set; }
 
-        private int BirdsKilled { get; set; }
-
-        public GameplayScreen(int levelIndex)
+        public GameplayScreen(Func<IGameplayController, IGameplayProvider> gameplayFactory)
         {
-            this.LevelIndex = levelIndex;
-                        
+            this.mGameplayFactory = gameplayFactory;
+
             this.CloudManager = new CloudManager();
             this.BirdManager = new BirdManager();
             this.BulletManager = new BulletManager();
             this.CoinManager = new CoinManager();
-        }
-
-        /// <summary>
-        /// When a bird dies, we need to spawn a new coin in its place.
-        /// </summary>
-        /// <param name="bird">The bird that died.</param>
-        private void Bird_OnDeath(BirdEntity bird)
-        {
-            this.BirdsKilled++;
-            var lCoin = new SimpleGameEntity
-            {
-                MovementBehavior = new GravityMovementBehavior
-                {
-                    TargetEntity = this.BeeManager.Bee,
-                    Position = bird.Position,
-                    Velocity = Vector2.UnitX * -300,
-                    Acceleration = Vector2.UnitX * (40 * this.PlayerManager.Player.BeeHoneycombAttraction),
-                },
-            };
-            this.CoinManager.Add(lCoin);
-        }
-
-        /// <summary>
-        /// When a bird is released, we add it to the bird manager, but we're also interested in when it dies.
-        /// </summary>
-        /// <param name="bird">The bird to release.</param>
-        private void LevelManager_ReleaseBird(BirdEntity bird)
-        {
-            this.BirdManager.Add(bird);
-            bird.OnDeath += this.Bird_OnDeath;
         }
 
         public override void Activate(bool instancePreserved)
@@ -120,12 +91,9 @@ namespace BeeFree2.GameScreens
             System.Diagnostics.Debug.WriteLine(string.Empty);
 
             this.BeeManager = new BeeManager() { Bee = lBee };
-            
-            this.LevelManager = new LevelManager(this.LevelIndex);
-            this.LevelManager.LevelOver += this.LevelManager_LevelOver;
-            this.LevelManager.ReleaseBird += this.LevelManager_ReleaseBird;
-            this.LevelManager.Bee = this.BeeManager.Bee;
-            this.LevelManager.BulletFired = this.BulletManager.Add;
+
+            var lGameplayController = new GameplayController(this);
+            this.mGameplayProvider = this.mGameplayFactory(lGameplayController);            
 
             this.HeadsUpDisplay.CurrentHealth = this.BeeManager.Bee.MaximumHealth;
             this.HeadsUpDisplay.MaximumHealth = this.BeeManager.Bee.MaximumHealth;
@@ -135,7 +103,6 @@ namespace BeeFree2.GameScreens
             this.BirdManager.Activate(this.ScreenManager.Game);
             this.BeeManager.Activate(this.ScreenManager.Game);
             this.CloudManager.Activate(this.ScreenManager.Game);
-            this.LevelManager.Activate(this.ScreenManager.Game);
         }
 
         /// <summary>
@@ -163,18 +130,6 @@ namespace BeeFree2.GameScreens
             lBehavior.BulletSpeed = (200 + (20 * this.PlayerManager.Player.BeeBulletSpeed));
 
             return lBehavior;
-        }
-
-        private void LevelManager_LevelOver()
-        {
-            var lWasFlawlessCompletion = !this.BeeManager.Bee.HasTakenDamage;
-            var lWasPerfectCompletion = this.BirdsKilled == this.LevelManager.TotalBirdCount;
-
-            this.PlayerManager.Player.MarkLevelCompleted(this.LevelIndex, lWasFlawlessCompletion, lWasPerfectCompletion);
-            this.PlayerManager.Player.MarkLevelAvailable(this.LevelIndex + 1);
-            this.PlayerManager.SavePlayer();
-
-            this.OnGamePlayOver();
         }
 
         private void Bee_OnDeath(BeeEntity bee)
@@ -210,7 +165,6 @@ namespace BeeFree2.GameScreens
             this.BulletManager.Unload();
             this.CloudManager.Unload();
             this.PlayerManager.Unload();
-            this.LevelManager.Unload();
         }
 
         public override void Update(GameTime gameTime, bool otherScreenHasFocus, bool coveredByOtherScreen)
@@ -222,14 +176,13 @@ namespace BeeFree2.GameScreens
             this.BirdManager.Update(gameTime);
             this.BulletManager.Update(gameTime);
             this.CloudManager.Update(gameTime);
-            this.LevelManager.Update(gameTime);
             this.BirdManager.Update(gameTime);
+
+            this.mGameplayProvider.Update(gameTime);
 
             this.DetectBulletHits();
             this.DetectBirdHits();
             this.CollectCoins();
-
-            this.HeadsUpDisplay.RemainingSeconds = this.LevelManager.RemainingTime.TotalSeconds;
 
             this.mUserInterface.Update(gameTime, !otherScreenHasFocus && !coveredByOtherScreen);
         }
@@ -248,6 +201,8 @@ namespace BeeFree2.GameScreens
                     var lPlayer = this.PlayerManager.Player;
                     lPlayer.TotalHoneycombCollected++;
                     lPlayer.AvailableHoneycombToSpend++;
+
+                    this.HeadsUpDisplay.CoinsCollected++;
 
                     lDeadCoins.Add(lCoin);
                 }
@@ -353,6 +308,88 @@ namespace BeeFree2.GameScreens
             lSpriteBatch.End();
 
             this.mUserInterface.Draw(gameTime);
+        }
+
+        private sealed class GameplayController : IGameplayController
+        {
+            private readonly GameplayScreen mScreen;
+
+            private int mTotalBirdsReleased;
+
+            public GameplayController(GameplayScreen screen)
+            {
+                this.mScreen = screen;
+            }
+
+            public Game Game => this.mScreen.ScreenManager.Game;
+
+            public TimeSpan? TimeRemaining
+            {
+                get => this.mScreen.HeadsUpDisplay.TimeRemaining;
+                set => this.mScreen.HeadsUpDisplay.TimeRemaining = value;
+            }
+
+            public string LevelName
+            {
+                get => this.mScreen.HeadsUpDisplay.LevelName;
+                set => this.mScreen.HeadsUpDisplay.LevelName = value;
+            }
+
+            public int BirdsKilled
+            {
+                get => this.mScreen.HeadsUpDisplay.BirdsKilled;
+                set => this.mScreen.HeadsUpDisplay.BirdsKilled = value;
+            }
+
+            public int HoneycombCollected
+            {
+                get => this.mScreen.HeadsUpDisplay.CoinsCollected;
+                set => this.mScreen.HeadsUpDisplay.CoinsCollected = value;
+            }
+
+            /// <summary>
+            /// When a bird is released, we add it to the bird manager, but we're also interested in when it dies.
+            /// </summary>
+            /// <param name="bird">The bird to release.</param>
+            public void AddBird(BirdEntity birdEntity)
+            {
+                this.mScreen.BirdManager.Add(birdEntity);
+                birdEntity.OnDeath += this.Bird_OnDeath;
+            }
+
+            public void OnLevelComplete()
+            {
+                var lWasFlawlessCompletion = !this.mScreen.BeeManager.Bee.HasTakenDamage;
+                var lWasPerfectCompletion = (this.mScreen.HeadsUpDisplay.BirdsKilled == this.mTotalBirdsReleased);
+
+                this.mScreen.PlayerManager.Player.MarkLevelCompleted(this.mScreen.LevelIndex, lWasFlawlessCompletion, lWasPerfectCompletion);
+                this.mScreen.PlayerManager.Player.MarkLevelAvailable(this.mScreen.LevelIndex + 1);
+                this.mScreen.PlayerManager.SavePlayer();
+
+                this.mScreen.OnGamePlayOver();
+            }
+
+            /// <summary>
+            /// When a bird dies, we need to spawn a new coin in its place.
+            /// </summary>
+            /// <param name="bird">The bird that died.</param>
+            private void Bird_OnDeath(BirdEntity bird)
+            {
+                this.mScreen.HeadsUpDisplay.BirdsKilled++;
+
+                var lCoin = new SimpleGameEntity
+                {
+                    MovementBehavior = new GravityMovementBehavior
+                    {
+                        TargetEntity = this.mScreen.BeeManager.Bee,
+                        Position = bird.Position,
+                        Velocity = Vector2.UnitX * -300,
+                        Acceleration = Vector2.UnitX * (40 * this.mScreen.PlayerManager.Player.BeeHoneycombAttraction),
+                    },
+                };
+
+                this.mScreen.CoinManager.Add(lCoin);
+            }
         }
     }
 }

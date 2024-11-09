@@ -57,7 +57,7 @@ namespace BeeFree2.EntityManagers
 
         public void Update(GameTime gameTime)
         {
-            const float lcBirdPadding = 50;
+            const float lcBirdPadding = 100;
 
             using (var lInactiveBirds = new BatchCollectionRemover<BirdEntity>(this.Birds))
             {
