@@ -15,6 +15,7 @@ namespace BeeFree2.GameScreens
     {
         private MenuButton mMenuButton_Back;
         private MenuButton mMenuButton_Shop;
+        private MenuButton mMenuButton_Endless;
 
         private GraphicalUserInterface mUserInterface;
 
@@ -95,12 +96,22 @@ namespace BeeFree2.GameScreens
             lButtonPanel.Add(this.mMenuButton_Back);
             lButtonPanel.Add(this.mMenuButton_Shop);
 
+            this.mMenuButton_Endless = new MenuButton("Endless", lStandardFont);
+            this.mMenuButton_Endless.Margin = new Thickness(10);
+            this.mMenuButton_Endless.HorizontalAlignment = HorizontalAlignment.Right;
+            this.mMenuButton_Endless.Width = 150;
+            this.mMenuButton_Endless.Height = 50;
+
+            var lVerticalButtonPanel = new VerticalStackPanel();
+            lVerticalButtonPanel.Add(this.mMenuButton_Endless);
+            lVerticalButtonPanel.Add(lButtonPanel);
+
             var lBottomInfoPanel = new VerticalStackPanel();
             lBottomInfoPanel.Add(new TextBlock("Choose a level to begin.", lStandardFont));
             lBottomInfoPanel.Add(new TextBlock("Don't worry, you can replay levels.", lStandardFont));
 
             var lBottomPanel = new DockPanel();
-            lBottomPanel.Add(lButtonPanel, Dock.Right);
+            lBottomPanel.Add(lVerticalButtonPanel, Dock.Right);
             lBottomPanel.Add(lBottomInfoPanel);
 
             var lScreenPanel = new DockPanel();
@@ -126,13 +137,18 @@ namespace BeeFree2.GameScreens
             {
                 LoadingScreen.Load(this.ScreenManager, true, new ShopScreen());
             }
+            else if (this.mMenuButton_Endless.WasClicked)
+            {
+                var lGameplayScreen = new GameplayScreen(x => new EndlessGameplayProvider(x));
+                LoadingScreen.Load(this.ScreenManager, true, lGameplayScreen);
+            }
             else
             {
                 foreach (var lLevelButton in this.mLevelButtons)
                 {
                     if (lLevelButton.WasClicked)
                     {
-                        var lGameplayScreen = new GameplayScreen(lLevelButton.LevelIndex);
+                        var lGameplayScreen = new GameplayScreen(x => new StandardGameplayProvider(x, lLevelButton.LevelIndex));
 
                         this.mPlayerManager.Player.MarkLevelPlayed(lLevelButton.LevelIndex);
                         this.mPlayerManager.SavePlayer();

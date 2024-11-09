@@ -13,7 +13,7 @@ namespace BeeFree2
     /// <summary>
     /// This is the main type for your game
     /// </summary>
-    public class BeeFreeGame : Game
+    public sealed class BeeFreeGame : Game
     {
         GraphicsDeviceManager mGraphics;
 
@@ -55,8 +55,8 @@ namespace BeeFree2
 
             if (string.Equals(Environment.GetEnvironmentVariable("BEEFREE_ENVIRONMENT"), "DEVELOPMENT", StringComparison.OrdinalIgnoreCase))
             {
-                this.mScreenManager.AddScreen(new LoadGameScreen(), null);
-                // this.mScreenManager.AddScreen(new MainMenuScreen(), null);
+                // this.mScreenManager.AddScreen(new LoadGameScreen(), null);
+                this.mScreenManager.AddScreen(new MainMenuScreen(), null);
             }
             else
             {

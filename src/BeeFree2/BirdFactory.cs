@@ -1,19 +1,21 @@
-﻿using System;
-using BeeFree2.GameEntities;
+﻿using BeeFree2.GameEntities;
 using BeeFree2.GameEntities.Rendering;
 using BeeFree2.ContentData;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
 using BeeFree2.Config;
+using BeeFree2.EntityManagers;
 
 namespace BeeFree2
 {
     /// <summary>
     /// Factory class to create birds.
     /// </summary>
-    public class BirdFactory
+    public sealed class BirdFactory
     {
+        private readonly IGameplayController mGameplayController;
+
         /// <summary>
         /// Gets the content manager used by the factory.
         /// </summary>
@@ -26,23 +28,16 @@ namespace BeeFree2
         /// </summary>
         private BirdTemplateCollection BirdTemplates { get; set; }
 
-        private Action<BulletEntity> BulletFired { get; set; }
-
-        /// <summary>
-        /// Gets or sets the BeeEntity which is used for targeting purposes.
-        /// </summary>
-        private BeeEntity Bee { get; set; }
-
         /// <summary>
         /// Creates a new bird factory used to create bird entities.
         /// </summary>
         /// <param name="manager"></param>
-        public BirdFactory(Game g, Action<BulletEntity> bulletFired, BeeEntity bee)
+        public BirdFactory(IGameplayController gameplayController)
         {
-            this.ContentManager = g.Content;
-            this.ConfigurationManager = g.Services.GetService<ConfigurationManager>();
-            this.BulletFired = bulletFired;
-            this.Bee = bee;
+            this.mGameplayController = gameplayController;
+
+            this.ContentManager = gameplayController.Game.Content;
+            this.ConfigurationManager = gameplayController.Game.Services.GetService<ConfigurationManager>();
         }
 
         private Texture2D TextureBody { get; set; }
