@@ -1,5 +1,6 @@
 ﻿namespace BeeFree2
 {
+
     public static class AssetNames
     {
         public static class Sprites
@@ -11,6 +12,11 @@
 
             public const string Perfect = $"{sPrefix}Perfect";
             public const string Flawless = $"{sPrefix}Flawless";
+        }
+
+        public static class Spritesheet
+        {
+            public const string Flat = "Complete_UI_Essential_Pack_Free/01_Flat_Theme/Spritesheets/Spritesheet_UI_Flat";
         }
 
         public static class Fonts

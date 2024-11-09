@@ -34,12 +34,12 @@ namespace BeeFree2.GameScreens
 
             var lFont = this.ScreenManager.Game.Content.Load<SpriteFont>(AssetNames.Fonts.Standard_14);
 
-            this.mMenuButton_ReturnToMenu = new MenuButton("Back", lFont);
+            this.mMenuButton_ReturnToMenu = new MenuButton(this.ScreenManager.Game.Content, "Back", lFont);
             this.mMenuButton_ReturnToMenu.HorizontalAlignment = HorizontalAlignment.Left;
-            this.mMenuButton_ReturnToMenu.Margin = new Thickness(5);
+            this.mMenuButton_ReturnToMenu.Margin = new ThicknessF(5);
 
-            this.mMenuButton_NextPage = new MenuButton("Next", lFont);
-            this.mMenuButton_PreviousPage = new MenuButton("Previous", lFont);
+            this.mMenuButton_NextPage = new MenuButton(this.ScreenManager.Game.Content, "Next", lFont);
+            this.mMenuButton_PreviousPage = new MenuButton(this.ScreenManager.Game.Content, "Previous", lFont);
 
             this.mTextBlock_CurrentPage = new TextBlock("Page 1", lFont);
             this.mTextBlock_CurrentPage.HorizontalAlignment = HorizontalAlignment.Center;
@@ -64,7 +64,7 @@ namespace BeeFree2.GameScreens
             lHeaderTextBlock.HorizontalAlignment = HorizontalAlignment.Center;
 
             var lCentralPanel = new VerticalStackPanel();
-            lCentralPanel.Margin = new Thickness(40, 40);
+            lCentralPanel.Margin = new ThicknessF(40, 40);
             lCentralPanel.Add(lHeaderTextBlock);
             lCentralPanel.Add(lNavigationPanel);
             lCentralPanel.Add(this.mPanel_PlayerButtons);
@@ -185,8 +185,8 @@ namespace BeeFree2.GameScreens
 
                 this.mButton = new Button();
                 this.mButton.BackgroundColor = new Color(1, 1, 1, 0.75f);
-                this.mButton.Padding = new Thickness(5);
-                this.mButton.Margin = new Thickness(5);
+                this.mButton.Padding = new ThicknessF(5);
+                this.mButton.Margin = new ThicknessF(5);
                 this.mButton.Add(lButtonPanel);
 
                 this.Add(this.mButton);

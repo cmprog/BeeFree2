@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace BeeFree2.Controls
 {
@@ -57,9 +58,9 @@ namespace BeeFree2.Controls
 
         bool IsMouseOver { get; }
 
-        Thickness Padding { get; set; }
+        ThicknessF Padding { get; set; }
 
-        Thickness Margin { get; set; }
+        ThicknessF Margin { get; set; }
 
         VerticalAlignment VerticalAlignment { get; set; }
 
@@ -79,11 +80,15 @@ namespace BeeFree2.Controls
 
         RectangleF ContentBounds { get; }
 
-        Thickness BorderThickness { get; set; }
+        ThicknessF BorderThickness { get; set; }
 
         Color BorderColor { get; set; }
 
         Color BackgroundColor { get; set; }
+
+        BoxScale BackgroundTextureScale { get; set; }
+
+        Texture2D BackgroundTexture { get; set; }
 
         /// <summary>
         /// Represents the bounding visible range of the component. If the component

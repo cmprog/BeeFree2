@@ -12,12 +12,12 @@ namespace BeeFree2.GameEntities
             var lTextBlock_Bee = new TextBlock("Bee", contentManager.Load<SpriteFont>(AssetNames.Fonts.Logo_96));
             lTextBlock_Bee.HorizontalAlignment = HorizontalAlignment.Left;
             lTextBlock_Bee.VerticalAlignment = VerticalAlignment.Top;
-            lTextBlock_Bee.Margin = new Thickness(50, 0, 0, 0);
+            lTextBlock_Bee.Margin = new ThicknessF(50, 0, 0, 0);
 
             var lTextBlock_Free = new TextBlock("Free", contentManager.Load<SpriteFont>(AssetNames.Fonts.Logo_96));
             lTextBlock_Free.HorizontalAlignment = HorizontalAlignment.Left;
             lTextBlock_Free.VerticalAlignment = VerticalAlignment.Top;
-            lTextBlock_Free.Margin = new Thickness(0, 100, 0, 0);
+            lTextBlock_Free.Margin = new ThicknessF(0, 100, 0, 0);
 
             var lTextBlock_2 = new TextBlock("2", contentManager.Load<SpriteFont>(AssetNames.Fonts.Logo_128));            
 

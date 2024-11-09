@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace BeeFree2.Controls
 {
@@ -76,9 +77,9 @@ namespace BeeFree2.Controls
             set => this.Y = value - this.ActualHeight;
         }
 
-        public Thickness Margin { get; set; }
+        public ThicknessF Margin { get; set; }
 
-        public Thickness Padding { get; set; }
+        public ThicknessF Padding { get; set; }
 
         public VerticalAlignment VerticalAlignment { get; set; } = VerticalAlignment.Stretch;
 
@@ -139,7 +140,11 @@ namespace BeeFree2.Controls
 
         public Color BackgroundColor { get; set; }
 
-        public Thickness BorderThickness { get; set; }
+        public BoxScale BackgroundTextureScale { get; set; }
+
+        public Texture2D BackgroundTexture { get; set; }
+
+        public ThicknessF BorderThickness { get; set; }
 
         public IGraphicsContainer Parent { get; set; }
 
@@ -210,6 +215,20 @@ namespace BeeFree2.Controls
             if (this.BackgroundColor != Color.Transparent)
             {
                 ui.FillRectangle(this.BorderBounds, this.BackgroundColor);
+            }
+
+            if (this.BackgroundTexture != null)
+            {
+                if (this.BackgroundTextureScale == null)
+                {
+                    // Draw the texture without scaling
+                    ui.SpriteBatch.Draw(this.BackgroundTexture, this.BorderBounds.Position, null, Color.White, 0, Vector2.Zero, Vector2.One, SpriteEffects.None, 0);
+                }
+                else
+                {
+                    // Draw the texture with the scale
+                    this.BackgroundTextureScale.Draw(ui.SpriteBatch, this.BackgroundTexture, this.BorderBounds);
+                }
             }
 
             if (!this.BorderThickness.IsEmpty && (this.BorderColor != Color.Transparent))
