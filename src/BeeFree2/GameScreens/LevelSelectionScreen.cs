@@ -46,11 +46,9 @@ namespace BeeFree2.GameScreens
                 {
                     var lLevelIndex = (lRowIndex * 5) + lColumnIndex;
                     
-                    var lButton = new LevelButton();
+                    var lButton = new LevelButton(this.ScreenManager.Game.Content);
                     lButton.LevelIndex = lLevelIndex;
-                    lButton.BorderThickness = new Thickness(2);
-                    lButton.BorderColor = Color.Black;
-                    lButton.Margin = new Thickness(5);
+                    lButton.Margin = new ThicknessF(5);
                     lButton.Width = 75;
                     lButton.Height = 75;
 
@@ -82,13 +80,13 @@ namespace BeeFree2.GameScreens
             lTopPanel.Add(lUniformGrid, Dock.Left);
             lTopPanel.Add(lInfoPanel);
 
-            this.mMenuButton_Back = new MenuButton("Back", lStandardFont);
-            this.mMenuButton_Back.Margin = new Thickness(10);
+            this.mMenuButton_Back = new MenuButton(this.ScreenManager.Game.Content, "Back", lStandardFont);
+            this.mMenuButton_Back.Margin = new ThicknessF(10);
             this.mMenuButton_Back.Width = 150;
             this.mMenuButton_Back.Height = 50;
 
-            this.mMenuButton_Shop = new MenuButton("Shop", lStandardFont);
-            this.mMenuButton_Shop.Margin = new Thickness(10);
+            this.mMenuButton_Shop = new MenuButton(this.ScreenManager.Game.Content, "Shop", lStandardFont);
+            this.mMenuButton_Shop.Margin = new ThicknessF(10);
             this.mMenuButton_Shop.Width = 150;
             this.mMenuButton_Shop.Height = 50;
 
@@ -96,8 +94,8 @@ namespace BeeFree2.GameScreens
             lButtonPanel.Add(this.mMenuButton_Back);
             lButtonPanel.Add(this.mMenuButton_Shop);
 
-            this.mMenuButton_Endless = new MenuButton("Endless", lStandardFont);
-            this.mMenuButton_Endless.Margin = new Thickness(10);
+            this.mMenuButton_Endless = new MenuButton(this.ScreenManager.Game.Content, "Endless", lStandardFont);
+            this.mMenuButton_Endless.Margin = new ThicknessF(10);
             this.mMenuButton_Endless.HorizontalAlignment = HorizontalAlignment.Right;
             this.mMenuButton_Endless.Width = 150;
             this.mMenuButton_Endless.Height = 50;

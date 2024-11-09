@@ -165,7 +165,7 @@ namespace BeeFree2.Controls
             return lTexture;
         }
 
-        public void DrawRectangle(RectangleF rect, Color color, Thickness thickness)
+        public void DrawRectangle(RectangleF rect, Color color, ThicknessF thickness)
         {
             var lTopLeft = rect.TopLeft;
 

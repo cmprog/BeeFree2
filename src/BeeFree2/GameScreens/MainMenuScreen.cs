@@ -47,10 +47,11 @@ namespace BeeFree2.GameScreens
             this.mTextBlock_MenuDescription.HorizontalAlignment = HorizontalAlignment.Center;
 
             var lMenuDescriptionBorder = new Border();
-            lMenuDescriptionBorder.BackgroundColor = new Color(1, 1, 1, 0.75f);
+            lMenuDescriptionBorder.BackgroundTexture = lContent.Load<Texture2D>(AssetNames.Spritesheet.Flat);
+            lMenuDescriptionBorder.BackgroundTextureScale = Spritesheets.Flat.InfoBox;
             lMenuDescriptionBorder.Width = 400;
             lMenuDescriptionBorder.Height = 50;
-            lMenuDescriptionBorder.Margin = new Thickness(10);
+            lMenuDescriptionBorder.Margin = new ThicknessF(10);
             lMenuDescriptionBorder.Add(this.mTextBlock_MenuDescription);
 
             var lStackPanel = new VerticalStackPanel();
@@ -70,9 +71,9 @@ namespace BeeFree2.GameScreens
 
         private MenuButton CreateMenuButton(string text, SpriteFont standardFont)
         {
-            var lMenuButton = new MenuButton(text, standardFont);
+            var lMenuButton = new MenuButton(this.ScreenManager.Game.Content, text, standardFont);            
             lMenuButton.HorizontalAlignment = HorizontalAlignment.Center;
-            lMenuButton.Margin = new Thickness(0, 5);
+            lMenuButton.Margin = new ThicknessF(0, 5);
             lMenuButton.Width = 200;
             lMenuButton.Height = 60;
             return lMenuButton;

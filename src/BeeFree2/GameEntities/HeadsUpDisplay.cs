@@ -38,11 +38,12 @@ namespace BeeFree2.GameEntities
 
             this.mGraphic_HealthBar = new Border();
             this.mGraphic_HealthBar.Height = 20;
-            this.mGraphic_HealthBar.VerticalAlignment = VerticalAlignment.Center;
+            this.mGraphic_HealthBar.VerticalAlignment = VerticalAlignment.Center;            
+            this.mGraphic_HealthBar.BackgroundTexture = contentManager.Load<Texture2D>(AssetNames.Spritesheet.Flat);
+            this.mGraphic_HealthBar.BackgroundTextureScale = Spritesheets.Flat.GuageContainer_Blue;
+            this.mGraphic_HealthBar.Padding = Spritesheets.Flat.GuageContainer_Blue.CornerThickness;
+            this.mGraphic_HealthBar.Margin = new ThicknessF(5, 0);
             this.mGraphic_HealthBar.Add(this.mGraphic_HealthValue);
-            this.mGraphic_HealthBar.BorderColor = Color.DarkRed;
-            this.mGraphic_HealthBar.BorderThickness = new Thickness(1);
-            this.mGraphic_HealthBar.Margin = new Thickness(5, 0);
 
             this.mTextBlock_CurrentHealth = new TextBlock("1 / 1", lFont);
 
@@ -67,17 +68,16 @@ namespace BeeFree2.GameEntities
             this.mTextBlock_HoneycombCollected.Font = lFont;
 
             var lStatsPanel = new VerticalStackPanel();
-            lStatsPanel.Margin = new Thickness(5);
+            lStatsPanel.Margin = new ThicknessF(5);
             lStatsPanel.Add(this.mTextBlock_BirdsKilled);
             lStatsPanel.Add(this.mTextBlock_HoneycombCollected);
 
             var lLevelInfoPanel = new VerticalStackPanel();
-            lStatsPanel.Margin = new Thickness(5);
+            lStatsPanel.Margin = new ThicknessF(5);
             lLevelInfoPanel.Add(this.mTextBlock_LevelName);
             lLevelInfoPanel.Add(this.mTextBlock_RemainingSeconds);
 
             var lHudPanel = new DockPanel();
-            lHudPanel.Tag = "DEBUG";
             lHudPanel.VerticalAlignment = VerticalAlignment.Top;
             lHudPanel.HorizontalAlignment = HorizontalAlignment.Stretch;
             lHudPanel.Add(lLevelInfoPanel, Dock.Right);

@@ -1,12 +1,12 @@
 ﻿namespace BeeFree2.Controls
 {
-    public struct Thickness
+    public struct ThicknessF
     {
-        public Thickness()
+        public ThicknessF()
         {
 
         }
-        public Thickness(float v)
+        public ThicknessF(float v)
         {
             this.Left = v;
             this.Top = v;
@@ -14,7 +14,7 @@
             this.Bottom = v;
         }
 
-        public Thickness(float horizontal, float vertical)
+        public ThicknessF(float horizontal, float vertical)
         {
             this.Left = horizontal;
             this.Top = vertical;
@@ -22,7 +22,7 @@
             this.Bottom = vertical;
         }
 
-        public Thickness(float left, float top, float right, float bottom)
+        public ThicknessF(float left, float top, float right, float bottom)
         {
             this.Left = left;
             this.Top = top;

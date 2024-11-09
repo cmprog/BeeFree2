@@ -1,5 +1,6 @@
 ﻿using BeeFree2.Controls;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace BeeFree2.GameEntities
@@ -8,41 +9,37 @@ namespace BeeFree2.GameEntities
     {
         private readonly Button mButton;
         private readonly TextBlock mTextBlock;
-        private readonly Border mBorder;
 
-        private readonly DockPanel mButtonPanel;
+        private readonly BoxScale mDisabledScale;
+        private readonly BoxScale mActiveScale;
+        private readonly BoxScale mDefaultScale;
 
         public MenuButton()
         {
             this.mTextBlock = new TextBlock();
-            this.mTextBlock.HorizontalAlignment = HorizontalAlignment.Left;
+            this.mTextBlock.HorizontalAlignment = HorizontalAlignment.Center;
             this.mTextBlock.VerticalAlignment = VerticalAlignment.Center;
             this.mTextBlock.ForeColor = Color.Black;
-            this.mTextBlock.Margin = new Thickness(5, 0, 0, 0);
 
-            this.mBorder = new Border();
-
-            this.mButtonPanel = new DockPanel();
-            this.mButtonPanel.Add(this.mBorder, Dock.Left);
-            this.mButtonPanel.Add(this.mTextBlock);
-
-            this.mButton = new Button(this.mButtonPanel);
-            this.mButton.BorderThickness = new Thickness(5);
+            this.mButton = new Button(this.mTextBlock);
             this.mButton.HorizontalAlignment = HorizontalAlignment.Stretch;
             this.mButton.VerticalAlignment = VerticalAlignment.Stretch;
-            this.mButton.BorderColor = Color.Black;
 
             this.UpdateStyle();
 
             this.Add(this.mButton);
         }
 
-        public MenuButton(string text, SpriteFont font)
+        public MenuButton(ContentManager content, string text, SpriteFont font)
             : this()
         {
-
             this.Text = text;
             this.Font = font;
+
+            this.mButton.BackgroundTexture = content.Load<Texture2D>(AssetNames.Spritesheet.Flat);
+
+            this.mDefaultScale = Spritesheets.Flat.Button_Gold;
+            this.mActiveScale = Spritesheets.Flat.Button_Gold_Active;
         }
 
         public string Text
@@ -66,19 +63,14 @@ namespace BeeFree2.GameEntities
         }
 
         private void UpdateStyle()
-        {
-            this.mBorder.Width = this.mBorder.ActualHeight;
-            this.mButtonPanel.MinWidth = this.mBorder.DesiredWidth + this.mTextBlock.DesiredWidth;
-
+        {                                    
             if (this.mButton.IsMouseOver)
             {
-                this.mButton.BackgroundColor = Color.White;
-                this.mBorder.BackgroundColor = Color.DarkGoldenrod;
+                this.mButton.BackgroundTextureScale = this.mActiveScale;
             }
             else
             {
-                this.mButton.BackgroundColor = Color.Gold;
-                this.mBorder.BackgroundColor = Color.Transparent;
+                this.mButton.BackgroundTextureScale = this.mDefaultScale;
             }
         }
     }
