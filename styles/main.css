@@ -23,6 +23,16 @@ li {
   cursor: pointer; 
 }
 
+@supports (-webkit-touch-callout: none) {
+  /* CSS specific to iOS devices */ 
+
+  /* Janky fix for buttons not supporting click events on iOS. */
+  button {
+    cursor: pointer;
+  }
+}
+
+
 .menu-container
 {
     position: absolute;
