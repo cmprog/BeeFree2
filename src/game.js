@@ -3,7 +3,7 @@
 import { getWorldSize } from "./util.js";
 import { Wall } from "./wall.js"
 import { CloudGenerator } from "./cloud.js";
-import { initializeSpriteAtlas } from "./sprites.js";
+import { initializeSpriteAtlas, spriteAtlas } from "./sprites.js";
 import { LEVEL_SELECTION_MENU, MAIN_MENU } from "./menus.js";
 import { currentLevel } from "./levels.js";
 import { BIRD_TEMPLATES } from "./birds.js";
@@ -87,6 +87,7 @@ const imagesSources = [
     'img/bee.png',
     'img/clouds.png',
     'img/bird.png',
+    'img/misc.png',
 ]
 
 engineInit(gameInit, gameUpdate, gameUpdatePost, gameRender, gameRenderPost, imagesSources);
