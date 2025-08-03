@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<head>
+  <title>BeeFree</title>
+  <meta charset=utf-8>
+  <meta name=apple-mobile-web-app-capable content=yes>
+  <meta name=mobile-web-app-capable content=yes>
+  <link rel="icon" type="image/png" href="img/prepared/bee1.png" />  
+  <link rel="stylesheet" href="styles/main.css">
+</head>
+<body>
+
+  <!-- setup html menu system -->
+  <div class="menu-container">
+    
+    <div id="main-menu" class="menu menu-closed">
+      <h1>Bee Free</h1>
+      <button class="start">Start</button>
+    </div>
+
+    <div id="level-selection-menu" class="menu menu-closed">
+      <h1>Level Selection</h1>      
+      <ol class="levels"></ol>
+    </div>
+
+  </div>
+
+  <script src="dist/littlejs.js" charset="utf-8"></script>
+
+  <script type="module" src="src/game.js" charset="utf-8"></script>
+
+</html>
