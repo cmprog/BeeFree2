@@ -18,8 +18,12 @@ export function initializeSpriteAtlas() {
             head: new TileInfo(vec2(0, 0), vec2(18, 21), 2),
             face: new TileInfo(vec2(23, 2), vec2(13, 13), 2),
             eyelids: new TileInfo(vec2(24, 18), vec2(11, 4), 2),
-            legs: new TileInfo(vec2(39, 0), vec2(29, 19), 2),
-            
-        }
+            legs: new TileInfo(vec2(39, 0), vec2(29, 19), 2),            
+        },
+
+        ammo: {
+            bee: new TileInfo(vec2(0, 0), vec2(15, 12), 3),
+            bird: new TileInfo(vec2(17, 1), vec2(15, 10), 3),
+        },
     }
 }

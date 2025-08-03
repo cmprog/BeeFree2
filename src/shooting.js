@@ -1,17 +1,14 @@
-import { Bullet } from "./bullet.js";
+import { Bee } from "./bee.js";
+import { BeeBullet, BirdBullet } from "./bullet.js";
 
 export class ShootingBehavior {
-    constructor() {        
-        this.bulletTileInfo = undefined
-    }
 
     update() {
         
     }
 }
 
-export class PassiveShooting extends ShootingBehavior {
-    
+export class PassiveShooting extends ShootingBehavior {    
 }
 
 export class SingleBulletShooting extends ShootingBehavior {
@@ -27,7 +24,13 @@ export class SingleBulletShooting extends ShootingBehavior {
 
     fire(shooter) {
         if (!this.cooldownTimer.isSet() || this.cooldownTimer.elapsed()) {
-            new Bullet(shooter.pos, this.velocity);
+
+            if (shooter instanceof Bee) {
+                new BeeBullet(shooter.pos, this.velocity);
+            } else {
+                new BirdBullet(shooter.pos, this.velocity);
+            }
+
             this.cooldownTimer.set(this.rate);            
         }
     }
