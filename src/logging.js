@@ -30,7 +30,7 @@ class Logger {
         this.scrollElement = document.querySelector('.log-container > .content');
         
         this.consoleLoggingEnabled = false;
-        this.uiLoggingEnabled = true;
+        this.uiLoggingEnabled = (document.location.href.indexOf('localhost') >= 0);
 
         this.isEnabled = {};
         for (const level of LOG_LEVELS) {
