@@ -32,6 +32,12 @@ class Logger {
         this.consoleLoggingEnabled = false;
         this.uiLoggingEnabled = (document.location.href.indexOf('localhost') >= 0);
 
+        if (!this.uiLoggingEnabled) {
+            document.querySelector('.log-container').classList.add('hidden');
+        }
+
+        console.log(this.uiLoggingEnabled);
+
         this.isEnabled = {};
         for (const level of LOG_LEVELS) {
             this.isEnabled[level] = true;
@@ -49,6 +55,7 @@ class Logger {
     }
 
     logToUI(formattedTimestamp, level, message) {
+
         if (!this.uiLoggingEnabled) return;
 
         const timeElement = document.createElement('span');

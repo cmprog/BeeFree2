@@ -145,3 +145,7 @@ button {
   padding: var(--spacing-default);
   overflow: auto;
 }
+
+.hidden {
+  display: none;
+}
