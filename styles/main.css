@@ -42,6 +42,11 @@ li {
   margin: 0;
 }
 
+button {
+  /* Janky fix for buttons not supporting click events on iOS. */
+  cursor: pointer;
+}
+
 @supports (-webkit-touch-callout: none) {
   /* CSS specific to iOS devices */ 
 
