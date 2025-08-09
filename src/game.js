@@ -1,19 +1,22 @@
 'use strict';
 
 import { getWorldSize } from "./util.js";
-import { Wall } from "./wall.js"
 import { CloudGenerator } from "./cloud.js";
 import { initializeSpriteAtlas, spriteAtlas } from "./sprites.js";
 import { LEVEL_SELECTION_MENU, MAIN_MENU } from "./menus.js";
 import { currentLevel } from "./levels.js";
-import { logDebug, logInfo } from "./logging.js";
-import { Owl } from "./owl.js";
+import { logDebug, logError, logInfo } from "./logging.js";
 
 if (isTouchDevice) {
     logDebug("Touch device detected, initializing touch gamepad.");
     touchGamepadEnable = true;
     touchGamepadSize = 200;
 }
+
+// Write up some error handing to we can see it in our UI logger
+window.addEventListener('error', (errorMsg, url, lineNumber) => {
+    logError(errorMsg.error.stack);
+});
 
 ///////////////////////////////////////////////////////////////////////////////
 function gameInit() {
@@ -27,15 +30,6 @@ function gameInit() {
     new CloudGenerator()
 
     MAIN_MENU.open();
-
-    let worldSize = getWorldSize();
-    let halfWorldSize = worldSize.scale(0.5);
-
-    // create walls
-    new Wall(vec2(-halfWorldSize.x - 1, 0), vec2(1, worldSize.y * 2)) // left
-    new Wall(vec2(halfWorldSize.x + 1, 0), vec2(1, worldSize.y * 2)) // right
-    new Wall(vec2(0, halfWorldSize.y + 1), vec2(worldSize.x * 2, 1)) // top
-    new Wall(vec2(0, -halfWorldSize.y - 1), vec2(worldSize.x * 2, 1)) // bottom
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -59,6 +53,8 @@ function gameUpdatePost() {
 
     // called after physics and objects are updated
     // setup camera and prepare for render
+
+    // logDebug(`Solid object count: ${engineObjectsCollide.length}`);
 }
 
 ///////////////////////////////////////////////////////////////////////////////

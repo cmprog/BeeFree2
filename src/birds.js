@@ -1,3 +1,5 @@
+import { logDebug } from "./logging.js";
+import { EntityType } from './entities.js';
 import { FixedVelocityMovement, StaticMovement } from "./movement.js";
 import { PassiveShooting, SingleBulletShooting } from "./shooting.js";
 import { spriteAtlas } from "./sprites.js";
@@ -114,8 +116,9 @@ export class Bird extends EngineObject
     {
         super(pos, vec2(1, 1));
 
+        this.entityType = EntityType.BIRD;
+
         this.setCollision();
-        this.mass = 0;
 
         this.face = new BirdFace(pos, this);
         this.eyelids = new BirdEyelids(pos, this);
@@ -139,6 +142,23 @@ export class Bird extends EngineObject
     }
 
     render() {
+        // Disables the default rendering
+    }
 
+    applyDamage(amount) {
+        this.health = Math.max(0, this.health - amount);
+        if (!this.health) {
+            this.destroy();
+        }
+    }
+
+    collideWithObject(o) {
+
+        if (o.entityType == EntityType.BEE) {            
+            o.applyDamage(this.touchDamange);
+            this.destroy();
+        }
+
+        return false;
     }
 }
