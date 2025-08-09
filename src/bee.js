@@ -1,3 +1,4 @@
+import { logDebug } from "./logging.js";
 import { SingleBulletShooting } from "./shooting.js";
 import { spriteAtlas } from "./sprites.js";
 
@@ -25,22 +26,28 @@ export class Bee extends EngineObject
 
         if (isUsingGamepad) {
 
-            direction = gamepadStick(0);
-            holdingFire = gamepadIsDown(0);
+            direction = gamepadStick(0);            
+            holdingFire = gamepadIsDown(0) || gamepadIsDown(0);
             
         } else {
             
-            // Chase the mouse cursor
+            // Chase the mouse cursor, put some threshold around the length to prevent
+            // twitchiness around this object's center
             direction = mousePos.subtract(this.pos)
+            if (direction.length() < this.size.scale(0.4).length()) {
+                direction = vec2(0);
+            }
+
             holdingFire = keyIsDown('KeySpace') || mouseIsDown(0) || gamepadIsDown(0);
-            
         }
-        
-        if (direction.length() > this.size.scale(0.4).length()) {
+
+        if (direction.length()) {
             this.velocity = direction.normalize(this.speed);
         } else {
-            this.velocity = vec2(0, 0)
+            this.velocity = vec2(0);
         }
+        
+        
 
         if (holdingFire) {
             this.shooting.fire(this);

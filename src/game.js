@@ -12,6 +12,7 @@ import { Owl } from "./owl.js";
 if (isTouchDevice) {
     logDebug("Touch device detected, initializing touch gamepad.");
     touchGamepadEnable = true;
+    touchGamepadSize = 200;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -58,14 +59,6 @@ function gameUpdatePost() {
 
     // called after physics and objects are updated
     // setup camera and prepare for render
-
-    if (isUsingGamepad) {
-        for (let i = 0; i < 10; i ++) {
-            if (gamepadWasPressed(i)) {
-                logDebug(`Was Pressed ${i}: ${gamepadWasPressed(i)}`);
-            }            
-        }
-    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
