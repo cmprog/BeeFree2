@@ -65,7 +65,7 @@ class LevelSelectionMenu extends Menu {
             const levelButton = document.createElement('button');
             levelButton.innerText = levelDefinition.name;
             levelButton.classList.add('level');
-            levelButton.addEventListener('click', this.loadLevel.bind(this, levelDefinition));
+            registerClick(levelButton, this.loadLevel.bind(this, levelDefinition));
             
             const itemElement = document.createElement('li');
             itemElement.appendChild(levelButton);
