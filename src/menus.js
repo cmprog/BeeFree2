@@ -1,4 +1,5 @@
 import { currentLevel, LEVELS } from "./levels.js";
+import { logDebug, logInfo } from "./logging.js";
 
 export let MAIN_MENU;
 export let LEVEL_SELECTION_MENU;
@@ -44,6 +45,9 @@ class MainMenu extends Menu {
     }
 
     onStartButtonClicked() {
+
+        logDebug('Start Button Clicked');
+
         this.close();
 
         LEVEL_SELECTION_MENU.open();

@@ -6,12 +6,14 @@ import { CloudGenerator } from "./cloud.js";
 import { initializeSpriteAtlas, spriteAtlas } from "./sprites.js";
 import { LEVEL_SELECTION_MENU, MAIN_MENU } from "./menus.js";
 import { currentLevel } from "./levels.js";
-import { BIRD_TEMPLATES } from "./birds.js";
+import { logInfo } from "./logging.js";
 
 
 ///////////////////////////////////////////////////////////////////////////////
-function gameInit()
-{
+function gameInit() {
+
+    logInfo('Initializing game...');
+
     initializeSpriteAtlas();
 
     // called once after the engine starts up
