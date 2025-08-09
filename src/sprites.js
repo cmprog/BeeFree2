@@ -25,5 +25,11 @@ export function initializeSpriteAtlas() {
             bee: new TileInfo(vec2(0, 0), vec2(15, 12), 3),
             bird: new TileInfo(vec2(17, 1), vec2(15, 10), 3),
         },
+
+        owl: {
+            body: new TileInfo(vec2(0, 0), vec2(190, 200), 4),
+            frontWing: new TileInfo(vec2(189, 2), vec2(100, 110), 4),
+            backWing: new TileInfo(vec2(292, 11), vec2(85, 75), 4),
+        }
     }
 }

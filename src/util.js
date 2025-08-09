@@ -29,6 +29,6 @@ export function registerClick(element, handler) {
             handler(ev);
             ev.preventDefault();
         }
-        timeSinceTouchStart = undefined;
+        touchStartOn = undefined;
     });
 }

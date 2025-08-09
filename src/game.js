@@ -6,8 +6,13 @@ import { CloudGenerator } from "./cloud.js";
 import { initializeSpriteAtlas, spriteAtlas } from "./sprites.js";
 import { LEVEL_SELECTION_MENU, MAIN_MENU } from "./menus.js";
 import { currentLevel } from "./levels.js";
-import { logInfo } from "./logging.js";
+import { logDebug, logInfo } from "./logging.js";
+import { Owl } from "./owl.js";
 
+if (isTouchDevice) {
+    logDebug("Touch device detected, initializing touch gamepad.");
+    touchGamepadEnable = true;
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 function gameInit() {
@@ -16,26 +21,14 @@ function gameInit() {
 
     initializeSpriteAtlas();
 
-    // called once after the engine starts up
-
     setCanvasFixedSize(vec2(1280, 720)); // use a 720p fixed size canvas
 
-    // create bricks
-    // for(let x=2;  x<=levelSize.x-2; x+=2)
-    // for(let y=12; y<=levelSize.y-2; y+=1)
-    // {
-    //     const brick = new Brick(vec2(x,y), vec2(2,1)); // create a brick
-    //     brick.color = randColor(); // give brick a random color
-    // }
-
-    // new Paddle; // create player's paddle
-    // new Bee()
     new CloudGenerator()
 
     MAIN_MENU.open();
 
-    let worldSize = getWorldSize()
-    let halfWorldSize = worldSize.scale(0.5)
+    let worldSize = getWorldSize();
+    let halfWorldSize = worldSize.scale(0.5);
 
     // create walls
     new Wall(vec2(-halfWorldSize.x - 1, 0), vec2(1, worldSize.y * 2)) // left
@@ -45,8 +38,8 @@ function gameInit() {
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-function gameUpdate()
-{
+function gameUpdate() {
+
     if (currentLevel) {
 
         currentLevel.update();
@@ -55,14 +48,24 @@ function gameUpdate()
             LEVEL_SELECTION_MENU.open();
             currentLevel.destroy();
         }
+    } else {
+        touchGamepadEnable = false;
     }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-function gameUpdatePost()
-{
+function gameUpdatePost() {
+
     // called after physics and objects are updated
     // setup camera and prepare for render
+
+    if (isUsingGamepad) {
+        for (let i = 0; i < 10; i ++) {
+            if (gamepadWasPressed(i)) {
+                logDebug(`Was Pressed ${i}: ${gamepadWasPressed(i)}`);
+            }            
+        }
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -90,6 +93,7 @@ const imagesSources = [
     'img/clouds.png',
     'img/bird.png',
     'img/misc.png',
+    'img/owl.png',
 ]
 
 engineInit(gameInit, gameUpdate, gameUpdatePost, gameRender, gameRenderPost, imagesSources);

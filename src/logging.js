@@ -1,9 +1,9 @@
 // Just defining something to use like an enum
 const LogLevel = Object.freeze({
-    DEBUG: { displayText: "DEBUG", className: "debug", },
-    INFO: { displayText: "INFO", className: "info", },
-    WARN: { displayText: "WARN", className: "warning", },
-    ERROR: {  displayText: "ERROR", className: "error", }
+    DEBUG: { displayText: "DEBUG", className: "debug", browserLog: console.debug.bind(console), },
+    INFO: { displayText: "INFO", className: "info", browserLog: console.info.bind(console), },
+    WARN: { displayText: "WARN", className: "warning", browserLog: console.warn.bind(console), },
+    ERROR: {  displayText: "ERROR", className: "error", browserLog: console.error.bind(console), }
 });
 
 const LOG_LEVELS = Object.keys(LogLevel).map(x => LogLevel[x]);
@@ -26,6 +26,15 @@ function formatTimestamp(timestamp) {
 class Logger {
 
     constructor() {
+
+        this.browseConsoleLog = console.log.bind(console);
+        console.log = this.interceptBrowserConsole.bind(this, LogLevel.INFO);
+        console.info = this.interceptBrowserConsole.bind(this, LogLevel.INFO);
+        console.debug = this.interceptBrowserConsole.bind(this, LogLevel.DEBUG);
+        console.warn = this.interceptBrowserConsole.bind(this, LogLevel.WARN);
+        console.error = this.interceptBrowserConsole.bind(this, LogLevel.ERROR);
+        console.assert = this.interceptBrowserAssert.bind(this);
+
         this.listElement = document.querySelector('.log-messages');
         this.scrollElement = document.querySelector('.log-container > .content');
         
@@ -35,8 +44,6 @@ class Logger {
         if (!this.uiLoggingEnabled) {
             document.querySelector('.log-container').classList.add('hidden');
         }
-
-        console.log(this.uiLoggingEnabled);
 
         this.isEnabled = {};
         for (const level of LOG_LEVELS) {
@@ -82,8 +89,18 @@ class Logger {
     }
 
     logToConsole(formattedTimestamp, level, message) {
-        if (!this.consoleLoggingEnabled) return;
-        console.log(`[${formattedTimestamp}] [${level.displayText}] ${message}`);
+        if (!this.consoleLoggingEnabled) return;        
+        level.browserLog(`[${formattedTimestamp}] [${level.displayText}] ${message}`);
+    }
+
+    interceptBrowserConsole(level, ...args) {
+        this.logToUI(formatTimestamp(new Date()), level, ...args);
+        level.browserLog(...args);
+    }
+
+    interceptBrowserAssert(condition, ...args) {
+        if (condition) return;        
+        this.log(LogLevel.ERROR, "Assertion failed: " + args);
     }
 }
 

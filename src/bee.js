@@ -11,7 +11,7 @@ export class Bee extends EngineObject
 
         this.setCollision(); // make object collide
         this.mass = 0; 
-
+        
         this.shooting = new SingleBulletShooting(1, vec2(1, 0), 1);
 
         this.speed = 0.1        
@@ -20,17 +20,29 @@ export class Bee extends EngineObject
     update() {
         super.update();
         
-        // Chase the mouse cursor
-        let direction = mousePos.subtract(this.pos)
+        let direction;
+        let holdingFire = false;
+
+        if (isUsingGamepad) {
+
+            direction = gamepadStick(0);
+            holdingFire = gamepadIsDown(0);
+            
+        } else {
+            
+            // Chase the mouse cursor
+            direction = mousePos.subtract(this.pos)
+            holdingFire = keyIsDown('KeySpace') || mouseIsDown(0) || gamepadIsDown(0);
+            
+        }
+        
         if (direction.length() > this.size.scale(0.4).length()) {
             this.velocity = direction.normalize(this.speed);
         } else {
             this.velocity = vec2(0, 0)
         }
 
-        this.holdingFire = keyIsDown('KeySpace') || mouseIsDown(0) || gamepadIsDown(0);
-
-        if (this.holdingFire) {
+        if (holdingFire) {
             this.shooting.fire(this);
         }
     }

@@ -57,7 +57,7 @@ class SingleEnemySpawner extends Spawner {
 
     update() {
         if (this.timer.elapsed()) {
-            console.log('spawning...')
+            console.log(`Spawning bird '${this.template.name}' at ${this.pos}.`)
             const bird = this.template.create(this.pos)
             this.spawnedObjects.push(bird);
             this.timer.unset();
