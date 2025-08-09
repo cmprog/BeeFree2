@@ -42,6 +42,14 @@ class MainMenu extends Menu {
 
         const startButton = this.element.querySelector('button.start');
         startButton.addEventListener('click', this.onStartButtonClicked.bind(this));
+
+        const touchEvents = ['touchstart', 'touchend', 'touchcancel', 'touchmove'];
+        for (const eventName of touchEvents) {
+            startButton.addEventListener(eventName, () => logDebug(`StartButton.${eventName}`));
+        }
+
+        const computedStyle = getComputedStyle(startButton);
+        logDebug(`Start button cursor = ${computedStyle.cursor}`);
     }
 
     onStartButtonClicked() {
