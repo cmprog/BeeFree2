@@ -1,9 +1,9 @@
 import { Bee } from "./bee.js";
-import { BIRD_TEMPLATES } from "./birds.js";
+import { BIRD_TEMPLATES, BirdTemplate } from "./birds.js";
 import { logInfo } from "./logging.js";
 import { Owl } from "./owl.js";
 import { currentPlayer } from "./player.js";
-import { SpawnDefinition, SpawnerCollection } from "./spawning.js";
+import { FormationDefinition, SpawnDefinition, SpawnerCollection, FormationCreationOptions } from "./spawning.js";
 import { getWorldSize } from "./util.js";
 
 export let currentLevel;
@@ -15,17 +15,41 @@ class LevelDefinition {
         this.name = name;
         this.spawns = [];
 
-        this.totalLevelDuration = 0;
+        this.totalDuration = 0;
     }
 
-    withSpawn(type, deltaTime, pos) {
-        this.spawns.push(new SpawnDefinition(type, this.totalLevelDuration + deltaTime, pos));
-        this.totalLevelDuration += deltaTime;
+    /**
+     * @param {BirdTemplate} template
+     * @param {Number} delay
+     * @param {Vector2} pos
+     */
+    withSpawn(template, delay, pos) {
+        const time = this.totalDuration + delay;
+        const definition = new SpawnDefinition(template, time, pos);
+        this.spawns.push(definition);
+        this.totalDuration += delay;
         return this;
     }
 
+    /**
+     * @param {FormationDefinition} formation
+     * @param {FormationCreationOptions} [options]
+     */
+    withFormation(formation, options) {
+        let previousSpawnTime = 0;
+        for (const spawn of formation.createSpawns(options)) {
+            const delay = spawn.time - previousSpawnTime;
+            this.withSpawn(spawn.template, delay, spawn.pos);
+            previousSpawnTime = spawn.time;
+        }
+        return this;
+    }
+
+    /**
+     * @param {Number} duration
+     */
     withDelay(duration) {
-        this.totalLevelDuration += duration;
+        this.totalDuration += duration;
         return this;
     }
 
@@ -83,7 +107,7 @@ class StandardLevel extends Level {
 
         this.id = levelDefinition.id;
         this.levelDefinition = levelDefinition;        
-        this.levelTimer = new Timer(this.levelDefinition.totalLevelDuration);
+        this.levelTimer = new Timer(this.levelDefinition.totalDuration);
         this.spawner = levelDefinition.createSpawner();
 
         this.spawnedOwls = [];
@@ -122,13 +146,73 @@ class StandardLevel extends Level {
     }
 }
 
-export const LEVELS = [
-    new LevelDefinition(0, 'Level 1')
-        .withSpawn(BIRD_TEMPLATES.fred, 2, vec2(20, 9))
+const FORMATIONS = {
+
+    fredBackSlash: new FormationDefinition('Fred Back Slash')    
+        .withSpawn(BIRD_TEMPLATES.fred, 0, vec2(20, 9))
         .withSpawn(BIRD_TEMPLATES.fred, 1, vec2(20, 6))
         .withSpawn(BIRD_TEMPLATES.fred, 1, vec2(20, 3))
         .withSpawn(BIRD_TEMPLATES.fred, 1, vec2(20, -3))
         .withSpawn(BIRD_TEMPLATES.fred, 1, vec2(20, -6))
-        .withSpawn(BIRD_TEMPLATES.fred, 1, vec2(20, -9))
+        .withSpawn(BIRD_TEMPLATES.fred, 1, vec2(20, -9)),
+
+    fredForwardSlash: new FormationDefinition('Fred Forward Slash') 
+        .withSpawn(BIRD_TEMPLATES.fred, 0, vec2(20, -9))
+        .withSpawn(BIRD_TEMPLATES.fred, 1, vec2(20, -6))
+        .withSpawn(BIRD_TEMPLATES.fred, 1, vec2(20, -3))
+        .withSpawn(BIRD_TEMPLATES.fred, 1, vec2(20, 3))
+        .withSpawn(BIRD_TEMPLATES.fred, 1, vec2(20, 6))
+        .withSpawn(BIRD_TEMPLATES.fred, 1, vec2(20, 7)),
+
+    diamond: new FormationDefinition('Diamond')
+        .withSpawn(BIRD_TEMPLATES.fred, 0.0, vec2(20, 0))
+        .withSpawn(BIRD_TEMPLATES.fred, 0.3, vec2(20, 5))
+        .withSpawn(BIRD_TEMPLATES.fred, 0.0, vec2(20, -5))
+        .withSpawn(BIRD_TEMPLATES.fred, 0.3, vec2(20, 0)),
+};
+
+export const LEVELS = [
+    new LevelDefinition(0, 'Level 1')
+        .withDelay(2)
+        .withFormation(FORMATIONS.fredBackSlash)
+        .withDelay(5),
+
+    new LevelDefinition(1, 'Level 2')
+        .withDelay(2)
+        .withFormation(FORMATIONS.fredBackSlash)
+        .withDelay(2)
+        .withFormation(FORMATIONS.fredForwardSlash)
+        .withDelay(2)
+        .withFormation(FORMATIONS.fredForwardSlash)
+        .withDelay(5),
+
+    new LevelDefinition(2, 'Level 3')
+        .withDelay(2)
+        .withFormation(FORMATIONS.diamond)
+        .withDelay(2)
+        .withFormation(FORMATIONS.diamond, new FormationCreationOptions()
+            .withPositionOffset(vec2(0, 5))
+        )
+        .withDelay(2)
+        .withFormation(FORMATIONS.diamond, new FormationCreationOptions()
+            .withPositionOffset(vec2(0, -5))
+        )
+        .withDelay(5),
+
+    new LevelDefinition(3, 'Level 4')
+        .withDelay(2)
+        .withSpawn(BIRD_TEMPLATES.fred, 0.0, vec2(20, 9))
+        .withSpawn(BIRD_TEMPLATES.fred, 0.0, vec2(20, -9))
+        .withDelay(0.3)
+        .withSpawn(BIRD_TEMPLATES.fred, 0.0, vec2(20, 7))
+        .withSpawn(BIRD_TEMPLATES.fred, 0.0, vec2(20, -7))
+        .withDelay(0.3)
+        .withSpawn(BIRD_TEMPLATES.bill, 0.0, vec2(20, 5))
+        .withSpawn(BIRD_TEMPLATES.bill, 0.0, vec2(20, -5))
+        .withDelay(0.3)
+        .withSpawn(BIRD_TEMPLATES.fred, 0.0, vec2(20, 3))
+        .withSpawn(BIRD_TEMPLATES.fred, 0.0, vec2(20, -3))
+        .withDelay(0.3)
+        .withSpawn(BIRD_TEMPLATES.bill, 0.0, vec2(20, 0))
         .withDelay(5),
 ]

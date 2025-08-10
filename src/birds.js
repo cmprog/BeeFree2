@@ -4,7 +4,7 @@ import { FixedVelocityMovement, StaticMovement } from "./movement.js";
 import { PassiveShooting, SingleBulletShooting } from "./shooting.js";
 import { spriteAtlas } from "./sprites.js";
 
-class BirdTemplate {
+export class BirdTemplate {
     constructor(name, description, health, touchDamange) {
         this.name = name;
         this.description = description;
@@ -38,6 +38,8 @@ class BirdTemplate {
     }
 }
 
+const STANDARD_BIRD_SPEED = 0.15;
+
 export const BIRD_TEMPLATES = {
 
     test: new BirdTemplate('Test', 'A test bird. Does not do anything.', 1, 1)
@@ -46,14 +48,24 @@ export const BIRD_TEMPLATES = {
         .withColors(RED, RED),
 
     fred: new BirdTemplate('Fred', 'A simple bird, simple movement and no shooting.', 1, 1)
-        .withMovement(new FixedVelocityMovement(vec2(-0.25, 0)))
+        .withMovement(new FixedVelocityMovement(vec2(-1, 0).normalize(STANDARD_BIRD_SPEED)))
         .withShooting(new PassiveShooting())
         .withColors(RED, RED),
 
-    bill: new BirdTemplate('Bill', '', 2, 2)
-        .withMovement(new FixedVelocityMovement(vec2(-0.25, 0)))
-        .withShooting(new SingleBulletShooting())
+    bill: new BirdTemplate('Bill', 'The most basic aggressive bird. Simple movement and shots forward.', 2, 2)
+        .withMovement(new FixedVelocityMovement(vec2(-1, 0).normalize(STANDARD_BIRD_SPEED)))
+        .withShooting(new SingleBulletShooting(3, vec2(-1, 0).normalize(3 * STANDARD_BIRD_SPEED), 1))
         .withColors(BLUE, BLUE),
+
+    thing1: new BirdTemplate('Thing 1', 'Twin to Thing 2 - this bird moves up and to the left while shooting.', 3, 4)
+        .withMovement(new FixedVelocityMovement(vec2(-1, 1).normalize(STANDARD_BIRD_SPEED)))
+        .withShooting(new SingleBulletShooting(4, vec2(-1, 0).normalize(3 * STANDARD_BIRD_SPEED), 0.9))
+        .withColors(BLUE, RED),
+
+    thing2: new BirdTemplate('Thing 2', 'The twin to Thing 1 - this bird moves down and to the left while shooting.', 3, 4)
+        .withMovement(new FixedVelocityMovement(vec2(-1, -1).normalize(STANDARD_BIRD_SPEED)))
+        .withShooting(new SingleBulletShooting(4, vec2(-1, 0).normalize(3 * STANDARD_BIRD_SPEED), 0.9))
+        .withColors(BLUE, RED),
 }
 
 const BASE_BIRD_SIZE = 1.5
@@ -135,7 +147,10 @@ export class Bird extends EngineObject
     }
     
     update() {
-        this.shooting.update(this);
+
+        // Birds always try shooting, the shooting behavior will
+        // rate limit based on the fire rate of the bird.
+        this.shooting.fire(this);
         this.movement.update(this);
 
         super.update();

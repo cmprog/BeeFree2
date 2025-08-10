@@ -1,9 +1,10 @@
 import { Bee } from "./bee.js";
 import { BeeBullet, BirdBullet } from "./bullet.js";
+import { EntityType } from "./entities.js";
 
 export class ShootingBehavior {
 
-    update() {
+    fire() {
         
     }
 }
@@ -25,9 +26,9 @@ export class SingleBulletShooting extends ShootingBehavior {
     fire(shooter) {
         if (!this.cooldownTimer.isSet() || this.cooldownTimer.elapsed()) {
 
-            if (shooter instanceof Bee) {
+            if (shooter.entityType == EntityType.BEE) {                
                 new BeeBullet(shooter.pos, this.velocity);
-            } else {
+            } else if (shooter.entityType == EntityType.BIRD) {
                 new BirdBullet(shooter.pos, this.velocity);
             }
 
