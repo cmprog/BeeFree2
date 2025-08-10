@@ -1,0 +1,9 @@
+@import url('./variables.css');
+@import url('./menus-common.css');
+
+#level-selection-menu .level {
+  background-color: white;
+  border: 1px solid black;
+  width: 100px;
+  height: 100px;
+}

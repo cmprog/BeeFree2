@@ -1,0 +1,25 @@
+:root {
+  --color-primary: black;
+  --color-warning: darkgoldenrod;
+  --color-critical: darkred;
+  --color-muted: gray;
+  
+  --spacing-default: 5px;  
+  --spacing-default-horizontal: 0 var(--spacing-default);
+  --spacing-default-vertical: var(--spacing-default) 0;
+  --spacing-default-top: var(--spacing-default) 0 0 0;
+  --spacing-default-right: 0 var(--spacing-default) 0 0;
+  --spacing-default-bottom: 0 0 var(--spacing-default) 0;
+  --spacing-default-left: 0 0 0 var(--spacing-default);
+
+  --font-size-xlarge: 1.15em;
+  --font-size-large: 1.30em;
+  --font-size-default: 1.00em;
+  --font-size-small: 0.85em;
+  --font-size-xsmall: 0.70em;
+}
+
+@font-face {
+  font-family: 'Bistroblock';
+  src: url('../fonts/dokdo/Dokdo-Regular.ttf');
+}

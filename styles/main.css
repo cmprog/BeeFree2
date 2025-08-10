@@ -1,149 +1,17 @@
-:root {
-  --color-primary: black;
-  --color-warning: darkgoldenrod;
-  --color-critical: darkred;
-  --color-muted: gray;
-  
-  --spacing-default: 5px;  
-  --spacing-default-horizontal: 0 var(--spacing-default);
-  --spacing-default-vertical: var(--spacing-default) 0;
-  --spacing-default-top: var(--spacing-default) 0 0 0;
-  --spacing-default-right: 0 var(--spacing-default) 0 0;
-  --spacing-default-bottom: 0 0 var(--spacing-default) 0;
-  --spacing-default-left: 0 0 0 var(--spacing-default);
+@import url('./variables.css');
 
-  --font-size-xlarge: 1.15em;
-  --font-size-large: 1.30em;
-  --font-size-default: 1.00em;
-  --font-size-small: 0.85em;
-  --font-size-xsmall: 0.70em;
-}
+@import url('./globals.css');
 
-* {
-  box-sizing: border-box;
-}
+@import url('./components.css');
 
-body {
-  background-color: white;
-  font-family: 'Jersey 10', sans-serif;
-  font-weight: 400;
-  font-style: normal;
-  --brown: #502407;
-}
+@import url('./menus-main.css');
+@import url('./menus-level-selection.css');
 
-ul, ol {
-  list-style-type: none;
-  padding: 0;
-  margin: 0;
-}
+@import url('./logging.css');
 
-li {
-  padding: 0;
-  margin: 0;
-}
-
-button {
-  /* Janky fix for buttons not supporting click events on iOS. */
-  cursor: pointer;
-}
-
-@supports (-webkit-touch-callout: none) {
-  /* CSS specific to iOS devices */ 
-
-  /* Janky fix for buttons not supporting click events on iOS. */
-  button {
-    cursor: pointer;
-  }
-}
-
-.menu-container
-{
-    position: absolute;
-    z-index: 1;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.menu
-{
-    gap: 20px;
-    padding: 30px;
-    align-items: center;
-    flex-direction: column;
-    border: 3px solid black;
-    background-color: white;
-}
-
-.menu.menu-closed {
-  display: none;
-}
-
-#level-selection-menu .level {
-  background-color: white;
-  border: 1px solid black;
-  width: 100px;
-  height: 100px;
-}
-
-.log-container {
-  z-index: 100;
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  margin: var(--spacing-default); 
-  border: 1px solid black;  
-  background-color: #FFFFFF88;
-  font-size: var(--font-size-xsmall);
-}
-
-.log-container > .content {
-  width: 800px; 
-  height: 75px;
-}
-
-.log-message.debug {
-  color: var(--color-muted);
-}
-
-.log-message.warning {
-  color: var(--color-warning);
-}
-
-.log-message.error {
-  color: var(--color-critical);
-}
-
-.log-message > .time {
-  padding: var(--spacing-default-right);
-}
-
-.log-message > .level {
-  padding: var(--spacing-default-right);
-  display: inline-block;
-  width: 50px;
-}
-
-.log-message > .value {
-  padding: var(--spacing-default-right);
-}
-
-.group-box {
-  display: flex;
-  flex-direction: column;
-}
-
-.group-box > .header {
-  flex: 0 1 auto;  
-  padding: var(--spacing-default);
-}
-
-.group-box > .content {
-  flex: 1 0 auto;
-  padding: var(--spacing-default);
-  overflow: auto;
+.game-title {
+  font-family: 'Bistroblock';
+  font-size: 64pt;
 }
 
 .hidden {

@@ -1,0 +1,15 @@
+.group-box {
+  display: flex;
+  flex-direction: column;
+
+  > .header {
+    flex: 0 1 auto;  
+    padding: var(--spacing-default);  
+  }
+
+  > .content {
+    flex: 1 0 auto;
+    padding: var(--spacing-default);
+    overflow: auto;
+  }
+}

@@ -1,0 +1,43 @@
+@import url('./variables.css');
+
+.log-container {
+  z-index: 100;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  margin: var(--spacing-default); 
+  border: 1px solid black;  
+  background-color: #FFFFFF88;
+  font-size: var(--font-size-xsmall);
+}
+
+.log-container > .content {
+  width: 800px; 
+  height: 75px;
+}
+
+.log-message.debug {
+  color: var(--color-muted);
+}
+
+.log-message.warning {
+  color: var(--color-warning);
+}
+
+.log-message.error {
+  color: var(--color-critical);
+}
+
+.log-message > .time {
+  padding: var(--spacing-default-right);
+}
+
+.log-message > .level {
+  padding: var(--spacing-default-right);
+  display: inline-block;
+  width: 50px;
+}
+
+.log-message > .value {
+  padding: var(--spacing-default-right);
+}
