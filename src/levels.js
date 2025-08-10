@@ -148,7 +148,8 @@ class StandardLevel extends Level {
 
 const FORMATIONS = {
 
-    fredBackSlash: new FormationDefinition('Fred Back Slash')    
+    /** A set of 6 birds in the shape of a backward slash (\). */
+    backSlash: new FormationDefinition('Back Slash (\\)')    
         .withSpawn(BIRD_TEMPLATES.fred, 0, vec2(20, 9))
         .withSpawn(BIRD_TEMPLATES.fred, 1, vec2(20, 6))
         .withSpawn(BIRD_TEMPLATES.fred, 1, vec2(20, 3))
@@ -156,7 +157,8 @@ const FORMATIONS = {
         .withSpawn(BIRD_TEMPLATES.fred, 1, vec2(20, -6))
         .withSpawn(BIRD_TEMPLATES.fred, 1, vec2(20, -9)),
 
-    fredForwardSlash: new FormationDefinition('Fred Forward Slash') 
+    /** A set of 6 birds in the shape of a forward slash (/). */
+    forwardSlash: new FormationDefinition('Forward Slash (/)') 
         .withSpawn(BIRD_TEMPLATES.fred, 0, vec2(20, -9))
         .withSpawn(BIRD_TEMPLATES.fred, 1, vec2(20, -6))
         .withSpawn(BIRD_TEMPLATES.fred, 1, vec2(20, -3))
@@ -164,26 +166,66 @@ const FORMATIONS = {
         .withSpawn(BIRD_TEMPLATES.fred, 1, vec2(20, 6))
         .withSpawn(BIRD_TEMPLATES.fred, 1, vec2(20, 7)),
 
+    /** A set of 4 birds aranged in a diamond pattern. */
     diamond: new FormationDefinition('Diamond')
         .withSpawn(BIRD_TEMPLATES.fred, 0.0, vec2(20, 0))
         .withSpawn(BIRD_TEMPLATES.fred, 0.3, vec2(20, 5))
         .withSpawn(BIRD_TEMPLATES.fred, 0.0, vec2(20, -5))
         .withSpawn(BIRD_TEMPLATES.fred, 0.3, vec2(20, 0)),
+
+    /** A vertical stack of 2 birds. */
+    vert2: new FormationDefinition('Vertical (2)')
+        .withSpawn(BIRD_TEMPLATES.fred, 0.0, vec2(20, 5))
+        .withSpawn(BIRD_TEMPLATES.fred, 0.0, vec2(20, -5)),
+
+    /** A vertical stack of 3 birds. */
+    vert3: new FormationDefinition('Vertical (3)')
+        .withSpawn(BIRD_TEMPLATES.fred, 0.0, vec2(20, 0))
+        .withSpawn(BIRD_TEMPLATES.fred, 0.0, vec2(20, 7))
+        .withSpawn(BIRD_TEMPLATES.fred, 0.0, vec2(20, -7)),
+
+    /** The thing 1 & 2 twin birds which always come from the right
+     * side of the screen and move diagonally.
+     */
+    twinsRight: new FormationDefinition("Twins (Right - 1 & 2)")
+        .withSpawn(BIRD_TEMPLATES.thing1, 0.0, vec2(20, -12))
+        .withSpawn(BIRD_TEMPLATES.thing2, 0.0, vec2(20, 12)),
+
+    /** Releases a set of birds in the shape of a greater than (>) sign.
+     * This spawns 5 'columns' of birds where the third and fifth column
+     * are a different type of bird. The final column is the 'point' and
+     * only has one bird.
+     */
+    greaterThan: new FormationDefinition('Greater Than (>)')
+        .withSpawn(BIRD_TEMPLATES.fred, 0.0, vec2(20, 9))
+        .withSpawn(BIRD_TEMPLATES.fred, 0.0, vec2(20, -9))
+        .withDelay(0.3)
+        .withSpawn(BIRD_TEMPLATES.fred, 0.0, vec2(20, 7))
+        .withSpawn(BIRD_TEMPLATES.fred, 0.0, vec2(20, -7))
+        .withDelay(0.3)
+        .withSpawn(BIRD_TEMPLATES.bill, 0.0, vec2(20, 5))
+        .withSpawn(BIRD_TEMPLATES.bill, 0.0, vec2(20, -5))
+        .withDelay(0.3)
+        .withSpawn(BIRD_TEMPLATES.fred, 0.0, vec2(20, 3))
+        .withSpawn(BIRD_TEMPLATES.fred, 0.0, vec2(20, -3))
+        .withDelay(0.3)
+        .withSpawn(BIRD_TEMPLATES.bill, 0.0, vec2(20, 0)),
+
 };
 
 export const LEVELS = [
     new LevelDefinition(0, 'Level 1')
         .withDelay(2)
-        .withFormation(FORMATIONS.fredBackSlash)
+        .withFormation(FORMATIONS.backSlash)
         .withDelay(5),
 
     new LevelDefinition(1, 'Level 2')
         .withDelay(2)
-        .withFormation(FORMATIONS.fredBackSlash)
+        .withFormation(FORMATIONS.backSlash)
         .withDelay(2)
-        .withFormation(FORMATIONS.fredForwardSlash)
+        .withFormation(FORMATIONS.forwardSlash)
         .withDelay(2)
-        .withFormation(FORMATIONS.fredForwardSlash)
+        .withFormation(FORMATIONS.forwardSlash)
         .withDelay(5),
 
     new LevelDefinition(2, 'Level 3')
@@ -201,18 +243,23 @@ export const LEVELS = [
 
     new LevelDefinition(3, 'Level 4')
         .withDelay(2)
-        .withSpawn(BIRD_TEMPLATES.fred, 0.0, vec2(20, 9))
-        .withSpawn(BIRD_TEMPLATES.fred, 0.0, vec2(20, -9))
+        .withFormation(FORMATIONS.greaterThan)
+        .withDelay(2)
+        .withFormation(FORMATIONS.greaterThan)
+        .withDelay(5),
+
+    new LevelDefinition(4, 'Level 5')
+        .withDelay(2)
+        .withFormation(FORMATIONS.vert3)
+        .withDelay(1)
+        .withFormation(FORMATIONS.twinsRight)
+        .withDelay(2)
+        .withFormation(FORMATIONS.vert3)
         .withDelay(0.3)
-        .withSpawn(BIRD_TEMPLATES.fred, 0.0, vec2(20, 7))
-        .withSpawn(BIRD_TEMPLATES.fred, 0.0, vec2(20, -7))
-        .withDelay(0.3)
-        .withSpawn(BIRD_TEMPLATES.bill, 0.0, vec2(20, 5))
-        .withSpawn(BIRD_TEMPLATES.bill, 0.0, vec2(20, -5))
-        .withDelay(0.3)
-        .withSpawn(BIRD_TEMPLATES.fred, 0.0, vec2(20, 3))
-        .withSpawn(BIRD_TEMPLATES.fred, 0.0, vec2(20, -3))
-        .withDelay(0.3)
-        .withSpawn(BIRD_TEMPLATES.bill, 0.0, vec2(20, 0))
+        .withFormation(FORMATIONS.vert2, new FormationCreationOptions()
+            .withTemplateMapping(BIRD_TEMPLATES.fred, BIRD_TEMPLATES.bill)
+        )
+        .withDelay(1)
+        .withFormation(FORMATIONS.twinsRight)
         .withDelay(5),
 ]

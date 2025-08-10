@@ -36,6 +36,11 @@ export class FormationDefinition {
         this.verticalOffset = 0;
     }
 
+    withDelay(duration) {
+        this.totalDuration += duration;
+        return this;
+    }
+
     withSpawn(template, delay, pos) {
         const time = this.totalDuration + delay;
         const definition = new SpawnDefinition(template, time, pos);
@@ -59,6 +64,10 @@ export class FormationDefinition {
 
             if (options) {
                 pos = pos.add(options.positionOffset);
+
+                if (template in options.templateMapping) {
+                    template = options.templateMapping[template];
+                }
             }
 
             const transformSpawn = new SpawnDefinition(template, time, pos);
