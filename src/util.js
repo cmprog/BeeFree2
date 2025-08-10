@@ -12,6 +12,10 @@ export function scaleTileSizeHeight(tileInfo, targetHeight) {
 
 export function registerClick(element, handler) {
 
+    if (typeof element == 'string') {
+        element = document.querySelector(element);
+    }
+
     element.addEventListener('click', (ev) => {
         handler(ev);
         ev.preventDefault();

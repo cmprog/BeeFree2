@@ -21,5 +21,10 @@
 
 @font-face {
   font-family: 'Bistroblock';
+  src: url('../fonts/Bistroblock/Bistroblock-oygz.ttf');
+}
+
+@font-face {
+  font-family: 'Dokdo';
   src: url('../fonts/dokdo/Dokdo-Regular.ttf');
 }

@@ -1,9 +1,25 @@
 @import url('./variables.css');
 @import url('./menus-common.css');
 
-#level-selection-menu .level {
-  background-color: white;
-  border: 1px solid black;
-  width: 100px;
-  height: 100px;
+#level-selection-menu {
+
+  --level-button-size: 100px;
+
+  .levels {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    overflow-y: auto;
+  }
+
+  .level {
+    background-color: darkgoldenrod;
+    color: black;
+    font-size: 24px;
+    border: 1px solid black;
+    width: var(--level-button-size);
+    height: var(--level-button-size);
+    margin: var(--spacing-default);
+  }
+
 }

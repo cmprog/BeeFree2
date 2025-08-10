@@ -3,7 +3,7 @@
 import { getWorldSize } from "./util.js";
 import { CloudGenerator } from "./cloud.js";
 import { initializeSpriteAtlas, spriteAtlas } from "./sprites.js";
-import { LEVEL_SELECTION_MENU, MAIN_MENU } from "./menus.js";
+import { MENU_LEVEL_SELECTION, MENU_MAIN } from "./menus.js";
 import { currentLevel } from "./levels.js";
 import { logDebug, logError, logInfo } from "./logging.js";
 
@@ -29,7 +29,7 @@ function gameInit() {
 
     new CloudGenerator()
 
-    MAIN_MENU.open();
+    MENU_MAIN.open();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -40,7 +40,7 @@ function gameUpdate() {
         currentLevel.update();
 
         if (currentLevel.isComplete()) {
-            LEVEL_SELECTION_MENU.open();
+            MENU_LEVEL_SELECTION.open();
             currentLevel.destroy();
         }
     } else {

@@ -2,8 +2,11 @@ import { currentLevel, LEVELS } from "./levels.js";
 import { logDebug, logInfo } from "./logging.js";
 import { registerClick } from "./util.js";
 
-export let MAIN_MENU;
-export let LEVEL_SELECTION_MENU;
+export let MENU_MAIN;
+export let MENU_LEVEL_SELECTION;
+export let MENU_SHOP;
+export let MENU_STATISTICS;
+export let MENU_ACHIVEMENTS;
 
 const CLASS_MENU_CLOSED = 'menu-closed'
 
@@ -11,7 +14,14 @@ class Menu {
 
     constructor(selector) {
         this.element = document.querySelector(selector);
-        this.isOpen = false;        
+        this.isOpen = false;
+
+        this.element.querySelectorAll('button.main-menu-return').forEach(el => {
+            registerClick(el, () => {
+                this.close();
+                MENU_MAIN.open();
+            });
+        });        
     }
 
     open() {
@@ -40,20 +50,21 @@ class MainMenu extends Menu {
 
     constructor() {
         super('#main-menu')
-
-        const startButton = this.element.querySelector('button.start');
-        registerClick(startButton, this.onStartButtonClicked.bind(this));
+        
+        // We must bind to selector functions. If we bind to the variable it will bind null values
+        // at this point since the values may not be initialized at time of constructions.
+        registerClick('#main-menu-level-select', this.openMenu.bind(this, () => MENU_LEVEL_SELECTION));
+        registerClick('#main-menu-shop', this.openMenu.bind(this, () => MENU_SHOP));
+        registerClick('#main-menu-statistics', this.openMenu.bind(this, () => MENU_STATISTICS));
+        registerClick('#main-menu-achivements', this.openMenu.bind(this, () => MENU_ACHIVEMENTS));
     }
+    
+    openMenu(menuSelector) {
 
-    onStartButtonClicked() {
-
-        logDebug('Start Button Clicked');
-
+        const targetMenu = menuSelector();
         this.close();
-
-        LEVEL_SELECTION_MENU.open();
+        targetMenu.open();
     }
-
 }
 
 class LevelSelectionMenu extends Menu {
@@ -61,10 +72,14 @@ class LevelSelectionMenu extends Menu {
         super('#level-selection-menu')
 
         const levelsList = this.element.querySelector('ol.levels');
+
         for (let levelDefinition of LEVELS) {
+
             const levelButton = document.createElement('button');
+            levelButton.type = 'button';
             levelButton.innerText = levelDefinition.name;
             levelButton.classList.add('level');
+
             registerClick(levelButton, this.loadLevel.bind(this, levelDefinition));
             
             const itemElement = document.createElement('li');
@@ -80,5 +95,27 @@ class LevelSelectionMenu extends Menu {
     }
 }
 
-MAIN_MENU = new MainMenu();
-LEVEL_SELECTION_MENU = new LevelSelectionMenu();
+class ShopMenu extends Menu {
+    constructor() {
+        super('#menu-shop')
+    }
+}
+
+class StatisticsMenu extends Menu {
+    constructor() {
+        super('#menu-statistics')
+    }
+
+}
+
+class AchivementsMenu extends Menu {
+    constructor() {
+        super('#menu-achivements')
+    }
+}
+
+MENU_MAIN = new MainMenu();
+MENU_LEVEL_SELECTION = new LevelSelectionMenu();
+MENU_SHOP = new ShopMenu();
+MENU_STATISTICS = new StatisticsMenu();
+MENU_ACHIVEMENTS = new AchivementsMenu();

@@ -1,2 +1,18 @@
 @import url('./variables.css');
 @import url('./menus-common.css');
+
+#main-menu {
+    .game-title {
+        margin: 0;    
+    }
+
+    .button-group {
+        width: 400px;
+        margin-left: auto;
+    }
+
+    button {
+        height: 75px;
+        font-size: 32px;
+    }
+}

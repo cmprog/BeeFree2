@@ -13,3 +13,13 @@
     overflow: auto;
   }
 }
+
+.button-group {
+
+  display: flex;
+  gap: var(--spacing-default);
+
+  &.vertical {
+    flex-direction: column;
+  }
+}

@@ -262,4 +262,26 @@ export const LEVELS = [
         .withDelay(1)
         .withFormation(FORMATIONS.twinsRight)
         .withDelay(5),
+
+        
+    // new LevelDefinition(5, 'Level 6'),
+    // new LevelDefinition(6, 'Level 7'),
+    // new LevelDefinition(7, 'Level 8'),
+    // new LevelDefinition(8, 'Level 9'),
+    // new LevelDefinition(9, 'Level 10'),
+    // new LevelDefinition(10, 'Level 11'),
+    // new LevelDefinition(11, 'Level 12'),
+    // new LevelDefinition(12, 'Level 13'),
+    // new LevelDefinition(13, 'Level 14'),
+    // new LevelDefinition(14, 'Level 15'),
+    // new LevelDefinition(15, 'Level 16'),
+    // new LevelDefinition(16, 'Level 17'),
+    // new LevelDefinition(17, 'Level 18'),
+    // new LevelDefinition(18, 'Level 19'),
+    // new LevelDefinition(19, 'Level 20'),
+    // new LevelDefinition(20, 'Level 21'),
+    // new LevelDefinition(21, 'Level 22'),
+    // new LevelDefinition(22, 'Level 23'),
+    // new LevelDefinition(23, 'Level 24'),
+    // new LevelDefinition(24, 'Level 25'),
 ]
