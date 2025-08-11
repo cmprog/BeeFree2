@@ -72,6 +72,8 @@ class Level {
 
         this.birdsKilled = 0;
         this.honeycombCollected = 0;
+        this.honeycombValueCollected = 0;
+
         touchGamepadEnable = true;       
         
         this.levelFailed = false;
@@ -87,6 +89,11 @@ class Level {
 
     onBeeDestroyed() {
         this.levelFailed = true;
+    }
+
+    onHoneycombCollected(value) {
+        this.honeycombCollected += 1;
+        this.honeycombValueCollected += value;
     }
 
     destroy() {
@@ -142,7 +149,10 @@ class StandardLevel extends Level {
 
         if (this.id + 1 < LEVELS.length) {
             currentPlayer.markLevelAvailable(this.id + 1);
-        }        
+        }
+        
+        currentPlayer.availableHoneycomb += this.honeycombValueCollected;
+        currentPlayer.totalHoneycombCollected += this.honeycombValueCollected;
     }
 }
 

@@ -103,7 +103,7 @@ class Player {
         this.totalHoneycombCollected = 0;
         this.killCount = 0;
         this.deathCount = 0;
-        this.levelsAttempted = 0;
+        this.levelsStarted = 0;
         this.levelsCompleted = 0;
         this.levelsFailed = 0;
         this.perfectLevelsCompleted = 0;
@@ -122,7 +122,7 @@ class Player {
     }
 
     onLevelStarted(levelId) {
-        this.levelsAttempted += 1;
+        this.levelsStarted += 1;
         this.getLevel(levelId).onLevelStarted();
         this.save();
     }
@@ -189,7 +189,7 @@ class Player {
             totalHoneycombCollected: this.totalHoneycombCollected,
             killCount: this.killCount,
             deathCount: this.deathCount,
-            levelsAttempted: this.levelsAttempted,
+            levelsAttempted: this.levelsStarted,
             levelsCompleted: this.levelsCompleted,
             levelsFailed: this.levelsFailed,
             perfectLevelsCompleted: this.perfectLevelsCompleted,
@@ -246,7 +246,7 @@ class Player {
         this.totalHoneycombCollected = saveObj.totalHoneycombCollected;
         this.killCount = saveObj.killCount;
         this.deathCount = saveObj.deathCount;
-        this.levelsAttempted = saveObj.levelsAttempted;
+        this.levelsStarted = saveObj.levelsAttempted;
         this.levelsCompleted = saveObj.levelsCompleted;
         this.levelsFailed = saveObj.levelsFailed;
         this.perfectLevelsCompleted = saveObj.perfectLevelsCompleted;

@@ -78,4 +78,14 @@ export class Bee extends EngineObject {
             }
         }
     }
+
+    collideWithObject(o) {
+
+        if (o.entityType == EntityType.HONEYCOMB) {
+            currentLevel.onHoneycombCollected(o.value);
+            o.destroy();            
+        }
+
+        return false;
+    }
 }

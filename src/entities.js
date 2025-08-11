@@ -3,6 +3,7 @@ export const EntityType = Object.freeze({
     BIRD: { },    
     BIRD_BULLET: { },
     BEE_BULLET: { },
+    HONEYCOMB: { },
 });
 
 function normalizeComponentPartSize(baseSizeScale, baseSprite, sourceSprite) {
