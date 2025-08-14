@@ -37,14 +37,22 @@ export class HealthBar extends EngineObject {
 
         this.currentValue = 1;
         this.maxValue = 1;
+
+        this.shouldRender = true;
     }
 
     update() {
         const percentHealth = clamp(this.currentValue / this.maxValue, 0, 1);
         this.currentHealthObj.size.x = this.size.x * percentHealth;
         this.currentHealthObj.localPos.x = (-this.size.x / 2) * (1 - percentHealth);
+
+        if (this.shouldRender) {
+            this.currentHealthObj.drawSize = undefined;
+            this.drawSize = undefined;
+        } else {
+            // Setting the draw size to 0 is simple approach
+            this.currentHealthObj.drawSize = vec2(0);
+            this.drawSize = vec2(0);
+        }
     }
-
-
-
 }

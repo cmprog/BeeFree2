@@ -63,6 +63,7 @@ class MainMenu extends Menu {
         registerClick('#main-menu-shop', this.openMenu.bind(this, () => MENU_SHOP));
         registerClick('#main-menu-statistics', this.openMenu.bind(this, () => MENU_STATISTICS));
         registerClick('#main-menu-achivements', this.openMenu.bind(this, () => MENU_ACHIVEMENTS));
+        registerClick('#main-menu-reset-save', this.resetSave.bind(this));
     }
     
     openMenu(menuSelector) {
@@ -70,6 +71,57 @@ class MainMenu extends Menu {
         const targetMenu = menuSelector();
         this.close();
         targetMenu.open();
+    }
+
+    resetSave() {
+        currentPlayer.reset();
+    }
+}
+
+class LevelSelectionButton {
+
+    constructor(levelDefinition) {
+
+        this.definition = levelDefinition;
+
+        this.flawlessBadgeElement = document.createElement('div');            
+        this.flawlessBadgeElement.classList.add('level-badge');
+        this.flawlessBadgeElement.classList.add('level-badge-flawless');
+        this.flawlessBadgeElement.innerText = 'F'
+
+        this.perfectBadgeElement = document.createElement('div');
+        this.perfectBadgeElement.classList.add('level-badge');
+        this.perfectBadgeElement.classList.add('level-badge-perfect');
+        this.perfectBadgeElement.innerText = 'P'
+
+        const badgeContainer = document.createElement('div');                  
+        badgeContainer.classList.add('level-badge-container');
+        badgeContainer.appendChild(this.flawlessBadgeElement);
+        badgeContainer.appendChild(this.perfectBadgeElement);
+
+        this.element = document.createElement('button');
+        this.element.type = 'button';
+        this.element.innerText = levelDefinition.name;
+        this.element.classList.add('level');
+        this.element.appendChild(badgeContainer);     
+        
+        this.refreshBadges();
+    }
+
+    refreshBadges() {
+
+        const levelData = currentPlayer.getLevel(this.definition.id);
+        this.updateBadgeClass(this.flawlessBadgeElement, levelData.flawlessCount > 0);
+        this.updateBadgeClass(this.perfectBadgeElement, levelData.perfectCount > 0);
+    }
+
+    updateBadgeClass(element, hasBadge) {
+        const CLASS_NAME = 'level-badge-acquired';
+        if (hasBadge) {
+            element.classList.add(CLASS_NAME);
+        } else {
+            element.classList.remove(CLASS_NAME);
+        }
     }
 }
 
@@ -79,19 +131,25 @@ class LevelSelectionMenu extends Menu {
 
         const levelsList = this.element.querySelector('ol.levels');
 
-        for (let levelDefinition of LEVELS) {
+        this.buttons = [];
 
-            const levelButton = document.createElement('button');
-            levelButton.type = 'button';
-            levelButton.innerText = levelDefinition.name;
-            levelButton.classList.add('level');
+        for (const levelDefinition of LEVELS) {
 
-            registerClick(levelButton, this.loadLevel.bind(this, levelDefinition));
+            const button = new LevelSelectionButton(levelDefinition);
+            this.buttons.push(button);
+
+            registerClick(button.element, this.loadLevel.bind(this, levelDefinition));
             
             const itemElement = document.createElement('li');
-            itemElement.appendChild(levelButton);
+            itemElement.appendChild(button.element);
             
             levelsList.appendChild(itemElement);
+        }
+    }
+
+    onOpening() {
+        for (const button of this.buttons) {
+            button.refreshBadges();
         }
     }
 

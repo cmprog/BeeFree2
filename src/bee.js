@@ -69,6 +69,11 @@ export class Bee extends EngineObject {
     }
 
     applyDamage(amount) {
+
+        if ((amount > 0) && currentLevel) {
+            currentLevel.onBeeDamageTaken();
+        }
+
         this.health = Math.max(0, this.health - amount);
         if (!this.health) {            
             this.destroy();

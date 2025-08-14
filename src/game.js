@@ -1,6 +1,6 @@
 'use strict';
 
-import { getWorldSize } from "./util.js";
+import { FONTS, getWorldSize } from "./util.js";
 import { CloudGenerator } from "./cloud.js";
 import { initializeSpriteAtlas, spriteAtlas } from "./sprites.js";
 import { MENU_LEVEL_SELECTION, MENU_MAIN } from "./menus.js";
@@ -35,17 +35,7 @@ function gameInit() {
 ///////////////////////////////////////////////////////////////////////////////
 function gameUpdate() {
 
-    if (currentLevel) {
-
-        currentLevel.update();
-
-        if (currentLevel.isComplete()) {
-            MENU_LEVEL_SELECTION.open();
-            currentLevel.destroy();
-        }
-    } else {
-        touchGamepadEnable = false;
-    }
+    touchGamepadEnable = (currentLevel != null);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -63,8 +53,11 @@ function gameRender()
     // called before objects are rendered
     // draw any background effects that appear behind objects
 
-    const worldSize = getWorldSize()
-    drawRect(vec2(), worldSize, new Color(0, 1, 1))
+    const worldSize = getWorldSize();
+    drawRect(vec2(), worldSize, new Color(0, 1, 1));
+
+    const font = new FontImage();
+    font.Color = BLACK;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

@@ -1,3 +1,5 @@
+import { currentLevel } from "./levels.js";
+
 export class FormationCreationOptions {
 
     constructor() {
@@ -93,17 +95,10 @@ export class SpawnDefinition {
 class Spawner {
 
     constructor() {
-        this.spawnedObjects = [];
     }
 
     update() {
 
-    }
-
-    destroy() {
-        for (const obj of this.spawnedObjects) {
-            obj.destroy();
-        }
     }
 }
 
@@ -139,7 +134,8 @@ class SingleEnemySpawner extends Spawner {
         if (this.timer.elapsed()) {
             console.log(`Spawning bird '${this.template.name}' at ${this.pos}.`)
             const bird = this.template.create(this.pos)
-            this.spawnedObjects.push(bird);
+            currentLevel.trackObj(bird);
+            currentLevel.onBirdSpawned();            
             this.timer.unset();
         }
     }

@@ -255,7 +255,12 @@ class Player {
 
         logDebug(`Player data loaded successfully!`);
     }
+
+    reset() {
+        currentPlayer = new Player();
+        currentPlayer.save();
+    }
 }
 
-export const currentPlayer = new Player();
+export let currentPlayer = new Player();
 currentPlayer.load();

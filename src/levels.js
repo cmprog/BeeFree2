@@ -1,10 +1,11 @@
 import { Bee } from "./bee.js";
 import { BIRD_TEMPLATES, BirdTemplate } from "./birds.js";
 import { logInfo } from "./logging.js";
+import { MENU_LEVEL_SELECTION } from "./menus.js";
 import { Owl } from "./owl.js";
 import { currentPlayer } from "./player.js";
 import { FormationDefinition, SpawnDefinition, SpawnerCollection, FormationCreationOptions } from "./spawning.js";
-import { getWorldSize } from "./util.js";
+import { FONTS, getWorldSize } from "./util.js";
 
 export let currentLevel;
 
@@ -64,19 +65,30 @@ class LevelDefinition {
     }
 }
 
-class Level {
+class Level extends EngineObject {
 
     constructor() {
 
+        super();
+
         this.bee = new Bee();
 
-        this.birdsKilled = 0;
+        this.trackedObjects = [];
+        this.trackObj(this.bee);
+
+        this.birdSpawnCount = 0;
+        this.birdKillCount = 0;
         this.honeycombCollected = 0;
         this.honeycombValueCollected = 0;
+        this.isFlawless = true;
 
         touchGamepadEnable = true;       
         
         this.levelFailed = false;
+    }
+
+    trackObj(obj) {
+        this.trackedObjects.push(obj);
     }
 
     update() {
@@ -85,6 +97,18 @@ class Level {
 
     isComplete() {
         return false;
+    }
+
+    onBirdSpawned() {
+        this.birdSpawnCount += 1;
+    }
+
+    onBirdKilled() {
+        this.birdKillCount += 1;
+    }
+
+    onBeeDamageTaken() {
+        this.isFlawless = false;   
     }
 
     onBeeDestroyed() {
@@ -97,12 +121,18 @@ class Level {
     }
 
     destroy() {
+        super.destroy();
 
-        this.bee.destroy();
-        this.spawner.destroy();
+        for (const obj of this.trackedObjects) {
+            obj.destroy();
+        }
 
         currentLevel = undefined;
         touchGamepadEnable = false;
+    }
+
+    render() {
+        // Purposefully blank since we don't care about default rendering
     }
 }
 
@@ -116,12 +146,15 @@ class StandardLevel extends Level {
         this.levelDefinition = levelDefinition;        
         this.levelTimer = new Timer(this.levelDefinition.totalDuration);
         this.spawner = levelDefinition.createSpawner();
-
-        this.spawnedOwls = [];
     }
 
     update() {
         this.spawner.update();
+
+        if (this.levelTimer.elapsed()) {
+            this.destroy();
+            MENU_LEVEL_SELECTION.open();            
+        }
 
         if (randInt(0, 5_000) == 0) {
             const worldSize = getWorldSize();
@@ -130,7 +163,7 @@ class StandardLevel extends Level {
             currentPlayer.luckyOwlsSpawned += 1;
             logInfo(`Lucky Owl Spawn at ${owl.pos}!`);
             owl.velocity = vec2(0.1, 0);
-            this.spawnedOwls.push(owl);
+            this.trackObj(owl);
         }
     }
 
@@ -141,11 +174,10 @@ class StandardLevel extends Level {
     destroy() {
         super.destroy();
 
-        for (const owl of this.spawnedOwls) {
-            owl.destroy();
+        if (currentPlayer) {
+            const wasPerfect = this.birdSpawnCount == this.birdKillCount;
+            currentPlayer.onLevelCompleted(this.id, this.levelFailed, this.isFlawless, wasPerfect);
         }
-
-        currentPlayer.onLevelCompleted(this.id, this.levelFailed, false, false);
 
         if (this.id + 1 < LEVELS.length) {
             currentPlayer.markLevelAvailable(this.id + 1);
@@ -153,6 +185,15 @@ class StandardLevel extends Level {
         
         currentPlayer.availableHoneycomb += this.honeycombValueCollected;
         currentPlayer.totalHoneycombCollected += this.honeycombValueCollected;
+    }
+
+    render() {
+        const formattedTimeRemaining = `Time Remaining: ${(Math.max(0, -this.levelTimer.get())).toFixed(1)} s`;
+        drawHudText(formattedTimeRemaining, vec2(0, 20));
+
+        function drawHudText(text, pos) {
+            drawTextScreen(text, pos, 40, BLACK, undefined, undefined, 'left', FONTS.SECONDARY, undefined, undefined);
+        }
     }
 }
 

@@ -1,9 +1,10 @@
 import { logDebug } from "./logging.js";
-import { EntityType } from './entities.js';
+import { EntityType, HealthBar } from './entities.js';
 import { FixedVelocityMovement, StaticMovement } from "./movement.js";
 import { PassiveShooting, SingleBulletShooting } from "./shooting.js";
 import { spriteAtlas } from "./sprites.js";
 import { Honeycomb } from "./honeycomb.js";
+import { currentLevel } from "./levels.js";
 
 export class BirdTemplate {
     constructor(name, description, health, touchDamange) {
@@ -137,6 +138,9 @@ export class Bird extends EngineObject
 
         this.setCollision();
 
+        this.healthBar = new HealthBar();
+        this.addChild(this.healthBar, vec2(0, 1));
+
         this.face = new BirdFace(pos, this);
         this.eyelids = new BirdEyelids(pos, this);
         this.legs = new BirdLegs(pos, this);
@@ -152,6 +156,10 @@ export class Bird extends EngineObject
     }
     
     update() {
+        
+        this.healthBar.currentValue = this.health;        
+        this.healthBar.maxValue = this.maxHealth;
+        this.healthBar.shouldRender = (this.health < this.maxHealth);        
 
         // Birds always try shooting, the shooting behavior will
         // rate limit based on the fire rate of the bird.
@@ -169,7 +177,15 @@ export class Bird extends EngineObject
         this.health = Math.max(0, this.health - amount);
         if (!this.health) {
             this.destroy();
-            new Honeycomb(this.pos, 1);
+
+            const honeycomb = new Honeycomb(this.pos, 1);
+            // Give it some velocity in the same direction of the bird - but not nearly as fast
+            honeycomb.velocity = this.velocity.normalize(rand(0, this.velocity.length() * 0.7));
+
+            if (currentLevel) {
+                currentLevel.trackObj(honeycomb);
+                currentLevel.onBirdKilled();
+            }
         }
     }
 

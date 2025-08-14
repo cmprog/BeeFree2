@@ -10,6 +10,11 @@ export function scaleTileSizeHeight(tileInfo, targetHeight) {
     return vec2((tileInfo.size.x / tileInfo.size.y) * targetHeight, targetHeight);
 }
 
+export const FONTS = Object.freeze({
+    PRIMARY: 'Bistroblock',
+    SECONDARY: 'Dokdo',
+});
+
 export function registerClick(element, handler) {
 
     if (typeof element == 'string') {
