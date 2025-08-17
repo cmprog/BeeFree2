@@ -10,9 +10,7 @@
   > .content {
     flex: 1 1 auto;
     padding: var(--spacing-default);
-    background-color: lightgreen;
     overflow: auto;
-    height: 100%;
     -webkit-overflow-scrolling: touch;
   }
 }
