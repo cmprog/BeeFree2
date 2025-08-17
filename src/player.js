@@ -1,4 +1,6 @@
+import { Bee } from "./bee.js";
 import { logDebug, logError } from "./logging.js";
+import { SingleBulletShooting } from "./shooting.js";
 
 const SAVE_KEY = "save";
 const SAVE_KEY_BACKUP = "save_bk";
@@ -87,14 +89,14 @@ class Player {
         this.lastSavedOn = undefined;
 
         // Attributes
-        this.beeSpeed = 0;
-        this.beeMaxHealth = 0;
+        this.beeSpeed = 0.1;
+        this.beeMaxHealth = 5;
         this.beeHealthRegen = 0;
-        this.beeFireRate = 0;
-        this.beeDamage = 0;
-        this.beeShotCount = 0;
+        this.beeFireRate = 1;
+        this.beeDamage = 1;
+        this.beeShotCount = 1;
         this.beeHoneycombAttration = 0;
-        this.beeBulletSpeed = 0;
+        this.beeBulletSpeed = 0.3;
 
         this.levels = {};
 
@@ -109,6 +111,8 @@ class Player {
         this.perfectLevelsCompleted = 0;
         this.flawlessLevelsCompleted = 0;
         this.luckyOwlsSpawned = 0;
+
+        this.shopPurchases = { };
 
         this.markLevelAvailable(0);
     }
@@ -184,6 +188,8 @@ class Player {
 
             // Will populate afterwards
             levels: {},
+            
+            shopPurchases: this.shopPurchases,
 
             availableHoneycomb: this.availableHoneycomb,
             totalHoneycombCollected: this.totalHoneycombCollected,
@@ -240,6 +246,13 @@ class Player {
             playerLevel.loadSaveObj(levelObj);
             
             this.levels[key] = playerLevel;            
+        }
+
+        this.shopPurchases = { };
+        if (saveObj.shopPurchases) {            
+            for (const key of Object.keys(saveObj.shopPurchases)) {
+                this.shopPurchases[key] = saveObj.shopPurchases[key];
+            }
         }
 
         this.availableHoneycomb = saveObj.availableHoneycomb;

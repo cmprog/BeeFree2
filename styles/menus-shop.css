@@ -1,0 +1,43 @@
+@import url('./variables.css');
+@import url('./menus-common.css');
+
+#menu-shop {
+  .shop-item {
+    border: 1px solid black;
+    border-radius: var(--spacing-default);
+    margin: var(--spacing-default);
+    display: flex;
+    gap: var(--spacing-default);
+    flex-direction: row;
+
+    > img {
+      flex: 0 0 auto;
+      width: 128px;
+      height: 128px;
+      border: 0px;
+    }
+
+    > .details {
+      flex: 1 1 auto;
+      display: flex;
+      flex-direction: column;
+      overflow-wrap: break-word;      
+      white-space: normal;
+    }
+
+    .title {
+      font-weight: bold;
+      font-size: 28px;
+    }
+
+    .description {
+      font-size: 22px;
+    }
+
+    > .purchase {
+      flex: 0 0 auto;
+      width: 128px;  
+      margin: 20px;    
+    }
+  }
+}

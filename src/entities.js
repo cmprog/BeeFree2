@@ -21,30 +21,34 @@ export class CompositeEntityPart extends EngineObject {
     }
 }
 
-export class HealthBar extends EngineObject {
+export class ProgressBar extends EngineObject {
 
     constructor() {
 
         super();
-
-        this.color = RED;
+        
         this.size = vec2(3, 0.3);
 
+        this.foregroundColor = GREEN;
+        this.backgroundColor = RED;
+
         this.currentHealthObj = new EngineObject();
-        this.currentHealthObj.color = GREEN;
         this.currentHealthObj.size = vec2(this.size);
         this.addChild(this.currentHealthObj, vec2(0, 0));
 
-        this.currentValue = 1;
-        this.maxValue = 1;
+        this.value = 0;
 
         this.shouldRender = true;
     }
 
     update() {
-        const percentHealth = clamp(this.currentValue / this.maxValue, 0, 1);
-        this.currentHealthObj.size.x = this.size.x * percentHealth;
-        this.currentHealthObj.localPos.x = (-this.size.x / 2) * (1 - percentHealth);
+
+        this.color = this.backgroundColor;
+        this.currentHealthObj.color = this.foregroundColor;
+       
+        const clampedValue = clamp(this.value, 0, 1);
+        this.currentHealthObj.size = vec2(this.size.x * clampedValue, this.size.y);
+        this.currentHealthObj.localPos.x = (-this.size.x / 2) * (1 - clampedValue);
 
         if (this.shouldRender) {
             this.currentHealthObj.drawSize = undefined;

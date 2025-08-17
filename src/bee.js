@@ -1,35 +1,45 @@
-import { logDebug } from "./logging.js";
-import { EntityType, HealthBar } from './entities.js';
+import { EntityType, ProgressBar } from './entities.js';
 import { SingleBulletShooting } from "./shooting.js";
 import { spriteAtlas } from "./sprites.js";
 import { currentLevel } from "./levels.js";
 
 export class Bee extends EngineObject {
 
-    constructor() {
+    constructor(player) {
         super(vec2(0, 0), vec2(2, 2)); 
         this.entityType = EntityType.BEE;
 
-        this.healthBar = new HealthBar();
+        this.healthBar = new ProgressBar();
         this.addChild(this.healthBar, vec2(0, 1));
 
         this.renderOrder = 400;
 
         this.setCollision();
         
-        this.shooting = new SingleBulletShooting(1, vec2(1, 0), 1);
+        this.shooting = new SingleBulletShooting(
+            player.beeDamage, 
+            vec2(1, 0).normalize(player.beeBulletSpeed),
+            player.beeFireRate,
+        );
 
-        this.speed = 0.1;
-        
-        this.maxHealth = 5;
+        this.speed = player.beeSpeed;        
+        this.maxHealth = player.beeMaxHealth;
         this.health = this.maxHealth;
+        this.healthRegen = player.beeHealthRegen;
+        this.honeycombAttraction = player.beeHoneycombAttration;    
+        
+        this.healthRegenTimer = new Timer(1);
     } 
     
     update() {
         super.update();
 
-        this.healthBar.currentValue = this.health;
-        this.healthBar.maxValue = this.maxHealth;
+        if (this.healthRegenTimer.elapsed()) {
+            this.health = min(this.maxHealth, this.health + this.healthRegen);
+            this.healthRegenTimer.set(1);
+        }
+
+        this.healthBar.value = this.health / this.maxHealth;
         
         let direction;
         let holdingFire = false;

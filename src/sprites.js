@@ -30,6 +30,8 @@ export function initializeSpriteAtlas() {
             body: new TileInfo(vec2(0, 0), vec2(190, 200), 4),
             frontWing: new TileInfo(vec2(189, 2), vec2(100, 110), 4),
             backWing: new TileInfo(vec2(292, 11), vec2(85, 75), 4),
-        }
+        },
+
+        honeycomb: new TileInfo(vec2(0, 0), vec2(45, 39), 5),
     }
 }

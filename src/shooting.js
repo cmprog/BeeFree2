@@ -2,6 +2,7 @@ import { Bee } from "./bee.js";
 import { BeeBullet, BirdBullet } from "./bullet.js";
 import { EntityType } from "./entities.js";
 import { currentLevel } from "./levels.js";
+import { SOUNDS } from "./sounds.js";
 
 export class ShootingBehavior {
 
@@ -27,9 +28,10 @@ export class SingleBulletShooting extends ShootingBehavior {
     fire(shooter) {
         if (!this.cooldownTimer.isSet() || this.cooldownTimer.elapsed()) {
 
-            if (shooter.entityType == EntityType.BEE) {                
+            if (shooter.entityType == EntityType.BEE) {
                 const bullet = new BeeBullet(shooter.pos, this.velocity);
                 currentLevel.trackObj(bullet);
+                SOUNDS.shoot.play(0, 1, 1);
             } else if (shooter.entityType == EntityType.BIRD) {
                 const bullet = new BirdBullet(shooter.pos, this.velocity);
                 currentLevel.trackObj(bullet);

@@ -1,5 +1,5 @@
 import { logDebug } from "./logging.js";
-import { EntityType, HealthBar } from './entities.js';
+import { EntityType, ProgressBar } from './entities.js';
 import { FixedVelocityMovement, StaticMovement } from "./movement.js";
 import { PassiveShooting, SingleBulletShooting } from "./shooting.js";
 import { spriteAtlas } from "./sprites.js";
@@ -138,7 +138,7 @@ export class Bird extends EngineObject
 
         this.setCollision();
 
-        this.healthBar = new HealthBar();
+        this.healthBar = new ProgressBar();
         this.addChild(this.healthBar, vec2(0, 1));
 
         this.face = new BirdFace(pos, this);
@@ -157,9 +157,8 @@ export class Bird extends EngineObject
     
     update() {
         
-        this.healthBar.currentValue = this.health;        
-        this.healthBar.maxValue = this.maxHealth;
-        this.healthBar.shouldRender = (this.health < this.maxHealth);        
+        this.healthBar.value = this.health / this.maxHealth;
+        this.healthBar.shouldRender = (this.health < this.maxHealth);
 
         // Birds always try shooting, the shooting behavior will
         // rate limit based on the fire rate of the bird.

@@ -1,7 +1,8 @@
 import { Bee } from "./bee.js";
 import { BIRD_TEMPLATES, BirdTemplate } from "./birds.js";
+import { ProgressBar } from "./entities.js";
 import { logInfo } from "./logging.js";
-import { MENU_LEVEL_SELECTION } from "./menus.js";
+import { MENUS } from "./menus.js";
 import { Owl } from "./owl.js";
 import { currentPlayer } from "./player.js";
 import { FormationDefinition, SpawnDefinition, SpawnerCollection, FormationCreationOptions } from "./spawning.js";
@@ -71,7 +72,7 @@ class Level extends EngineObject {
 
         super();
 
-        this.bee = new Bee();
+        this.bee = new Bee(currentPlayer);
 
         this.trackedObjects = [];
         this.trackObj(this.bee);
@@ -146,15 +147,28 @@ class StandardLevel extends Level {
         this.levelDefinition = levelDefinition;        
         this.levelTimer = new Timer(this.levelDefinition.totalDuration);
         this.spawner = levelDefinition.createSpawner();
+
+        this.timeRemainingBar = new ProgressBar();
+        this.timeRemainingBar.size = vec2(10, 1.0);
+
+        const margin = vec2(0.1);
+
+        this.timeRemainingBar.pos = screenToWorld(mainCanvasSize).scale(-1)
+            .add(vec2((this.timeRemainingBar.size.x * 0.5) + margin.x, (-this.timeRemainingBar.size.y * 0.5) - margin.y));
+        
+        this.trackObj(this.timeRemainingBar);
     }
 
     update() {
         this.spawner.update();
 
-        if (this.levelTimer.elapsed()) {
+        if (this.levelFailed || this.levelTimer.elapsed()) {
             this.destroy();
-            MENU_LEVEL_SELECTION.open();            
+            MENUS.LEVEL_SELECTION.open();            
         }
+
+        const timeRemaining = -this.levelTimer.get();
+        this.timeRemainingBar.value = timeRemaining / this.levelDefinition.totalDuration;
 
         if (randInt(0, 5_000) == 0) {
             const worldSize = getWorldSize();
@@ -188,12 +202,9 @@ class StandardLevel extends Level {
     }
 
     render() {
-        const formattedTimeRemaining = `Time Remaining: ${(Math.max(0, -this.levelTimer.get())).toFixed(1)} s`;
-        drawHudText(formattedTimeRemaining, vec2(0, 20));
-
-        function drawHudText(text, pos) {
-            drawTextScreen(text, pos, 40, BLACK, undefined, undefined, 'left', FONTS.SECONDARY, undefined, undefined);
-        }
+        const formattedSecondsRemaining = `${(Math.max(0, -this.levelTimer.get())).toFixed(1)} s`
+        drawTextOverlay(formattedSecondsRemaining, this.timeRemainingBar.pos, 0.8 * this.timeRemainingBar.size.y, BLACK, undefined, undefined, undefined, FONTS.SECONDARY);
+        drawTextOverlay('time remaining', this.timeRemainingBar.pos.add(vec2(0, -this.timeRemainingBar.size.y)), 0.8 * this.timeRemainingBar.size.y, BLACK, undefined, undefined, undefined, FONTS.SECONDARY);
     }
 }
 

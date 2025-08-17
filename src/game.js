@@ -3,7 +3,7 @@
 import { FONTS, getWorldSize } from "./util.js";
 import { CloudGenerator } from "./cloud.js";
 import { initializeSpriteAtlas, spriteAtlas } from "./sprites.js";
-import { MENU_LEVEL_SELECTION, MENU_MAIN } from "./menus.js";
+import { MENUS } from "./menus.js";
 import { currentLevel } from "./levels.js";
 import { logDebug, logError, logInfo } from "./logging.js";
 
@@ -23,13 +23,15 @@ function gameInit() {
 
     logInfo('Initializing game...');
 
+    soundEnable = false;
+
     initializeSpriteAtlas();
 
     setCanvasFixedSize(vec2(1280, 720)); // use a 720p fixed size canvas
 
     new CloudGenerator()
 
-    MENU_MAIN.open();
+    MENUS.MAIN.open();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -76,6 +78,7 @@ const imagesSources = [
     'img/bird.png',
     'img/misc.png',
     'img/owl.png',
-]
+    'img/honeycomb.png',
+];
 
 engineInit(gameInit, gameUpdate, gameUpdatePost, gameRender, gameRenderPost, imagesSources);
