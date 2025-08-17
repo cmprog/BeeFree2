@@ -70,6 +70,11 @@ export class Bee extends EngineObject {
         if (holdingFire) {
             this.shooting.fire(this);
         }
+
+        // Bottom right position tells us the pos x half-width and neg y half-height of the world size
+        const worldBottomRight = screenToWorld(mainCanvasSize);
+        this.pos.x = clamp(this.pos.x, -worldBottomRight.x, worldBottomRight.x);
+        this.pos.y = clamp(this.pos.y, worldBottomRight.y, -worldBottomRight.y);
     }
 
     render() {        
