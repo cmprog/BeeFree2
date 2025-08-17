@@ -10,7 +10,7 @@
   > .content {
     flex: 1 1 auto;
     padding: var(--spacing-default);
-    overflow: scroll;
+    overflow: auto;
     -webkit-overflow-scrolling: touch;
   }
 }
