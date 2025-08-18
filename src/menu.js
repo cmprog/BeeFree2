@@ -1,3 +1,4 @@
+import { logDebug } from "./logging.js";
 import { MENUS } from "./menus.js";
 import { registerClick } from "./util.js";
 
@@ -22,6 +23,15 @@ export class Menu {
         this.element.classList.remove(CLASS_MENU_CLOSED);
         this.isOpen = true;
         this.onOpened();
+
+        const contentEl = this.element.querySelector('.content');
+        if (contentEl) {
+            const computedStyle = window.getComputedStyle(contentEl);
+            
+            logDebug(`contentEl.scrollHeight: ${contentEl.scrollHeight}`);
+            logDebug(`computedStyle.height: ${computedStyle.height}`);
+        }
+        
     }
 
     onOpening() {
