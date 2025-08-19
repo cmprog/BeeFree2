@@ -1,11 +1,11 @@
 'use strict';
 
-import { FONTS, getWorldSize } from "./util.js";
-import { CloudGenerator } from "./cloud.js";
-import { initializeSpriteAtlas, spriteAtlas } from "./sprites.js";
-import { MENUS } from "./menus.js";
-import { currentLevel } from "./levels.js";
-import { logDebug, logError, logInfo } from "./logging.js";
+// import { FONTS, getWorldSize } from "./util.js";
+// import { CloudGenerator } from "./cloud.js";
+// import { initializeSpriteAtlas, spriteAtlas } from "./sprites.js";
+// import { MENUS } from "./menus.js";
+// import { currentLevel } from "./levels.js";
+// import { logDebug, logError, logInfo } from "./logging.js";
 
 if (isTouchDevice) {
     logDebug("Touch device detected, initializing touch gamepad.");
@@ -14,24 +14,24 @@ if (isTouchDevice) {
 }
 
 // Write up some error handing to we can see it in our UI logger
-window.addEventListener('error', (errorMsg, url, lineNumber) => {
-    logError(errorMsg.error.stack);
-});
+// window.addEventListener('error', (errorMsg, url, lineNumber) => {
+//     logError(errorMsg.error.stack);
+// });
 
 ///////////////////////////////////////////////////////////////////////////////
 function gameInit() {
 
-    logInfo('Initializing game...');
+    // logInfo('Initializing game...');
 
-    soundEnable = false;
+    // soundEnable = false;
 
-    initializeSpriteAtlas();
+    // initializeSpriteAtlas();
 
     setCanvasFixedSize(vec2(1280, 720)); // use a 720p fixed size canvas
 
-    new CloudGenerator()
+    // new CloudGenerator()
 
-    MENUS.MAIN.open();
+    // MENUS.MAIN.open();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -55,11 +55,8 @@ function gameRender()
     // called before objects are rendered
     // draw any background effects that appear behind objects
 
-    const worldSize = getWorldSize();
-    drawRect(vec2(), worldSize, new Color(0, 1, 1));
-
-    const font = new FontImage();
-    font.Color = BLACK;
+    // const worldSize = getWorldSize();
+    // drawRect(vec2(), worldSize, new Color(0, 1, 1));
 }
 
 ///////////////////////////////////////////////////////////////////////////////
