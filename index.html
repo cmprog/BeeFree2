@@ -145,6 +145,19 @@
       16. a b c <br />
     </div>
   </div>
+
+  <script>
+    const element = document.querySelector('.test-content');
+    element.addEventListener('click', () => {
+      console.log('onclick');
+    });
+    element.addEventListener('touchstart', () => {
+      console.log('ontouchstart');
+    });
+    element.addEventListener('touchend', () => {
+      console.log('ontouchend');
+    });
+  </script>
   
   <script>
     // This can be used to fake a touch screen device
