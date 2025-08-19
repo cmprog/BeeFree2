@@ -8,7 +8,7 @@
 // import { logDebug, logError, logInfo } from "./logging.js";
 
 if (isTouchDevice) {
-    logDebug("Touch device detected, initializing touch gamepad.");
+    // logDebug("Touch device detected, initializing touch gamepad.");
     touchGamepadEnable = true;
     touchGamepadSize = 200;
 }
