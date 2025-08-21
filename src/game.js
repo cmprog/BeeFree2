@@ -18,6 +18,9 @@ window.addEventListener('error', (errorMsg, url, lineNumber) => {
     logError(errorMsg.error.stack);
 });
 
+// Only show the watermark when we are running in dev.
+showWatermark = (document.location.href.indexOf('localhost') >= 0);
+
 ///////////////////////////////////////////////////////////////////////////////
 function gameInit() {
 
