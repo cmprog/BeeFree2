@@ -7,12 +7,12 @@
     }
 
     .button-group {
-        width: 400px;
+        width: 300px;
         margin-left: auto;
     }
 
     button {
-        height: 75px;
-        font-size: 32px;
+        height: 8vh;
+        font-size: 5vh;
     }
 }
