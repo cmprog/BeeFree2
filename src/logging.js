@@ -39,7 +39,7 @@ class Logger {
         this.scrollElement = document.querySelector('.log-container > .content');
         
         this.consoleLoggingEnabled = false;
-        this.uiLoggingEnabled = true || (document.location.href.indexOf('localhost') >= 0);
+        this.uiLoggingEnabled = (document.location.href.indexOf('localhost') >= 0);
         
         if (!this.uiLoggingEnabled) {
             document.querySelector('.log-container').classList.add('hidden');
