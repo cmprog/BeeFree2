@@ -1,6 +1,5 @@
 'use strict';
 
-import { FONTS, getWorldSize } from "./util.js";
 import { CloudGenerator } from "./cloud.js";
 import { initializeSpriteAtlas, spriteAtlas } from "./sprites.js";
 import { MENUS } from "./menus.js";
@@ -30,7 +29,8 @@ function gameInit() {
 
     initializeSpriteAtlas();
 
-    setCanvasFixedSize(vec2(1280, 720)); // use a 720p fixed size canvas
+    // use a 720p fixed size canvas
+    setCanvasFixedSize(vec2(1280, 720));
 
     new CloudGenerator()
 

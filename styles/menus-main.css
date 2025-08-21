@@ -6,13 +6,26 @@
         margin: 0;    
     }
 
+    position: relative;
+
     .button-group {
-        width: 300px;
-        margin-left: auto;
+        width: 40vw;
+        margin: 5px;
+        position: absolute;
+        bottom: 0px;
+        right: 0px;
+
     }
 
     button {
         height: 8vh;
         font-size: 5vh;
+    }
+
+    #main-menu-reset-save {
+        position: absolute;
+        bottom: 0px;
+        left: 0px;
+        margin: 5px;
     }
 }
