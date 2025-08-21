@@ -41,7 +41,12 @@
 
     <div id="menu-shop" class="menu menu-closed">
       <div class="header">
-        <div class="menu-title">Spend Honeycomb</div>
+        <span class="menu-title">
+          Spend Honeycomb
+        </span>
+        <span class="available-honeycomb">
+          
+        </span>
         <button type="button" class="main-menu-return">Back to Menu</button>
       </div>
       <div class="content">        
@@ -125,47 +130,25 @@
     </div>
   </div>
 
-  
-  <div class="test-container">
-    <div class="test-header">Header</div>
-    <div class="test-content">
-      1. a b c <br />
-      2. a b c <br />
-      3. a b c <br />
-      4. a b c <br />
-      5. a b c <br />
-      6. a b c <br />
-      7. a b c <br />
-      8. a b c <br />
-      9. a b c <br />
-      10. a b c <br />
-      11. a b c <br />
-      12. a b c <br />
-      13. a b c <br />
-      14. a b c <br />
-      15. a b c <br />
-      16. a b c <br />
+  <!-- Rotation logic, styles, and animations taken from https://github.com/arscan/pleaserotate.js/blob/master/pleaserotate.js -->
+  <div id="pleaserotate-backdrop">
+    <div id="pleaserotate-container">      
+      <svg xmlns:xlink="http://www.w3.org/1999/xlink" id="pleaserotate-graphic" viewBox="0 0 250 250">
+        <g id="pleaserotate-graphic-path">
+          <path d="M190.5,221.3c0,8.3-6.8,15-15,15H80.2c-8.3,0-15-6.8-15-15V28.7c0-8.3,6.8-15,15-15h95.3c8.3,0,15,6.8,15,15V221.3zM74.4,33.5l-0.1,139.2c0,8.3,0,17.9,0,21.5c0,3.6,0,6.9,0,7.3c0,0.5,0.2,0.8,0.4,0.8s7.2,0,15.4,0h75.6c8.3,0,15.1,0,15.2,0s0.2-6.8,0.2-15V33.5c0-2.6-1-5-2.6-6.5c-1.3-1.3-3-2.1-4.9-2.1H81.9c-2.7,0-5,1.6-6.3,4C74.9,30.2,74.4,31.8,74.4,33.5zM127.7,207c-5.4,0-9.8,5.1-9.8,11.3s4.4,11.3,9.8,11.3s9.8-5.1,9.8-11.3S133.2,207,127.7,207z" />
+        </g>
+      </svg>
+      <div id="pleaserotate-message">
+        Please ROtate Your Device
+      </div>
     </div>
   </div>
-
-  <script>
-    const element = document.querySelector('.test-content');
-    element.addEventListener('click', () => {
-      console.log('onclick');
-    });
-    element.addEventListener('touchstart', () => {
-      console.log('ontouchstart');
-    });
-    element.addEventListener('touchend', () => {
-      console.log('ontouchend');
-    });
-
-    
-  </script>
   
   <script>
-    // This can be used to fake a touch screen device
-    // window.ontouchstart = "void(0);";
+    const shouldFakeTouchScreenDevice = false;
+    if (shouldFakeTouchScreenDevice && !window.ontouchstart) {
+      window.ontouchstart = "void(0);";
+    };
   </script>
 
   <script type="text/javascript" src="dist/littlejs.js" charset="utf-8"></script>

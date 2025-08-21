@@ -275,7 +275,9 @@ const SHOP_ITEMS = {
 }
 
 class ShopItem {
-    constructor(key, data) {
+    constructor(shopMenu, key, data) {
+
+        this.shopMenu = shopMenu;
 
         this.key = key;
         this.data = data;
@@ -316,29 +318,45 @@ class ShopItem {
 
     onPurchaseButtonClick() {
 
-        if (this.clickConfirmTimeout) {
-            this.onPurchaseConfirmed();
+        if (this.purchaseButtonTimeout) {
+
+            if (this.hasAvailableHoneycomb()) {
+                this.onPurchaseConfirmed();
+            }
+            
             return;
         }
 
-        this.purchaseButton.innerText = 'confirm';
-        this.clickConfirmTimeout = window.setTimeout(
-            this.onPurchaseButtonConfirmTimeout.bind(this),
-            2000,
-        );
+        if (!this.hasAvailableHoneycomb()) {
+            this.purchaseButton.innerText = 'not enough honeycomb'
+            this.purchaseButtonTimeout = window.setTimeout(
+                this.onPurchaseButtonTimeout.bind(this),
+                2000,
+            );
+        } else {
+            this.purchaseButton.innerText = 'confirm';
+            this.purchaseButtonTimeout = window.setTimeout(
+                this.onPurchaseButtonTimeout.bind(this),
+                2000,
+            );
+        }        
     }
 
-    onPurchaseButtonConfirmTimeout() {
-        if (this.clickConfirmTimeout) {
-            window.clearTimeout(this.clickConfirmTimeout);
-            this.clickConfirmTimeout = undefined;
-            this.purchaseButton.innerText = '42 hc';
+    hasAvailableHoneycomb() {
+        return (this.levelData && (currentPlayer.availableHoneycomb >= this.levelData.price));
+    }
+
+    onPurchaseButtonTimeout() {
+        if (this.purchaseButtonTimeout) {
+            window.clearTimeout(this.purchaseButtonTimeout);
+            this.purchaseButtonTimeout = undefined;
+            this.refresh();
         }
     }
 
     onPurchaseConfirmed() {
 
-        this.onPurchaseButtonConfirmTimeout();
+        this.onPurchaseButtonTimeout();
         
         currentPlayer.availableHoneycomb -= this.levelData.price;
         currentPlayer.shopPurchases[this.key] = this.levelKey;
@@ -348,6 +366,7 @@ class ShopItem {
         currentPlayer.save();
 
         this.refresh();
+        this.shopMenu.refreshAvaialbleHoneycomb();
     }
 
     refresh() {
@@ -387,7 +406,7 @@ export class ShopMenu extends Menu {
         for (const shopItemKey of Object.keys(SHOP_ITEMS)) {
 
             const shopItemData = SHOP_ITEMS[shopItemKey];
-            const shopItem = new ShopItem(shopItemKey, shopItemData);
+            const shopItem = new ShopItem(this, shopItemKey, shopItemData);
 
             itemsListEl.appendChild(shopItem.listItemEl);
 
@@ -399,5 +418,12 @@ export class ShopMenu extends Menu {
         for (const shopItem of this.shopItems) {
             shopItem.refresh();
         }
+
+        this.refreshAvaialbleHoneycomb();
+    }
+
+    refreshAvaialbleHoneycomb(){
+        const availableHoneycombEl = this.element.querySelector('.available-honeycomb');
+        availableHoneycombEl.innerText = `${currentPlayer.availableHoneycomb} honeycomb`;
     }
 }
