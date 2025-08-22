@@ -143,6 +143,55 @@
       </div>
     </div>
   </div>
+
+  <div class="scroll-test-container">
+    <div class="scroll-test-header">
+      Scroll Test (0)
+    </div>
+    <div class="scroll-test-content">
+      1, 2, 3 <br />
+      4, 5, 6 <br />
+      7, 8, 9 <br />
+      1, 2, 3 <br />
+      4, 5, 6 <br />
+      7, 8, 9 <br />
+      1, 2, 3 <br />
+      4, 5, 6 <br />
+      7, 8, 9 <br />
+      1, 2, 3 <br />
+      4, 5, 6 <br />
+      7, 8, 9 <br />
+      1, 2, 3 <br />
+      4, 5, 6 <br />
+      7, 8, 9 <br />
+    </div>
+  </div>
+
+  <style>
+    .scroll-test-container {
+      display: flex;
+      flex-direction: column;
+      background-color: darkred;
+      gap: 5px;
+      width: 200px;
+      height: 100px;
+      z-index: 10000;
+      padding: 5px;
+    }
+
+    .scroll-test-header {
+      color: white;
+      background-color: darkblue;
+      flex: 0 0 auto;
+    }
+
+    .scroll-test-content {
+      color: white;
+      background-color: darkgreen;      
+      flex: 1 1 auto;
+      overflow-y: scroll;
+    }
+  </style>
   
   <script>
     const shouldFakeTouchScreenDevice = false;
