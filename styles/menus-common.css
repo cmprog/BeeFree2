@@ -24,6 +24,9 @@
 
     /* Required to enable touch scrolling on iOS */
     overflow: initial;
+    user-select: auto;
+    touch-action: auto;      
+    -webkit-overflow-scrolling: touch;
 
     &.menu-closed {
       display: none;
@@ -45,9 +48,12 @@
 
     > .content {
       flex: 1 1 auto;
+      background-color: darkgreen;
       overflow-y: scroll;
+      min-height: 0px;
+      user-select: auto;
+      touch-action: auto;
       -webkit-overflow-scrolling: touch;
-      height: 200px;
     }    
 
     button {
