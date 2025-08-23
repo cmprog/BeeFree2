@@ -1,7 +1,7 @@
 import { currentPlayer } from './player.js'
 
-setMedalDisplaySize(vec2(150, 30));
-setMedalDisplayIconSize(25);
+setMedalDisplaySize(vec2(300, 60));
+setMedalDisplayIconSize(55);
 
 class Achivement extends Medal {
     constructor(id, name, description, icon, src, data) {
