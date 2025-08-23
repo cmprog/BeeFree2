@@ -8,8 +8,8 @@ import { logDebug, logError, logInfo } from "./logging.js";
 
 if (isTouchDevice) {
     logDebug("Touch device detected, initializing touch gamepad.");
-    touchGamepadEnable = true;
-    touchGamepadSize = 200;
+    // touchGamepadEnable = true;
+    // touchGamepadSize = 200;
 }
 
 // Write up some error handing to we can see it in our UI logger
@@ -80,4 +80,4 @@ const imagesSources = [
     'img/honeycomb.png',
 ];
 
-// engineInit(gameInit, gameUpdate, gameUpdatePost, gameRender, gameRenderPost, imagesSources);
+engineInit(gameInit, gameUpdate, gameUpdatePost, gameRender, gameRenderPost, imagesSources);
