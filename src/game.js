@@ -41,8 +41,7 @@ function gameInit() {
 
     new CloudGenerator()
 
-    // MENUS.MAIN.open();
-    MENUS.ACHIVEMENTS.open();
+    MENUS.MAIN.open();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
