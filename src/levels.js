@@ -196,9 +196,8 @@ class StandardLevel extends Level {
         if (this.id + 1 < LEVELS.length) {
             currentPlayer.markLevelAvailable(this.id + 1);
         }
-        
-        currentPlayer.availableHoneycomb += this.honeycombValueCollected;
-        currentPlayer.totalHoneycombCollected += this.honeycombValueCollected;
+
+        currentPlayer.collectHoneycomb(this.honeycombValueCollected);
     }
 
     render() {
@@ -208,142 +207,152 @@ class StandardLevel extends Level {
     }
 }
 
-const FORMATIONS = {
+let FORMATIONS;
+export let LEVELS;
 
-    /** A set of 6 birds in the shape of a backward slash (\). */
-    backSlash: new FormationDefinition('Back Slash (\\)')    
-        .withSpawn(BIRD_TEMPLATES.fred, 0, vec2(20, 9))
-        .withSpawn(BIRD_TEMPLATES.fred, 1, vec2(20, 6))
-        .withSpawn(BIRD_TEMPLATES.fred, 1, vec2(20, 3))
-        .withSpawn(BIRD_TEMPLATES.fred, 1, vec2(20, -3))
-        .withSpawn(BIRD_TEMPLATES.fred, 1, vec2(20, -6))
-        .withSpawn(BIRD_TEMPLATES.fred, 1, vec2(20, -9)),
+function initFormations() {
+    FORMATIONS = {
 
-    /** A set of 6 birds in the shape of a forward slash (/). */
-    forwardSlash: new FormationDefinition('Forward Slash (/)') 
-        .withSpawn(BIRD_TEMPLATES.fred, 0, vec2(20, -9))
-        .withSpawn(BIRD_TEMPLATES.fred, 1, vec2(20, -6))
-        .withSpawn(BIRD_TEMPLATES.fred, 1, vec2(20, -3))
-        .withSpawn(BIRD_TEMPLATES.fred, 1, vec2(20, 3))
-        .withSpawn(BIRD_TEMPLATES.fred, 1, vec2(20, 6))
-        .withSpawn(BIRD_TEMPLATES.fred, 1, vec2(20, 7)),
+        /** A set of 6 birds in the shape of a backward slash (\). */
+        backSlash: new FormationDefinition('Back Slash (\\)')    
+            .withSpawn(BIRD_TEMPLATES.fred, 0, vec2(20, 9))
+            .withSpawn(BIRD_TEMPLATES.fred, 1, vec2(20, 6))
+            .withSpawn(BIRD_TEMPLATES.fred, 1, vec2(20, 3))
+            .withSpawn(BIRD_TEMPLATES.fred, 1, vec2(20, -3))
+            .withSpawn(BIRD_TEMPLATES.fred, 1, vec2(20, -6))
+            .withSpawn(BIRD_TEMPLATES.fred, 1, vec2(20, -9)),
 
-    /** A set of 4 birds aranged in a diamond pattern. */
-    diamond: new FormationDefinition('Diamond')
-        .withSpawn(BIRD_TEMPLATES.fred, 0.0, vec2(20, 0))
-        .withSpawn(BIRD_TEMPLATES.fred, 0.3, vec2(20, 5))
-        .withSpawn(BIRD_TEMPLATES.fred, 0.0, vec2(20, -5))
-        .withSpawn(BIRD_TEMPLATES.fred, 0.3, vec2(20, 0)),
+        /** A set of 6 birds in the shape of a forward slash (/). */
+        forwardSlash: new FormationDefinition('Forward Slash (/)') 
+            .withSpawn(BIRD_TEMPLATES.fred, 0, vec2(20, -9))
+            .withSpawn(BIRD_TEMPLATES.fred, 1, vec2(20, -6))
+            .withSpawn(BIRD_TEMPLATES.fred, 1, vec2(20, -3))
+            .withSpawn(BIRD_TEMPLATES.fred, 1, vec2(20, 3))
+            .withSpawn(BIRD_TEMPLATES.fred, 1, vec2(20, 6))
+            .withSpawn(BIRD_TEMPLATES.fred, 1, vec2(20, 7)),
 
-    /** A vertical stack of 2 birds. */
-    vert2: new FormationDefinition('Vertical (2)')
-        .withSpawn(BIRD_TEMPLATES.fred, 0.0, vec2(20, 5))
-        .withSpawn(BIRD_TEMPLATES.fred, 0.0, vec2(20, -5)),
+        /** A set of 4 birds aranged in a diamond pattern. */
+        diamond: new FormationDefinition('Diamond')
+            .withSpawn(BIRD_TEMPLATES.fred, 0.0, vec2(20, 0))
+            .withSpawn(BIRD_TEMPLATES.fred, 0.3, vec2(20, 5))
+            .withSpawn(BIRD_TEMPLATES.fred, 0.0, vec2(20, -5))
+            .withSpawn(BIRD_TEMPLATES.fred, 0.3, vec2(20, 0)),
 
-    /** A vertical stack of 3 birds. */
-    vert3: new FormationDefinition('Vertical (3)')
-        .withSpawn(BIRD_TEMPLATES.fred, 0.0, vec2(20, 0))
-        .withSpawn(BIRD_TEMPLATES.fred, 0.0, vec2(20, 7))
-        .withSpawn(BIRD_TEMPLATES.fred, 0.0, vec2(20, -7)),
+        /** A vertical stack of 2 birds. */
+        vert2: new FormationDefinition('Vertical (2)')
+            .withSpawn(BIRD_TEMPLATES.fred, 0.0, vec2(20, 5))
+            .withSpawn(BIRD_TEMPLATES.fred, 0.0, vec2(20, -5)),
 
-    /** The thing 1 & 2 twin birds which always come from the right
-     * side of the screen and move diagonally.
-     */
-    twinsRight: new FormationDefinition("Twins (Right - 1 & 2)")
-        .withSpawn(BIRD_TEMPLATES.thing1, 0.0, vec2(20, -12))
-        .withSpawn(BIRD_TEMPLATES.thing2, 0.0, vec2(20, 12)),
+        /** A vertical stack of 3 birds. */
+        vert3: new FormationDefinition('Vertical (3)')
+            .withSpawn(BIRD_TEMPLATES.fred, 0.0, vec2(20, 0))
+            .withSpawn(BIRD_TEMPLATES.fred, 0.0, vec2(20, 7))
+            .withSpawn(BIRD_TEMPLATES.fred, 0.0, vec2(20, -7)),
 
-    /** Releases a set of birds in the shape of a greater than (>) sign.
-     * This spawns 5 'columns' of birds where the third and fifth column
-     * are a different type of bird. The final column is the 'point' and
-     * only has one bird.
-     */
-    greaterThan: new FormationDefinition('Greater Than (>)')
-        .withSpawn(BIRD_TEMPLATES.fred, 0.0, vec2(20, 9))
-        .withSpawn(BIRD_TEMPLATES.fred, 0.0, vec2(20, -9))
-        .withDelay(0.3)
-        .withSpawn(BIRD_TEMPLATES.fred, 0.0, vec2(20, 7))
-        .withSpawn(BIRD_TEMPLATES.fred, 0.0, vec2(20, -7))
-        .withDelay(0.3)
-        .withSpawn(BIRD_TEMPLATES.bill, 0.0, vec2(20, 5))
-        .withSpawn(BIRD_TEMPLATES.bill, 0.0, vec2(20, -5))
-        .withDelay(0.3)
-        .withSpawn(BIRD_TEMPLATES.fred, 0.0, vec2(20, 3))
-        .withSpawn(BIRD_TEMPLATES.fred, 0.0, vec2(20, -3))
-        .withDelay(0.3)
-        .withSpawn(BIRD_TEMPLATES.bill, 0.0, vec2(20, 0)),
+        /** The thing 1 & 2 twin birds which always come from the right
+         * side of the screen and move diagonally.
+         */
+        twinsRight: new FormationDefinition("Twins (Right - 1 & 2)")
+            .withSpawn(BIRD_TEMPLATES.thing1, 0.0, vec2(20, -12))
+            .withSpawn(BIRD_TEMPLATES.thing2, 0.0, vec2(20, 12)),
 
+        /** Releases a set of birds in the shape of a greater than (>) sign.
+         * This spawns 5 'columns' of birds where the third and fifth column
+         * are a different type of bird. The final column is the 'point' and
+         * only has one bird.
+         */
+        greaterThan: new FormationDefinition('Greater Than (>)')
+            .withSpawn(BIRD_TEMPLATES.fred, 0.0, vec2(20, 9))
+            .withSpawn(BIRD_TEMPLATES.fred, 0.0, vec2(20, -9))
+            .withDelay(0.3)
+            .withSpawn(BIRD_TEMPLATES.fred, 0.0, vec2(20, 7))
+            .withSpawn(BIRD_TEMPLATES.fred, 0.0, vec2(20, -7))
+            .withDelay(0.3)
+            .withSpawn(BIRD_TEMPLATES.bill, 0.0, vec2(20, 5))
+            .withSpawn(BIRD_TEMPLATES.bill, 0.0, vec2(20, -5))
+            .withDelay(0.3)
+            .withSpawn(BIRD_TEMPLATES.fred, 0.0, vec2(20, 3))
+            .withSpawn(BIRD_TEMPLATES.fred, 0.0, vec2(20, -3))
+            .withDelay(0.3)
+            .withSpawn(BIRD_TEMPLATES.bill, 0.0, vec2(20, 0)),
+
+    };
 };
 
-export const LEVELS = [
-    new LevelDefinition(0, 'Level 1')
-        .withDelay(2)
-        .withFormation(FORMATIONS.backSlash)
-        .withDelay(5),
+export function initLevels() {
 
-    new LevelDefinition(1, 'Level 2')
-        .withDelay(2)
-        .withFormation(FORMATIONS.backSlash)
-        .withDelay(2)
-        .withFormation(FORMATIONS.forwardSlash)
-        .withDelay(2)
-        .withFormation(FORMATIONS.forwardSlash)
-        .withDelay(5),
+    initFormations();
 
-    new LevelDefinition(2, 'Level 3')
-        .withDelay(2)
-        .withFormation(FORMATIONS.diamond)
-        .withDelay(2)
-        .withFormation(FORMATIONS.diamond, new FormationCreationOptions()
-            .withPositionOffset(vec2(0, 5))
-        )
-        .withDelay(2)
-        .withFormation(FORMATIONS.diamond, new FormationCreationOptions()
-            .withPositionOffset(vec2(0, -5))
-        )
-        .withDelay(5),
+    LEVELS = [
+        new LevelDefinition(0, 'Level 1')
+            .withDelay(2)
+            .withFormation(FORMATIONS.backSlash)
+            .withDelay(5),
 
-    new LevelDefinition(3, 'Level 4')
-        .withDelay(2)
-        .withFormation(FORMATIONS.greaterThan)
-        .withDelay(2)
-        .withFormation(FORMATIONS.greaterThan)
-        .withDelay(5),
+        new LevelDefinition(1, 'Level 2')
+            .withDelay(2)
+            .withFormation(FORMATIONS.backSlash)
+            .withDelay(2)
+            .withFormation(FORMATIONS.forwardSlash)
+            .withDelay(2)
+            .withFormation(FORMATIONS.forwardSlash)
+            .withDelay(5),
 
-    new LevelDefinition(4, 'Level 5')
-        .withDelay(2)
-        .withFormation(FORMATIONS.vert3)
-        .withDelay(1)
-        .withFormation(FORMATIONS.twinsRight)
-        .withDelay(2)
-        .withFormation(FORMATIONS.vert3)
-        .withDelay(0.3)
-        .withFormation(FORMATIONS.vert2, new FormationCreationOptions()
-            .withTemplateMapping(BIRD_TEMPLATES.fred, BIRD_TEMPLATES.bill)
-        )
-        .withDelay(1)
-        .withFormation(FORMATIONS.twinsRight)
-        .withDelay(5),
+        new LevelDefinition(2, 'Level 3')
+            .withDelay(2)
+            .withFormation(FORMATIONS.diamond)
+            .withDelay(2)
+            .withFormation(FORMATIONS.diamond, new FormationCreationOptions()
+                .withPositionOffset(vec2(0, 5))
+            )
+            .withDelay(2)
+            .withFormation(FORMATIONS.diamond, new FormationCreationOptions()
+                .withPositionOffset(vec2(0, -5))
+            )
+            .withDelay(5),
 
-        
-    // new LevelDefinition(5, 'Level 6'),
-    // new LevelDefinition(6, 'Level 7'),
-    // new LevelDefinition(7, 'Level 8'),
-    // new LevelDefinition(8, 'Level 9'),
-    // new LevelDefinition(9, 'Level 10'),
-    // new LevelDefinition(10, 'Level 11'),
-    // new LevelDefinition(11, 'Level 12'),
-    // new LevelDefinition(12, 'Level 13'),
-    // new LevelDefinition(13, 'Level 14'),
-    // new LevelDefinition(14, 'Level 15'),
-    // new LevelDefinition(15, 'Level 16'),
-    // new LevelDefinition(16, 'Level 17'),
-    // new LevelDefinition(17, 'Level 18'),
-    // new LevelDefinition(18, 'Level 19'),
-    // new LevelDefinition(19, 'Level 20'),
-    // new LevelDefinition(20, 'Level 21'),
-    // new LevelDefinition(21, 'Level 22'),
-    // new LevelDefinition(22, 'Level 23'),
-    // new LevelDefinition(23, 'Level 24'),
-    // new LevelDefinition(24, 'Level 25'),
-]
+        new LevelDefinition(3, 'Level 4')
+            .withDelay(2)
+            .withFormation(FORMATIONS.greaterThan)
+            .withDelay(2)
+            .withFormation(FORMATIONS.greaterThan)
+            .withDelay(5),
+
+        new LevelDefinition(4, 'Level 5')
+            .withDelay(2)
+            .withFormation(FORMATIONS.vert3)
+            .withDelay(1)
+            .withFormation(FORMATIONS.twinsRight)
+            .withDelay(2)
+            .withFormation(FORMATIONS.vert3)
+            .withDelay(0.3)
+            .withFormation(FORMATIONS.vert2, new FormationCreationOptions()
+                .withTemplateMapping(BIRD_TEMPLATES.fred, BIRD_TEMPLATES.bill)
+            )
+            .withDelay(1)
+            .withFormation(FORMATIONS.twinsRight)
+            .withDelay(5),
+
+            
+        // new LevelDefinition(5, 'Level 6'),
+        // new LevelDefinition(6, 'Level 7'),
+        // new LevelDefinition(7, 'Level 8'),
+        // new LevelDefinition(8, 'Level 9'),
+        // new LevelDefinition(9, 'Level 10'),
+        // new LevelDefinition(10, 'Level 11'),
+        // new LevelDefinition(11, 'Level 12'),
+        // new LevelDefinition(12, 'Level 13'),
+        // new LevelDefinition(13, 'Level 14'),
+        // new LevelDefinition(14, 'Level 15'),
+        // new LevelDefinition(15, 'Level 16'),
+        // new LevelDefinition(16, 'Level 17'),
+        // new LevelDefinition(17, 'Level 18'),
+        // new LevelDefinition(18, 'Level 19'),
+        // new LevelDefinition(19, 'Level 20'),
+        // new LevelDefinition(20, 'Level 21'),
+        // new LevelDefinition(21, 'Level 22'),
+        // new LevelDefinition(22, 'Level 23'),
+        // new LevelDefinition(23, 'Level 24'),
+        // new LevelDefinition(24, 'Level 25'),
+    ]
+}

@@ -1,4 +1,3 @@
-import { Bee } from "./bee.js";
 import { BeeBullet, BirdBullet } from "./bullet.js";
 import { EntityType } from "./entities.js";
 import { currentLevel } from "./levels.js";

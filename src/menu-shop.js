@@ -387,7 +387,15 @@ class ShopItem {
 
         if (this.levelData) {
             this.purchaseButton.classList.remove('hidden');
-            this.purchaseButton.innerText = `${this.levelData.price} honeycomb`
+            
+            while (this.purchaseButton.firstChild) {
+                this.purchaseButton.removeChild(this.purchaseButton.lastChild);
+            }
+            
+            this.purchaseButton.appendChild(document.createTextNode(this.levelData.price));
+            this.purchaseButton.appendChild(document.createElement('br'));
+            this.purchaseButton.appendChild(document.createTextNode('honeycomb'));
+
             this.descriptionEl.innerText = this.levelData.description;
         } else {
             this.purchaseButton.classList.add('hidden');

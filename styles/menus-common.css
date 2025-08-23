@@ -48,7 +48,7 @@
 
     > .content {
       flex: 1 1 auto;
-      overflow-y: scroll;
+      overflow-y: auto;
       min-height: 0px;
       user-select: auto;
       touch-action: auto;

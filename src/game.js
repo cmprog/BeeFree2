@@ -1,11 +1,12 @@
 'use strict';
 
 import { CloudGenerator } from "./cloud.js";
-import { initializeSpriteAtlas, spriteAtlas } from "./sprites.js";
-import { MENUS } from "./menus.js";
-import { currentLevel } from "./levels.js";
+import { initSpriteAtlas } from "./sprites.js";
+import { initMenus, MENUS } from "./menus.js";
+import { currentLevel, initLevels } from "./levels.js";
 import { logDebug, logError, logInfo } from "./logging.js";
 import { tryUnlockAllAchivements } from "./achivements.js";
+import { initBirdTemplates } from "./birds.js";
 
 if (isTouchDevice) {
     logDebug("Touch device detected, initializing touch gamepad.");
@@ -28,7 +29,10 @@ function gameInit() {
 
     soundEnable = false;
 
-    initializeSpriteAtlas();
+    initSpriteAtlas();
+    initBirdTemplates();
+    initLevels();
+    initMenus();
 
     // use a 720p fixed size canvas
     setCanvasFixedSize(vec2(1280, 720));
@@ -37,7 +41,8 @@ function gameInit() {
 
     new CloudGenerator()
 
-    MENUS.MAIN.open();
+    // MENUS.MAIN.open();
+    MENUS.ACHIVEMENTS.open();
 }
 
 ///////////////////////////////////////////////////////////////////////////////

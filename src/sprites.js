@@ -1,6 +1,6 @@
 export let spriteAtlas;
 
-export function initializeSpriteAtlas() {
+export function initSpriteAtlas() {
     spriteAtlas = {
         bee: new TileInfo(vec2(0, 0), vec2(75, 59), 0),
 

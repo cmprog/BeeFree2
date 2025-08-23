@@ -4,10 +4,14 @@ import { MainMenu } from "./menu-main.js";
 import { ShopMenu } from "./menu-shop.js";
 import { StatisticsMenu } from "./menu-statistics.js";
 
-export const MENUS = {
-    MAIN: new MainMenu(),
-    SHOP: new ShopMenu(),
-    LEVEL_SELECTION: new LevelSelectionMenu(),
-    STATISTICS: new StatisticsMenu(),
-    ACHIVEMENTS: new AchivementsMenu(),
-};
+export let MENUS;
+
+export function initMenus() {
+    MENUS = {        
+        MAIN: new MainMenu(),
+        SHOP: new ShopMenu(),
+        LEVEL_SELECTION: new LevelSelectionMenu(),
+        STATISTICS: new StatisticsMenu(),
+        ACHIVEMENTS: new AchivementsMenu(),
+    }
+}

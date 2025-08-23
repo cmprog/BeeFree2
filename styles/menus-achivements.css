@@ -1,0 +1,54 @@
+@import url('./variables.css');
+@import url('./menus-common.css');
+
+#menu-achivements {
+
+  --level-button-size: 100px;
+  --font-size-name: 28px;
+  --font-size-description: 22px;
+  
+
+  .achivement-list {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: var(--spacing-default);
+  }
+
+  .achivement {
+    border: 1px solid black;
+    display: flex;
+    flex-direction: row;
+    gap: var(--spacing-default);
+    padding: var(--spacing-default);
+    width: calc(50% - var(--spacing-default));
+    background-color: #FFFFFFAA;
+
+    .icon {
+      flex: 0 0 auto;
+      visibility: hidden;
+      font-size: var(--font-size-name);
+      align-self: center;
+    }
+
+    .content {
+      flex: 1 1 auto;
+    }
+
+    .name {
+      font-size: var(--font-size-name);
+      font-weight: bold;
+    }
+
+    .description {
+      font-size: var(--font-size-description);
+    }
+
+    &.unlocked {
+      .icon {
+        visibility: visible;
+      }
+    }
+  }
+
+}

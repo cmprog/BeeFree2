@@ -20,3 +20,18 @@ li {
   padding: 0;
   margin: 0;
 }
+
+progress {
+  border-radius: var(--spacing-default);
+  width: 100%;
+  height: 1.0em;
+}
+
+progress::-webkit-progress-bar {
+  background-color: black;
+  border-radius: var(--spacing-default);
+}
+progress::-webkit-progress-value {
+  background-color: darkgoldenrod;
+  border-radius: var(--spacing-default);
+}

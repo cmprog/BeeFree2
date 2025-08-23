@@ -42,36 +42,41 @@ export class BirdTemplate {
 
 const STANDARD_BIRD_SPEED = 0.15;
 
-export const BIRD_TEMPLATES = {
+export let BIRD_TEMPLATES;
 
-    test: new BirdTemplate('Test', 'A test bird. Does not do anything.', 1, 1)
-        .withMovement(new StaticMovement())
-        .withShooting(new PassiveShooting())
-        .withColors(RED, RED),
+export function initBirdTemplates() {
+    
+    BIRD_TEMPLATES = {
 
-    /** A simple bird, simple movement and no shooting. */
-    fred: new BirdTemplate('Fred', 'A simple bird, simple movement and no shooting.', 1, 1)
-        .withMovement(new FixedVelocityMovement(vec2(-1, 0).normalize(STANDARD_BIRD_SPEED)))
-        .withShooting(new PassiveShooting())
-        .withColors(RED, RED),
+        test: new BirdTemplate('Test', 'A test bird. Does not do anything.', 1, 1)
+            .withMovement(new StaticMovement())
+            .withShooting(new PassiveShooting())
+            .withColors(RED, RED),
 
-    /** The most basic aggressive bird. Simple movement and shots forward. */
-    bill: new BirdTemplate('Bill', 'The most basic aggressive bird. Simple movement and shots forward.', 2, 2)
-        .withMovement(new FixedVelocityMovement(vec2(-1, 0).normalize(STANDARD_BIRD_SPEED)))
-        .withShooting(new SingleBulletShooting(3, vec2(-1, 0).normalize(3 * STANDARD_BIRD_SPEED), 1))
-        .withColors(BLUE, BLUE),
+        /** A simple bird, simple movement and no shooting. */
+        fred: new BirdTemplate('Fred', 'A simple bird, simple movement and no shooting.', 1, 1)
+            .withMovement(new FixedVelocityMovement(vec2(-1, 0).normalize(STANDARD_BIRD_SPEED)))
+            .withShooting(new PassiveShooting())
+            .withColors(RED, RED),
 
-    /** Twin to Thing 2 - this bird moves up and to the left while shooting. */
-    thing1: new BirdTemplate('Thing 1', 'Twin to Thing 2 - this bird moves up and to the left while shooting.', 3, 4)
-        .withMovement(new FixedVelocityMovement(vec2(-1, 1).normalize(STANDARD_BIRD_SPEED)))
-        .withShooting(new SingleBulletShooting(4, vec2(-1, 0).normalize(3 * STANDARD_BIRD_SPEED), 0.9))
-        .withColors(BLUE, RED),
+        /** The most basic aggressive bird. Simple movement and shots forward. */
+        bill: new BirdTemplate('Bill', 'The most basic aggressive bird. Simple movement and shots forward.', 2, 2)
+            .withMovement(new FixedVelocityMovement(vec2(-1, 0).normalize(STANDARD_BIRD_SPEED)))
+            .withShooting(new SingleBulletShooting(3, vec2(-1, 0).normalize(3 * STANDARD_BIRD_SPEED), 1))
+            .withColors(BLUE, BLUE),
 
-    /** The twin to Thing 1 - this bird moves down and to the left while shooting. */
-    thing2: new BirdTemplate('Thing 2', 'The twin to Thing 1 - this bird moves down and to the left while shooting.', 3, 4)
-        .withMovement(new FixedVelocityMovement(vec2(-1, -1).normalize(STANDARD_BIRD_SPEED)))
-        .withShooting(new SingleBulletShooting(4, vec2(-1, 0).normalize(3 * STANDARD_BIRD_SPEED), 0.9))
-        .withColors(BLUE, RED),
+        /** Twin to Thing 2 - this bird moves up and to the left while shooting. */
+        thing1: new BirdTemplate('Thing 1', 'Twin to Thing 2 - this bird moves up and to the left while shooting.', 3, 4)
+            .withMovement(new FixedVelocityMovement(vec2(-1, 1).normalize(STANDARD_BIRD_SPEED)))
+            .withShooting(new SingleBulletShooting(4, vec2(-1, 0).normalize(3 * STANDARD_BIRD_SPEED), 0.9))
+            .withColors(BLUE, RED),
+
+        /** The twin to Thing 1 - this bird moves down and to the left while shooting. */
+        thing2: new BirdTemplate('Thing 2', 'The twin to Thing 1 - this bird moves down and to the left while shooting.', 3, 4)
+            .withMovement(new FixedVelocityMovement(vec2(-1, -1).normalize(STANDARD_BIRD_SPEED)))
+            .withShooting(new SingleBulletShooting(4, vec2(-1, 0).normalize(3 * STANDARD_BIRD_SPEED), 0.9))
+            .withColors(BLUE, RED),
+    }
 }
 
 const BASE_BIRD_SIZE = 1.5

@@ -118,6 +118,11 @@ class Player {
         this.markLevelAvailable(0);
     }
 
+    collectHoneycomb(amount) {
+        this.availableHoneycomb += amount;
+        this.totalHoneycombCollected += amount;
+    }
+
     getLevel(levelId) {
         if (!(levelId in this.levels)) {
             this.levels[levelId] = new PlayerLevel();
@@ -160,6 +165,15 @@ class Player {
     markLevelAvailable(levelId) {
         const level = this.getLevel(levelId);
         level.markAvailable();
+    }
+
+    /**
+     * Checks if the player has unlocked the given achivement.
+     * @param {number} id The id of the achivement.
+     * @returns Boolean whether or not the player has the given achivement.
+     */
+    hasAchivement(id) {
+        return (id in this.achivements) && this.achivements[id];
     }
 
     save() {
