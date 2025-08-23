@@ -80,4 +80,4 @@ const imagesSources = [
     'img/honeycomb.png',
 ];
 
-engineInit(gameInit, gameUpdate, gameUpdatePost, gameRender, gameRenderPost, imagesSources);
+// engineInit(gameInit, gameUpdate, gameUpdatePost, gameRender, gameRenderPost, imagesSources);
