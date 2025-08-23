@@ -3358,8 +3358,8 @@ function touchInputInit()
         wasTouching = touching;
 
         // prevent default handling like copy and magnifier lens
-        if (document.hasFocus()) // allow document to get focus
-            e.preventDefault();
+        // if (document.hasFocus()) // allow document to get focus
+        //     e.preventDefault();
         
         // must return true so the document will get focus
         return true;
