@@ -48,7 +48,6 @@
 
     > .content {
       flex: 1 1 auto;
-      background-color: darkgreen;
       overflow-y: scroll;
       min-height: 0px;
       user-select: auto;
