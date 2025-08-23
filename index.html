@@ -147,7 +147,7 @@
   <div class="scroll-test-backdrop">
     <div class="scroll-test-container">
       <div class="scroll-test-header">
-        Scroll Test (4)
+        Scroll Test (7)
       </div>
       <div class="scroll-test-content">
         1, 2, 3 <br />
@@ -178,8 +178,6 @@
       width: 100vw;
       height: 100vh;
       z-index: 10000;  
-      user-select: auto;
-      touch-action: auto;
     }
 
     .scroll-test-container {
@@ -191,6 +189,9 @@
       width: 200px;
       height: 100px;
       padding: 5px;
+      user-select: auto;
+      touch-action: auto;      
+      -webkit-overflow-scrolling: touch;
     }
 
     .scroll-test-header {
@@ -207,6 +208,7 @@
       min-height: 0px;
       user-select: auto;
       touch-action: auto;
+      -webkit-overflow-scrolling: touch;
     }
   </style>
   
