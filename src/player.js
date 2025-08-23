@@ -99,6 +99,7 @@ class Player {
         this.beeBulletSpeed = 0.3;
 
         this.levels = {};
+        this.achivements = {};
 
         // Statistics
         this.availableHoneycomb = 0;
@@ -187,8 +188,9 @@ class Player {
             beeBulletSpeed: this.beeBulletSpeed,
 
             // Will populate afterwards
-            levels: {},
-            
+            levels: {},            
+
+            achivements: this.achivements,            
             shopPurchases: this.shopPurchases,
 
             availableHoneycomb: this.availableHoneycomb,
@@ -255,6 +257,13 @@ class Player {
             }
         }
 
+        this.achivements = { };
+        if (saveObj.achivements) {            
+            for (const key of Object.keys(saveObj.achivements)) {
+                this.achivements[key] = saveObj.achivements[key];
+            }
+        }
+
         this.availableHoneycomb = saveObj.availableHoneycomb;
         this.totalHoneycombCollected = saveObj.totalHoneycombCollected;
         this.killCount = saveObj.killCount;
@@ -266,12 +275,15 @@ class Player {
         this.flawlessLevelsCompleted = saveObj.flawlessLevelsCompleted;
         this.luckyOwlsSpawned = saveObj.luckyOwlsSpawned;
 
+        medalsForEach(m => m.reload());
+
         logDebug(`Player data loaded successfully!`);
     }
 
     reset() {
         currentPlayer = new Player();
-        currentPlayer.save();
+        currentPlayer.save();        
+        medalsForEach(m => m.reload());
     }
 }
 

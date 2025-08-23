@@ -5,6 +5,7 @@ import { initializeSpriteAtlas, spriteAtlas } from "./sprites.js";
 import { MENUS } from "./menus.js";
 import { currentLevel } from "./levels.js";
 import { logDebug, logError, logInfo } from "./logging.js";
+import { tryUnlockAllAchivements } from "./achivements.js";
 
 if (isTouchDevice) {
     logDebug("Touch device detected, initializing touch gamepad.");
@@ -31,6 +32,8 @@ function gameInit() {
 
     // use a 720p fixed size canvas
     setCanvasFixedSize(vec2(1280, 720));
+    
+    medalsForEach(m => m.reload());
 
     new CloudGenerator()
 
@@ -50,6 +53,8 @@ function gameUpdatePost() {
     // setup camera and prepare for render
 
     // logDebug(`Solid object count: ${engineObjectsCollide.length}`);
+
+    tryUnlockAllAchivements();
 }
 
 ///////////////////////////////////////////////////////////////////////////////

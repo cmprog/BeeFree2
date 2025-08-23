@@ -4,8 +4,6 @@ import { registerClick } from "./util.js";
 
 const CLASS_MENU_CLOSED = 'menu-closed'
 
-export let isHtmlMenuOpen = false;
-
 export class Menu {
 
     constructor(selector) {
@@ -26,7 +24,7 @@ export class Menu {
         this.isOpen = true;
         this.onOpened();
 
-        isHtmlMenuOpen = true;
+        setInputPreventDefault(false);
 
         const contentEl = this.element.querySelector('.content');
         if (contentEl) {
@@ -52,7 +50,7 @@ export class Menu {
         this.isOpen = false;
         this.closed();
 
-        isHtmlMenuOpen = false;
+        setInputPreventDefault(true);
     }
 
     closed() {
