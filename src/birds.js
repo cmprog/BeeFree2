@@ -77,9 +77,7 @@ export function initBirdTemplates() {
         bill: new BirdTemplate('Bill', 'The most basic aggressive bird. Simple movement and shots forward.', 2, 2)
             .withMovement(new FixedVelocityMovement(vec2(-1, 0).normalize(DEFAULT_BIRD_ATTRIBUTES.SPEED)))
             .withShooting(new SingleBulletShooting({
-                bulletFactory: new BirdBulletFactory({
-                    damage: 3,
-                }),
+                bulletFactory: new BirdBulletFactory(),
                 direction: vec2(-1, 0),
                 rate: 1,
             }))
@@ -89,9 +87,7 @@ export function initBirdTemplates() {
         thing1: new BirdTemplate('Thing 1', 'Twin to Thing 2 - this bird moves up and to the left while shooting.', 3, 4)
             .withMovement(new FixedVelocityMovement(vec2(-1, 1).normalize(DEFAULT_BIRD_ATTRIBUTES.SPEED)))
             .withShooting(new SingleBulletShooting({
-                bulletFactory: new BirdBulletFactory({
-                    damage: 3,
-                }),
+                bulletFactory: new BirdBulletFactory(),
                 direction: vec2(-1, 0),
                 rate: 1,
             }))

@@ -151,6 +151,8 @@ class StandardLevel extends Level {
         this.timeRemainingBar = new ProgressBar();
         this.timeRemainingBar.size = vec2(10, 1.0);
 
+        this.sammyChance = currentPlayer.sammyChance;
+
         const margin = vec2(0.1);
 
         this.timeRemainingBar.pos = screenToWorld(mainCanvasSize).scale(-1)
@@ -170,7 +172,7 @@ class StandardLevel extends Level {
         const timeRemaining = -this.levelTimer.get();
         this.timeRemainingBar.value = timeRemaining / this.levelDefinition.totalDuration;
 
-        if (randInt(0, 5_000) == 0) {
+        if (randInt(0, 5_000 * (1 / this.sammyChance)) == 0) {
             const worldSize = getWorldSize();
             const halfWorldSize = worldSize.scale(0.5);
             const owl = new Owl(vec2(-halfWorldSize.x - 10, rand(-halfWorldSize.y, halfWorldSize.y)));

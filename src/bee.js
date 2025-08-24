@@ -1,5 +1,5 @@
 import { EntityType, ProgressBar } from './entities.js';
-import { SingleBulletShooting } from "./shooting.js";
+import { MultiBulletShooting, SingleBulletShooting } from "./shooting.js";
 import { spriteAtlas } from "./sprites.js";
 import { currentLevel } from "./levels.js";
 import { BeeBulletFactory } from './bullet.js';
@@ -26,12 +26,22 @@ export class Bee extends EngineObject {
         this.honeycombAttraction = player.beeHoneycombAttration;    
         this.critChance = player.beeCritChance;
         this.critMultiplier = player.beeCritMultiplier;
-        
-        this.shooting = new SingleBulletShooting({
-            bulletFactory: new BeeBulletFactory(this),
-            direction: vec2(1, 0),
-            rate: 1.0 / player.beeFireRate,
-        });
+
+        if (player.beeShotCount > 1) {
+            this.shooting = new MultiBulletShooting({                
+                bulletFactory: new BeeBulletFactory(this),
+                count: player.beeShotCount,
+                spread: Math.PI / 6,
+                direction: vec2(1, 0),
+                rate: 1.0 / player.beeFireRate,
+            });
+        } else {
+            this.shooting = new SingleBulletShooting({
+                bulletFactory: new BeeBulletFactory(this),
+                direction: vec2(1, 0),
+                rate: 1.0 / player.beeFireRate,
+            });
+        }
         
         this.healthRegenTimer = new Timer(1);
     } 

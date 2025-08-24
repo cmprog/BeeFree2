@@ -29,3 +29,72 @@ export class SingleBulletShooting extends ShootingBehavior {
         }
     }
 }
+
+export class MultiBulletShooting extends ShootingBehavior {
+    constructor(opts) {
+        super();
+        
+        /**
+         * The number of bullets to spawn.
+         * @type {number}
+         * @public
+         * @readonly
+         */
+        this.count = opts.count;
+
+        /**
+         * The factory which can create bullets for us.
+         * @public
+         * @readonly
+         */
+        this.bulletFactory = opts.bulletFactory;
+
+        
+        /**
+         * The rate that we are allowed to fire bullets - defined as a duration in seconds.
+         * @type {number}
+         * @public
+         * @readonly
+         */
+        this.rate = opts.rate;
+        
+        /**
+         * A unit vector base direction we should be shooting the bullets.
+         * @type {number}
+         * @public
+         * @readonly
+         */
+        this.direction = opts.direction;
+
+        /**
+         * A spread angle, in radians. The number of bullets will be spread between
+         * (direction - (spread / 2), direction + (spread / 2)).
+         * @type {number}
+         * @public
+         * @readonly
+         */
+        this.spread = opts.spread;
+
+        this.startDirection = this.direction.rotate(-this.spread / 2);;
+        this.endDirection = this.direction.rotate(this.spread / 2);
+        this.deltaAngle = this.spread / (this.count - 1);
+
+        this.cooldownTimer = new Timer();
+    }
+
+    fire(shooter) {
+        if (!this.cooldownTimer.isSet() || this.cooldownTimer.elapsed()) {
+
+            let currentDirection = this.startDirection;
+            for (let iShot = 0; iShot < this.count; iShot += 1) {
+
+                const bullet = this.bulletFactory.createBullet(shooter, currentDirection);
+                currentLevel.trackObj(bullet);  
+
+                currentDirection = currentDirection.rotate(this.deltaAngle);              
+            }
+
+            this.cooldownTimer.set(this.rate); 
+        }
+    }
+}

@@ -1,3 +1,4 @@
+import { appendChildHtml } from './html.js';
 import { Menu } from './menu.js'
 import { currentPlayer } from './player.js';
 import { DEFAULT_ATTRIBUTE_VALUES } from './settings.js';
@@ -9,6 +10,9 @@ const SHOP_ITEMS = {
         description: 'Work out those wings! Helps you better dodge those pesky birds and piles of poo!',
         onPurchased: (itemKey, itemData, levelKey, levelData) => {
             currentPlayer.beeSpeed = levelData;
+        },
+        formatDisplayValue: (value) => {            
+            return `${(value * 10).toFixed(1)} flaps per second`
         },
         costBase: 5,
         costGrowth: 1.2,
@@ -22,10 +26,13 @@ const SHOP_ITEMS = {
         onPurchased: (itemKey, itemData, levelKey, levelData) => {
             currentPlayer.beeFireRate = levelData;
         },
+        formatDisplayValue: (value) => {            
+            return `${(1 / value).toFixed(2)} seconds per sting`
+        },
         costBase: 1,
         costGrowth: 1.80,
         valueBase: DEFAULT_ATTRIBUTE_VALUES.BEE_FIRE_RATE,        
-        valueGrowthMultiplier: 1.1,
+        valueGrowthMultiplier: 0.1,
     },
 
     BULLET_DAMAGE: {
@@ -33,6 +40,9 @@ const SHOP_ITEMS = {
         description: 'Increases how much damage is dealt by your stingers. Get them nice and sharp to take down those pesky birds.',        
         onPurchased: (itemKey, itemData, levelKey, levelData) => {
             currentPlayer.beeDamage = levelData;
+        },
+        formatDisplayValue: (value) => {            
+            return `${value.toFixed(1)} stinger power`
         },
         costBase: 5,
         costGrowth: 1.5,
@@ -46,6 +56,9 @@ const SHOP_ITEMS = {
         onPurchased: (itemKey, itemData, levelKey, levelData) => {
             currentPlayer.beeShotCount = levelData;
         },
+        formatDisplayValue: (value) => {            
+            return `${value.toFixed(0)} stingers per shoot`
+        },
         costBase: 75,
         costGrowth: 3,
         valueBase: DEFAULT_ATTRIBUTE_VALUES.BEE_SHOT_COUNT,
@@ -57,6 +70,9 @@ const SHOP_ITEMS = {
         description: 'Makes the stingers move faster. This makes it easier to aim at those birds, especially the ones that move try to dodge.',
         onPurchased: (itemKey, itemData, levelKey, levelData) => {
             currentPlayer.beeBulletSpeed = levelData;
+        },
+        formatDisplayValue: (value) => {            
+            return `${value.toFixed(2)} ouchies per second`
         },
         costBase: 5,
         costGrowth: 1.20,
@@ -70,6 +86,9 @@ const SHOP_ITEMS = {
         onPurchased: (itemKey, itemData, levelKey, levelData) => {
             currentPlayer.beeHoneycombAttration = levelData;
         },
+        formatDisplayValue: (value) => {            
+            return `${value.toFixed(2)} electro-sticky-magnitism`
+        },
         costBase: 5,
         costGrowth: 1.30,
         valueBase: DEFAULT_ATTRIBUTE_VALUES.BEE_HONEYCOMB_ATTRACTION,
@@ -81,6 +100,9 @@ const SHOP_ITEMS = {
         description: 'Honeycomb magnet works from slightly further distances.',
         onPurchased: (itemKey, itemData, levelKey, levelData) => {
             currentPlayer.beeHoneycombAttrationDistance = levelData;
+        },
+        formatDisplayValue: (value) => {            
+            return `${value.toFixed(1)} reachability`
         },
         costBase: 10,
         costGrowth: 1.6,
@@ -94,6 +116,9 @@ const SHOP_ITEMS = {
         onPurchased: (itemKey, itemData, levelKey, levelData) => {
             currentPlayer.beeMaxHealth = levelData;
         },
+        formatDisplayValue: (value) => {            
+            return `${value.toFixed(1)} hitpoints`
+        },
         costBase: 5,
         costGrowth: 1.1,
         valueBase: DEFAULT_ATTRIBUTE_VALUES.BEE_MAX_HEALTH,
@@ -105,6 +130,9 @@ const SHOP_ITEMS = {
         description: 'Increases your natural ability to heal. Scientists are still not sure how this works.',
         onPurchased: (itemKey, itemData, levelKey, levelData) => {
             currentPlayer.beeHealthRegen = levelData;
+        },
+        formatDisplayValue: (value) => {            
+            return `${value.toFixed(1)} hitpoints per second`
         },
         costBase: 5,
         costGrowth: 1.2,
@@ -118,10 +146,13 @@ const SHOP_ITEMS = {
         onPurchased: (itemKey, itemData, levelKey, levelData) => {
             currentPlayer.beeHealthRegen = levelData;
         },
+        formatDisplayValue: (value) => {            
+            return `${(value * 100).toFixed(1)}%`
+        },
         costBase: 5,
         costGrowth: 1.2,
         valueBase: DEFAULT_ATTRIBUTE_VALUES.BEE_CRIT_CHANCE,
-        valueGrowthMultiplier: 0.1,
+        valueGrowthMultiplier: 0.05,
     },
 
     CRIT_MULTIPLIER: {
@@ -130,6 +161,9 @@ const SHOP_ITEMS = {
         onPurchased: (itemKey, itemData, levelKey, levelData) => {
             currentPlayer.beeHealthRegen = levelData;
         },
+        formatDisplayValue: (value) => {            
+            return `x${value.toFixed(1)}`
+        },
         costBase: 5,
         costGrowth: 1.2,
         valueBase: DEFAULT_ATTRIBUTE_VALUES.BEE_CRIT_MULTIPLER,
@@ -137,10 +171,13 @@ const SHOP_ITEMS = {
     },
 
     SAMMY_CHANCE: {
-        title: 'Critical Hit Chance',
+        title: 'Sammy Chance',
         description: '',
         onPurchased: (itemKey, itemData, levelKey, levelData) => {
             currentPlayer.beeHealthRegen = levelData;
+        },
+        formatDisplayValue: (value) => {            
+            return `${value.toFixed(1)} discoverability`
         },
         costBase: 5,
         costGrowth: 1.2,
@@ -158,35 +195,31 @@ class ShopItem {
         this.data = data;
         this.currentLevel = 0;
 
-        const imgEl = document.createElement('img');
-
-        const titleEl = document.createElement('div');
-        titleEl.classList.add('title');
-        titleEl.innerText = this.data.title;
-
-        this.descriptionEl = document.createElement('div');        
-        this.descriptionEl.classList.add('description');
-        this.descriptionEl.innerText = data.description;
-
-        this.purchaseButton = document.createElement('button');
-        this.purchaseButton.classList.add('purchase');
-        this.purchaseButton.type = 'button';
-        registerClick(this.purchaseButton, this.onPurchaseButtonClick.bind(this));
-        
-        const detailsEl = document.createElement('div');
-        detailsEl.classList.add('details');
-        detailsEl.appendChild(titleEl);
-        detailsEl.appendChild(this.descriptionEl);
-
-        this.element = document.createElement('div');
-        this.element.classList.add('shop-item');
-        this.element.dataset['key'] = key;
-        this.element.appendChild(imgEl);
-        this.element.appendChild(detailsEl);
-        this.element.appendChild(this.purchaseButton);
+        const templateHtml = `
+            <div class="shop-item">
+                <img />
+                <div class="details">
+                    <div class="title">${this.data.title}</div>
+                    <div class="description">${this.data.description}</div>
+                    <div class="attribute-container">
+                        <span>From</span>
+                        <span class="attribute-value attribute-current"></span>
+                        <span>to</span>
+                        <span class="attribute-value attribute-next"></span>
+                    </div>
+                </div>
+                <button type="button" class="purchase"></button>
+            </div>
+        `;
 
         this.listItemEl = document.createElement('li');
-        this.listItemEl.appendChild(this.element);
+        appendChildHtml(this.listItemEl, templateHtml);
+
+        this.currentValueEl = this.listItemEl.querySelector('.attribute-value.attribute-current');
+        this.nextValueEl = this.listItemEl.querySelector('.attribute-value.attribute-next');
+
+        this.purchaseButton = this.listItemEl.querySelector('.purchase');
+        registerClick(this.purchaseButton, this.onPurchaseButtonClick.bind(this));
     }
 
     onPurchaseButtonClick() {
@@ -262,6 +295,11 @@ class ShopItem {
         } else {
             this.currentLevel = 0;
         }
+
+        const formatValue = this.data.formatDisplayValue || ((value) => value.toString());        
+
+        this.currentValueEl.innerText = formatValue(this.computeValue(this.currentLevel));
+        this.nextValueEl.innerText = formatValue(this.computeValue(this.currentLevel + 1));
             
         while (this.purchaseButton.firstChild) {
             this.purchaseButton.removeChild(this.purchaseButton.lastChild);

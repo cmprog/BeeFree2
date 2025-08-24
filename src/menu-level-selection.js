@@ -1,40 +1,36 @@
+import { appendChildHtml } from './html.js';
 import { LEVELS } from './levels.js';
 import { Menu } from './menu.js'
 import { currentPlayer } from './player.js';
 import { registerClick } from './util.js';
 
-class LevelSelectionButton {
+class LevelSelectionItem {
 
     constructor(levelDefinition) {
 
         this.definition = levelDefinition;
 
-        this.flawlessBadgeElement = document.createElement('div');            
-        this.flawlessBadgeElement.classList.add('level-badge');
-        this.flawlessBadgeElement.classList.add('level-badge-flawless');
-        this.flawlessBadgeElement.innerText = 'F'
+        const templateHtml = `
+            <button type="button" class="level">
+                <div class="level-title">${levelDefinition.name}</div>
+                <div class="level-badge-container">
+                    <div class="level-badge level-badge-flawless">F</div>
+                    <div class="level-badge level-badge-perfect">P</div>
+                </div>
+            </div>
+        `;
 
-        this.perfectBadgeElement = document.createElement('div');
-        this.perfectBadgeElement.classList.add('level-badge');
-        this.perfectBadgeElement.classList.add('level-badge-perfect');
-        this.perfectBadgeElement.innerText = 'P'
+        this.listItemEl = document.createElement('li');
+        appendChildHtml(this.listItemEl, templateHtml);
 
-        const badgeContainer = document.createElement('div');                  
-        badgeContainer.classList.add('level-badge-container');
-        badgeContainer.appendChild(this.flawlessBadgeElement);
-        badgeContainer.appendChild(this.perfectBadgeElement);
-
-        this.element = document.createElement('button');
-        this.element.type = 'button';
-        this.element.innerText = levelDefinition.name;
-        this.element.classList.add('level');
-        this.element.appendChild(badgeContainer);     
+        this.flawlessBadgeElement = this.listItemEl.querySelector('.level-badge-flawless');
+        this.perfectBadgeElement = this.listItemEl.querySelector('.level-badge-perfect');
+        this.element = this.listItemEl.querySelector('button');
         
         this.refreshBadges();
     }
 
     refreshBadges() {
-
         const levelData = currentPlayer.getLevel(this.definition.id);
         this.updateBadgeClass(this.flawlessBadgeElement, levelData.flawlessCount > 0);
         this.updateBadgeClass(this.perfectBadgeElement, levelData.perfectCount > 0);
@@ -60,7 +56,7 @@ export class LevelSelectionMenu extends Menu {
 
         for (const levelDefinition of LEVELS) {
 
-            const button = new LevelSelectionButton(levelDefinition);
+            const button = new LevelSelectionItem(levelDefinition);
             this.buttons.push(button);
 
             registerClick(button.element, this.loadLevel.bind(this, levelDefinition));

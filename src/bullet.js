@@ -25,6 +25,8 @@ export class BirdBulletFactory extends BulletFactory {
 
         super();
 
+        opts = opts || {};
+
         this.speed = opts.speed || DEFAULT_BIRD_ATTRIBUTES.BULLET_SPEED;
     }
 
@@ -71,7 +73,7 @@ export class Bullet extends EngineObject {
             o.applyDamage(damage);
         }
 
-        return true;
+        return false;
     }
 }
 
