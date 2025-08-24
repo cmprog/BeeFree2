@@ -5,6 +5,8 @@ import { PassiveShooting, SingleBulletShooting } from "./shooting.js";
 import { spriteAtlas } from "./sprites.js";
 import { Honeycomb } from "./honeycomb.js";
 import { currentLevel } from "./levels.js";
+import { DEFAULT_BIRD_ATTRIBUTES } from "./settings.js";
+import { BirdBulletFactory } from "./bullet.js";
 
 export class BirdTemplate {
     constructor(name, description, health, touchDamange) {
@@ -16,6 +18,9 @@ export class BirdTemplate {
         this.movement = new FixedVelocityMovement(-0.5);
         this.bodyColor = WHITE;
         this.headColor = WHITE;
+        this.damage = DEFAULT_BIRD_ATTRIBUTES.DAMAGE;
+        this.critChance = DEFAULT_BIRD_ATTRIBUTES.CRIT_CHANCE;
+        this.critMultiplier = DEFAULT_BIRD_ATTRIBUTES.CRIT_MULTIPLIER;
     }
 
     withShooting(shootingBehavior) {
@@ -34,13 +39,22 @@ export class BirdTemplate {
         return this;
     }
 
+    withDamange(value) {
+        this.damage = value;
+        return this;
+    }
+
+    withCritical(chance, multipler) {
+        this.critChance = chance;
+        this.multipler = multipler;
+        return this;
+    }
+
     create(pos) {
         const bird = new Bird(pos, this);
         return bird;
     }
 }
-
-const STANDARD_BIRD_SPEED = 0.15;
 
 export let BIRD_TEMPLATES;
 
@@ -55,26 +69,44 @@ export function initBirdTemplates() {
 
         /** A simple bird, simple movement and no shooting. */
         fred: new BirdTemplate('Fred', 'A simple bird, simple movement and no shooting.', 1, 1)
-            .withMovement(new FixedVelocityMovement(vec2(-1, 0).normalize(STANDARD_BIRD_SPEED)))
+            .withMovement(new FixedVelocityMovement(vec2(-1, 0).normalize(DEFAULT_BIRD_ATTRIBUTES.SPEED)))
             .withShooting(new PassiveShooting())
             .withColors(RED, RED),
 
         /** The most basic aggressive bird. Simple movement and shots forward. */
         bill: new BirdTemplate('Bill', 'The most basic aggressive bird. Simple movement and shots forward.', 2, 2)
-            .withMovement(new FixedVelocityMovement(vec2(-1, 0).normalize(STANDARD_BIRD_SPEED)))
-            .withShooting(new SingleBulletShooting(3, vec2(-1, 0).normalize(3 * STANDARD_BIRD_SPEED), 1))
+            .withMovement(new FixedVelocityMovement(vec2(-1, 0).normalize(DEFAULT_BIRD_ATTRIBUTES.SPEED)))
+            .withShooting(new SingleBulletShooting({
+                bulletFactory: new BirdBulletFactory({
+                    damage: 3,
+                }),
+                direction: vec2(-1, 0),
+                rate: 1,
+            }))
             .withColors(BLUE, BLUE),
 
         /** Twin to Thing 2 - this bird moves up and to the left while shooting. */
         thing1: new BirdTemplate('Thing 1', 'Twin to Thing 2 - this bird moves up and to the left while shooting.', 3, 4)
-            .withMovement(new FixedVelocityMovement(vec2(-1, 1).normalize(STANDARD_BIRD_SPEED)))
-            .withShooting(new SingleBulletShooting(4, vec2(-1, 0).normalize(3 * STANDARD_BIRD_SPEED), 0.9))
+            .withMovement(new FixedVelocityMovement(vec2(-1, 1).normalize(DEFAULT_BIRD_ATTRIBUTES.SPEED)))
+            .withShooting(new SingleBulletShooting({
+                bulletFactory: new BirdBulletFactory({
+                    damage: 3,
+                }),
+                direction: vec2(-1, 0),
+                rate: 1,
+            }))
             .withColors(BLUE, RED),
 
         /** The twin to Thing 1 - this bird moves down and to the left while shooting. */
         thing2: new BirdTemplate('Thing 2', 'The twin to Thing 1 - this bird moves down and to the left while shooting.', 3, 4)
-            .withMovement(new FixedVelocityMovement(vec2(-1, -1).normalize(STANDARD_BIRD_SPEED)))
-            .withShooting(new SingleBulletShooting(4, vec2(-1, 0).normalize(3 * STANDARD_BIRD_SPEED), 0.9))
+            .withMovement(new FixedVelocityMovement(vec2(-1, -1).normalize(DEFAULT_BIRD_ATTRIBUTES.SPEED)))
+            .withShooting(new SingleBulletShooting({
+                bulletFactory: new BirdBulletFactory({
+                    damage: 4,
+                }),
+                direction: vec2(-1, 0),
+                rate: (1.0 / 0.9),
+            }))            
             .withColors(BLUE, RED),
     }
 }
@@ -155,6 +187,9 @@ export class Bird extends EngineObject
         this.maxHealth = template.health;
         this.health = this.maxHealth;        
 
+        this.damage = template.critChance;
+        this.critChance = template.critChance;
+        this.critMultiplier = template.critMultiplier;
         this.touchDamange = template.touchDamange;
         this.shooting = template.shooting;
         this.movement = template.movement    
@@ -190,6 +225,13 @@ export class Bird extends EngineObject
                 currentLevel.trackObj(honeycomb);
                 currentLevel.onBirdKilled();
             }
+        }
+    }
+
+    getDamage() {        
+        let damage = this.damange;
+        if (rand(0, 1) >= this.critChance) {
+            damage = damage * this.critMultiplier;
         }
     }
 

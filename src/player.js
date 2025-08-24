@@ -1,5 +1,6 @@
 import { Bee } from "./bee.js";
 import { logDebug, logError } from "./logging.js";
+import { DEFAULT_ATTRIBUTE_VALUES } from "./settings.js";
 import { SingleBulletShooting } from "./shooting.js";
 
 const SAVE_KEY = "save";
@@ -89,20 +90,24 @@ class Player {
         this.lastSavedOn = undefined;
 
         // Attributes
-        this.beeSpeed = 0.1;
-        this.beeMaxHealth = 5;
-        this.beeHealthRegen = 0;
-        this.beeFireRate = 1;
-        this.beeDamage = 1;
-        this.beeShotCount = 1;
-        this.beeHoneycombAttration = 0;
-        this.beeBulletSpeed = 0.3;
+        this.beeSpeed = DEFAULT_ATTRIBUTE_VALUES.BEE_SPEED;
+        this.beeMaxHealth = DEFAULT_ATTRIBUTE_VALUES.BEE_MAX_HEALTH;
+        this.beeHealthRegen = DEFAULT_ATTRIBUTE_VALUES.BEE_HEALTH_REGEN;
+        this.beeFireRate = DEFAULT_ATTRIBUTE_VALUES.BEE_FIRE_RATE;
+        this.beeDamage = DEFAULT_ATTRIBUTE_VALUES.BEE_DAMAGE;
+        this.beeShotCount = DEFAULT_ATTRIBUTE_VALUES.BEE_SHOT_COUNT;
+        this.beeHoneycombAttration = DEFAULT_ATTRIBUTE_VALUES.BEE_HONEYCOMB_ATTRACTION;
+        this.beeHoneycombAttrationDistance = DEFAULT_ATTRIBUTE_VALUES.BEE_HONEYCOMB_ATTRACTION_DISTANCE;
+        this.beeBulletSpeed = DEFAULT_ATTRIBUTE_VALUES.BEE_BULLET_SPEED;
+        this.beeCritChance = DEFAULT_ATTRIBUTE_VALUES.BEE_CRIT_CHANCE;
+        this.beeCritMultiplier = DEFAULT_ATTRIBUTE_VALUES.BEE_CRIT_MULTIPLER;
+        this.sammyChance = DEFAULT_ATTRIBUTE_VALUES.SAMMY_CHANCE;
 
         this.levels = {};
         this.achivements = {};
 
         // Statistics
-        this.availableHoneycomb = 0;
+        this.availableHoneycomb = 10000;
         this.totalHoneycombCollected = 0;
         this.killCount = 0;
         this.deathCount = 0;
@@ -121,6 +126,10 @@ class Player {
     collectHoneycomb(amount) {
         this.availableHoneycomb += amount;
         this.totalHoneycombCollected += amount;
+    }
+
+    spendHoneycomb(amount) {
+        this.availableHoneycomb -= amount;
     }
 
     getLevel(levelId) {
@@ -199,7 +208,11 @@ class Player {
             beeDamage: this.beeDamage,
             beeShotCount: this.beeShotCount,
             beeHoneycombAttration: this.beeHoneycombAttration,
+            beeHoneycombAttrationDistance: this.beeHoneycombAttrationDistance,
             beeBulletSpeed: this.beeBulletSpeed,
+            beeCritChance: this.beeCritChance,
+            beeCritMultiplier: this.beeCritMultiplier,
+            sammyChance: this.sammyChance,
 
             // Will populate afterwards
             levels: {},            
@@ -244,14 +257,18 @@ class Player {
         this.lastPlayedOn = saveObj.lastPlayedOn;
         this.lastSavedOn = saveObj.lastSavedOn;
 
-        this.beeSpeed = saveObj.beeSpeed;
-        this.beeMaxHealth = saveObj.beeMaxHealth;
-        this.beeHealthRegen = saveObj.beeHealthRegen;
-        this.beeFireRate = saveObj.beeFireRate;
-        this.beeDamage = saveObj.beeDamage;
-        this.beeShotCount = saveObj.beeShotCount;
-        this.beeHoneycombAttration = saveObj.beeHoneycombAttration;
-        this.beeBulletSpeed = saveObj.beeBulletSpeed;
+        this.beeSpeed = saveObj.beeSpeed || DEFAULT_ATTRIBUTE_VALUES.BEE_SPEED;
+        this.beeMaxHealth = saveObj.beeMaxHealth || DEFAULT_ATTRIBUTE_VALUES.BEE_MAX_HEALTH;
+        this.beeHealthRegen = saveObj.beeHealthRegen || DEFAULT_ATTRIBUTE_VALUES.BEE_HEALTH_REGEN;
+        this.beeFireRate = saveObj.beeFireRate || DEFAULT_ATTRIBUTE_VALUES.BEE_FIRE_RATE;
+        this.beeDamage = saveObj.beeDamage || DEFAULT_ATTRIBUTE_VALUES.BEE_DAMAGE;
+        this.beeShotCount = saveObj.beeShotCount || DEFAULT_ATTRIBUTE_VALUES.BEE_SHOT_COUNT;
+        this.beeHoneycombAttration = saveObj.beeHoneycombAttration || DEFAULT_ATTRIBUTE_VALUES.BEE_HONEYCOMB_ATTRACTION;
+        this.beeHoneycombAttrationDistance = saveObj.beeHoneycombAttrationDistance || DEFAULT_ATTRIBUTE_VALUES.BEE_HONEYCOMB_ATTRACTION_DISTANCE;
+        this.beeBulletSpeed = saveObj.beeBulletSpeed || DEFAULT_ATTRIBUTE_VALUES.BEE_BULLET_SPEED;
+        this.beeCritChance = saveObj.beeCritChance || DEFAULT_ATTRIBUTE_VALUES.BEE_CRIT_CHANCE;
+        this.beeCritMultiplier = saveObj.beeCritMultiplier || DEFAULT_ATTRIBUTE_VALUES.BEE_CRIT_MULTIPLER;
+        this.sammyChance = saveObj.sammyChance || DEFAULT_ATTRIBUTE_VALUES.SAMMY_CHANCE;
 
         // Clear the current levels as a new obj
         this.levels = {};

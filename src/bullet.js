@@ -1,12 +1,44 @@
 import { EntityType } from './entities.js';
+import { DEFAULT_BIRD_ATTRIBUTES } from './settings.js';
 import { spriteAtlas } from "./sprites.js";
 import { scaleTileSizeHeight } from "./util.js";
 
+export class BulletFactory {
+
+}
+
+export class BeeBulletFactory extends BulletFactory {
+    constructor(bee) {
+
+        super();
+
+        this.speed = bee.bulletSpeed;
+    }
+
+    createBullet(entity, direction) {
+        return new BeeBullet(entity, direction.normalize(this.speed));
+    }
+}
+
+export class BirdBulletFactory extends BulletFactory {
+    constructor(opts) {
+
+        super();
+
+        this.speed = opts.speed || DEFAULT_BIRD_ATTRIBUTES.BULLET_SPEED;
+    }
+
+    createBullet(entity, direction) {
+        return new BirdBullet(entity, direction.normalize(this.speed));
+    }
+}
+
 export class Bullet extends EngineObject {
 
-    constructor(pos, velocity, tileInfo) {
-        super(pos, vec2(1), tileInfo);
+    constructor(spawningEntity, velocity, tileInfo) {
+        super(spawningEntity.pos, vec2(1), tileInfo);
 
+        this.spawningEntity = spawningEntity;
         this.velocity = velocity;
 
         this.setCollision();
@@ -24,39 +56,45 @@ export class Bullet extends EngineObject {
             this.destroy();
         }
     }
-}
 
-export class BeeBullet extends Bullet {
-    constructor(pos, velocity) {
-        super(pos, velocity, spriteAtlas.ammo.bee);
-        this.entityType = EntityType.BEE_BULLET;
+    isValidTarget(o) {
+        return false;
     }
 
     collideWithObject(o) {
 
-        if (o.entityType == EntityType.BIRD) {
+        if (this.isValidTarget(o)) {
+
             this.destroy();
-            o.applyDamage(1);
+
+            const damage = this.spawningEntity.getDamage();
+            o.applyDamage(damage);
         }
 
         return true;
     }
 }
 
+export class BeeBullet extends Bullet {
+    constructor(spawningEntity, velocity) {
+        super(spawningEntity, velocity, spriteAtlas.ammo.bee);
+
+        this.entityType = EntityType.BEE_BULLET;
+    }
+
+    isValidTarget(o) {
+        return o.entityType == EntityType.BIRD;
+    }
+}
+
 export class BirdBullet extends Bullet {
 
-    constructor(pos, velocity) {
-        super(pos, velocity, spriteAtlas.ammo.bird);
+    constructor(spawningEntity, velocity) {
+        super(spawningEntity, velocity, spriteAtlas.ammo.bird);
         this.entityType = EntityType.BIRD_BULLET;
-    }   
+    }  
 
-    collideWithObject(o) {
-
-        if (o.entityType == EntityType.BEE) {
-            this.destroy();
-            o.applyDamage(1);
-        }
-
-        return false;
-    } 
+    isValidTarget(o) {
+        return o.entityType == EntityType.BEE;
+    }
 }

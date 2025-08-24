@@ -2,6 +2,7 @@ import { EntityType, ProgressBar } from './entities.js';
 import { SingleBulletShooting } from "./shooting.js";
 import { spriteAtlas } from "./sprites.js";
 import { currentLevel } from "./levels.js";
+import { BeeBulletFactory } from './bullet.js';
 
 export class Bee extends EngineObject {
 
@@ -15,18 +16,22 @@ export class Bee extends EngineObject {
         this.renderOrder = 400;
 
         this.setCollision();
-        
-        this.shooting = new SingleBulletShooting(
-            player.beeDamage, 
-            vec2(1, 0).normalize(player.beeBulletSpeed),
-            player.beeFireRate,
-        );
 
+        this.damange = player.beeDamage;
+        this.bulletSpeed = player.beeBulletSpeed;
         this.speed = player.beeSpeed;        
         this.maxHealth = player.beeMaxHealth;
         this.health = this.maxHealth;
         this.healthRegen = player.beeHealthRegen;
         this.honeycombAttraction = player.beeHoneycombAttration;    
+        this.critChance = player.beeCritChance;
+        this.critMultiplier = player.beeCritMultiplier;
+        
+        this.shooting = new SingleBulletShooting({
+            bulletFactory: new BeeBulletFactory(this),
+            direction: vec2(1, 0),
+            rate: 1.0 / player.beeFireRate,
+        });
         
         this.healthRegenTimer = new Timer(1);
     } 
@@ -97,6 +102,16 @@ export class Bee extends EngineObject {
                 currentLevel.onBeeDestroyed();
             }
         }
+    }
+
+    getDamage() {
+        
+        let damage = this.damange;
+        if (rand(0, 1) >= this.critChance) {
+            damage = damage * this.critMultiplier;
+        }
+
+        return damage;
     }
 
     collideWithObject(o) {

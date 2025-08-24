@@ -1,7 +1,4 @@
-import { BeeBullet, BirdBullet } from "./bullet.js";
-import { EntityType } from "./entities.js";
 import { currentLevel } from "./levels.js";
-import { SOUNDS } from "./sounds.js";
 
 export class ShootingBehavior {
 
@@ -14,28 +11,20 @@ export class PassiveShooting extends ShootingBehavior {
 }
 
 export class SingleBulletShooting extends ShootingBehavior {
-    constructor(damage, velocity, rate) {
+    constructor(opts) {
         super();
-
-        this.damage = damage;
-        this.velocity = velocity;
-        this.rate = rate;
+        
+        this.bulletFactory = opts.bulletFactory;
+        this.rate = opts.rate;
+        this.direction = opts.direction;
 
         this.cooldownTimer = new Timer();
     }
 
     fire(shooter) {
         if (!this.cooldownTimer.isSet() || this.cooldownTimer.elapsed()) {
-
-            if (shooter.entityType == EntityType.BEE) {
-                const bullet = new BeeBullet(shooter.pos, this.velocity);
-                currentLevel.trackObj(bullet);
-                SOUNDS.shoot.play(0, 1, 1);
-            } else if (shooter.entityType == EntityType.BIRD) {
-                const bullet = new BirdBullet(shooter.pos, this.velocity);
-                currentLevel.trackObj(bullet);
-            }
-
+            const bullet = this.bulletFactory.createBullet(shooter, this.direction);
+            currentLevel.trackObj(bullet);
             this.cooldownTimer.set(this.rate);            
         }
     }

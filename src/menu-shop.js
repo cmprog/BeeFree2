@@ -1,277 +1,152 @@
 import { Menu } from './menu.js'
 import { currentPlayer } from './player.js';
+import { DEFAULT_ATTRIBUTE_VALUES } from './settings.js';
 import { registerClick } from './util.js';
 
 const SHOP_ITEMS = {    
     BEE_SPEED: {
         title: 'Bee Speed',
-        maxDescription: 'You are too fast, can\'t break the laws of physics.',
+        description: 'Work out those wings! Helps you better dodge those pesky birds and piles of poo!',
         onPurchased: (itemKey, itemData, levelKey, levelData) => {
-            currentPlayer.beeSpeed += levelData.deltaValue;
+            currentPlayer.beeSpeed = levelData;
         },
-        levels: {
-            1: {
-                price: 5,
-                description: 'Now, your stingers move faster!',
-                deltaValue: 0.025,
-            },
-            2: {
-                price: 10,
-                description: 'Faster stingers are harder for the birds to dodge!',
-                deltaValue: 0.025,
-            },
-            3: {
-                price: 25,
-                description: 'Starting to pick up more speed!',
-                deltaValue: 0.025,
-            },
-            4: {
-                price: 50,
-                description: 'Your stingers could compete in NASCAR at this point!',
-                deltaValue: 0.025,
-            },
-            5: {
-                price: 100,
-                description: 'It\'s a bird! It\'s a plane! Nope, just your stingers!',
-                deltaValue: 0.025,
-            },
-        },
+        costBase: 5,
+        costGrowth: 1.2,
+        valueBase: DEFAULT_ATTRIBUTE_VALUES.BEE_SPEED,
+        valueGrowthMultiplier: 0.025,
     },
 
     BULLET_RATE: {
         title: 'Sing Rate',
-        maxDescription: 'There is no way you could shoot those stingers any faster than you do.',
+        description: 'Increases the rate you can shoot your stinger.',
         onPurchased: (itemKey, itemData, levelKey, levelData) => {
-            currentPlayer.beeFireRate += levelData.valueDelta;
+            currentPlayer.beeFireRate = levelData;
         },
-        levels: {
-            1: {
-                price: 1,
-                description: 'Sting faster!',
-                valueDelta: -0.1,
-            },
-            2: {
-                price: 10,
-                description: 'Stinging this fast must work your abdominals!',
-                valueDelta: -0.1,
-            },
-            3: {
-                price: 30,
-                description: 'In reality - you should only be able to sting once...',
-                valueDelta: -0.1,
-            },
-            4: {
-                price: 50,
-                description: 'This looks painful - for the birds!',
-                valueDelta: -0.1,
-            },
-            5: {
-                price: 100,
-                description: 'Hope the enemies won\'t blink, these bullets are coming fast!',
-                valueDelta: -0.1,
-            },
-        }
+        costBase: 1,
+        costGrowth: 1.80,
+        valueBase: DEFAULT_ATTRIBUTE_VALUES.BEE_FIRE_RATE,        
+        valueGrowthMultiplier: 1.1,
     },
 
     BULLET_DAMAGE: {
         title: 'Damage',
-        maxDescription: 'Theres just no way you could sting better!',        
+        description: 'Increases how much damage is dealt by your stingers. Get them nice and sharp to take down those pesky birds.',        
         onPurchased: (itemKey, itemData, levelKey, levelData) => {
-            currentPlayer.beeDamage += levelData.levelDelta;
+            currentPlayer.beeDamage = levelData;
         },
-        levels: {
-            1: {
-                price: 10,
-                description: 'More potent stingers - its better than before at least...',
-                valueDelta: 1.0,
-            },
-            2: {
-                price: 25,
-                description: 'Now you\'re starting to do some damage!',
-                valueDelta: 1.0,
-            },
-            3: {
-                price: 50,
-                description: 'Someone\'s been working out their stinger!',
-                valueDelta: 1.0,
-            },
-            4: {
-                price: 75,
-                description: 'Did you sharpen the point on your stinger?',
-                valueDelta: 1.0,
-            },
-            5: {
-                price: 100,
-                description: 'You must be packing a load of bricks behind those stings!',
-                valueDelta: 1.0,
-            },
-        }
+        costBase: 5,
+        costGrowth: 1.5,
+        valueBase: DEFAULT_ATTRIBUTE_VALUES.BEE_DAMAGE,
+        valueGrowthMultiplier: 0.5,
     },
 
     BULLET_MULTISHOT: {
         title: 'Multishot',
-        maxDescription: 'When all else fails, shoot more stingers, one of them will hit!',
+        description: 'Increase the number of stingers with each shot. Do not ask me how this works, but I\'ll bet it is painful... for the birds.',
         onPurchased: (itemKey, itemData, levelKey, levelData) => {
-            currentPlayer.beeShotCount += levelData.valueDelta;
+            currentPlayer.beeShotCount = levelData;
         },
-        levels: {
-            1: {
-                price: 75,
-                description: 'hrough the miracle of science, shoot 2 stingers with each sting!',
-                valueDelta: 1,
-            },
-            2: {
-                price: 200,
-                description: 'Allows the bee to sting with 3 stingers at once, we\'re not sure how this is possible...',
-                valueDelta: 1,
-            },
-        }
+        costBase: 75,
+        costGrowth: 3,
+        valueBase: DEFAULT_ATTRIBUTE_VALUES.BEE_SHOT_COUNT,
+        valueGrowthMultiplier: 1,
     },
 
     BULLET_SPEED: {
         title: 'Stinger Speed',
-        maxDescription: 'Any faster would break the laws of bee-physics!',
+        description: 'Makes the stingers move faster. This makes it easier to aim at those birds, especially the ones that move try to dodge.',
         onPurchased: (itemKey, itemData, levelKey, levelData) => {
-            currentPlayer.beeBulletSpeed += levelData.valueDelta;
+            currentPlayer.beeBulletSpeed = levelData;
         },
-        levels: {
-            1: {
-                price: 5,
-                description: 'More potent stingers - its better than before at least...',
-                valueDelta: 0.06,
-            },
-            2: {
-                price: 10,
-                description: 'Faster stingers are harder for the birds to dodge!',
-                valueDelta: 0.06,
-            },
-            3: {
-                price: 25,
-                description: 'Starting to pick up more speed!',
-                valueDelta: 0.06,
-            },
-            4: {
-                price: 50,
-                description: 'Your stingers could compete in NASCAR at this point!',
-                valueDelta: 0.06,
-            },
-            5: {
-                price: 100,
-                description: 'It\'s a bird! It\'s a plane! Nope, just your stingers!',
-                valueDelta: 0.06,
-            },
-        }
+        costBase: 5,
+        costGrowth: 1.20,
+        valueBase: DEFAULT_ATTRIBUTE_VALUES.BEE_BULLET_SPEED,
+        valueGrowthMultiplier: 0.06,
     },
 
     HONEYCOMB_MAGNET: {
         title: 'Homeycomb Magnet',
-        maxDescription: 'Any more attractive and I\'d be drawn to you!',
+        description: 'Makes honeycomb slightly more attracted to you due to your charasmatic personality making it much easier to collect more honeycomb.',
         onPurchased: (itemKey, itemData, levelKey, levelData) => {
-            currentPlayer.beeHoneycombAttration += levelData.valueDelta;
+            currentPlayer.beeHoneycombAttration = levelData;
         },
-        levels: {
-            1: {
-                price: 5,
-                description: 'The honeycomb will become slightly attracted to you with this magnet!',
-                valueDelta: 0.1,
-            },
-            2: {
-                price: 15,
-                description: 'Isn\'t it nice the honeycomb comes to you?',
-                valueDelta: 0.1,
-            },
-            3: {
-                price: 25,
-                description: 'The honeycomb is addictive isn\'t it?',
-                valueDelta: 0.1,
-            },
-            4: {
-                price: 40,
-                description: 'In Soviet Russia, honeycomb collects you!',
-                valueDelta: 0.1,
-            },
-            5: {
-                price: 60,
-                description: 'Who even needs to collect honeycomb at this point?',
-                valueDelta: 0.1,
-            },
-        }
+        costBase: 5,
+        costGrowth: 1.30,
+        valueBase: DEFAULT_ATTRIBUTE_VALUES.BEE_HONEYCOMB_ATTRACTION,
+        valueGrowthMultiplier: 0.01,
+    },
+
+    HONEYCOMB_MAGNET_DISTANCE: {
+        title: 'Homeycomb Magnet Distance',
+        description: 'Honeycomb magnet works from slightly further distances.',
+        onPurchased: (itemKey, itemData, levelKey, levelData) => {
+            currentPlayer.beeHoneycombAttrationDistance = levelData;
+        },
+        costBase: 10,
+        costGrowth: 1.6,
+        valueBase: DEFAULT_ATTRIBUTE_VALUES.BEE_HONEYCOMB_ATTRACTION_DISTANCE,
+        valueGrowthMultiplier: 0.3,
     },
 
     BEE_HEALTH: {
         title: 'Health',
-        maxDescription: 'You\'re fit as a fiddle - I\'m assuming fiddles are very fit.',
+        description: 'Increases your maximum health making you more durable. It is recommended to just avoid taking damange in the first place.',
         onPurchased: (itemKey, itemData, levelKey, levelData) => {
-            currentPlayer.beeMaxHealth += levelData.deltaValue;
+            currentPlayer.beeMaxHealth = levelData;
         },
-        levels: {
-            1: {
-                price: 5,
-                description: 'Gives your more health - more health makes it harder for the birds to pick you off!',
-                deltaValue: 5,
-            },
-            2: {
-                price: 15,
-                description: 'A apples weight of honey a day - or something like that...',
-                deltaValue: 5,
-            },
-            3: {
-                price: 25,
-                description: 'This should help keep the birds from picking you off quickly!',
-                deltaValue: 5,
-            },
-            4: {
-                price: 45,
-                description: 'Help, I\'m running out of witty descriptions!',
-                deltaValue: 5,
-            },
-            5: {
-                price: 60,
-                description: 'You\'re gonna have While E. Coyote health!',
-                deltaValue: 5,
-            },
-        }
+        costBase: 5,
+        costGrowth: 1.1,
+        valueBase: DEFAULT_ATTRIBUTE_VALUES.BEE_MAX_HEALTH,
+        valueGrowthMultiplier: 1,
     },
 
     BEE_HEALTH_REGEN: {
         title: 'Health Regen',
-        maxDescription: 'If you regenerated any faster, you would have a clone!',
+        description: 'Increases your natural ability to heal. Scientists are still not sure how this works.',
         onPurchased: (itemKey, itemData, levelKey, levelData) => {
-            currentPlayer.beeHealthRegen += levelData.valueDelta;
+            currentPlayer.beeHealthRegen = levelData;
         },
-        levels: {
-            1: {
-                price: 5,
-                description: 'Incraeses the rate at which your health regenerates.',
-                valueDelta: 0.1,
-            },
-            2: {
-                price: 15,
-                description: 'Just make sure you don\'t get killed in a single hit...',
-                valueDelta: 0.1,
-            },
-            3: {
-                price: 25,
-                description: 'We\'re not sure how you\'re able to regen your health, but its pretty awesome!',
-                valueDelta: 0.1,
-            },
-            4: {
-                price: 45,
-                description: 'It\'s almost as if your skin is healing before our very eyes!',
-                valueDelta: 0.1,
-            },
-            5: {
-                price: 60,
-                description: 'Who needs health when you have health regenerating abilities?',
-                valueDelta: 0.1,
-            },
-        }
+        costBase: 5,
+        costGrowth: 1.2,
+        valueBase: DEFAULT_ATTRIBUTE_VALUES.BEE_HEALTH_REGEN,
+        valueGrowthMultiplier: 0.1,
     },
 
-    // CRIT_CHANCE: { },
-    // CRIT_MULTIPLIER: { },
+    CRIT_CHANCE: {
+        title: 'Critical Hit Chance',
+        description: 'Increases the chance that your hits will be critical, dealing additional damange.',
+        onPurchased: (itemKey, itemData, levelKey, levelData) => {
+            currentPlayer.beeHealthRegen = levelData;
+        },
+        costBase: 5,
+        costGrowth: 1.2,
+        valueBase: DEFAULT_ATTRIBUTE_VALUES.BEE_CRIT_CHANCE,
+        valueGrowthMultiplier: 0.1,
+    },
 
-    // SAMMY_CHANCE: { },
+    CRIT_MULTIPLIER: {
+        title: 'Critical Hit Multiplier',
+        description: '',
+        onPurchased: (itemKey, itemData, levelKey, levelData) => {
+            currentPlayer.beeHealthRegen = levelData;
+        },
+        costBase: 5,
+        costGrowth: 1.2,
+        valueBase: DEFAULT_ATTRIBUTE_VALUES.BEE_CRIT_MULTIPLER,
+        valueGrowthMultiplier: 0.1,
+    },
+
+    SAMMY_CHANCE: {
+        title: 'Critical Hit Chance',
+        description: '',
+        onPurchased: (itemKey, itemData, levelKey, levelData) => {
+            currentPlayer.beeHealthRegen = levelData;
+        },
+        costBase: 5,
+        costGrowth: 1.2,
+        valueBase: DEFAULT_ATTRIBUTE_VALUES.SAMMY_CHANCE,
+        valueGrowthMultiplier: 0.1,
+    },
 }
 
 class ShopItem {
@@ -281,8 +156,7 @@ class ShopItem {
 
         this.key = key;
         this.data = data;
-        this.levelKey = 1;
-        this.levelData = data.levels[this.levelKey];
+        this.currentLevel = 0;
 
         const imgEl = document.createElement('img');
 
@@ -292,12 +166,11 @@ class ShopItem {
 
         this.descriptionEl = document.createElement('div');        
         this.descriptionEl.classList.add('description');
-        this.descriptionEl.innerText = '';
+        this.descriptionEl.innerText = data.description;
 
         this.purchaseButton = document.createElement('button');
         this.purchaseButton.classList.add('purchase');
         this.purchaseButton.type = 'button';
-        this.purchaseButton.innerText = '42 hc';
         registerClick(this.purchaseButton, this.onPurchaseButtonClick.bind(this));
         
         const detailsEl = document.createElement('div');
@@ -343,7 +216,7 @@ class ShopItem {
     }
 
     hasAvailableHoneycomb() {
-        return (this.levelData && (currentPlayer.availableHoneycomb >= this.levelData.price));
+        return (currentPlayer.availableHoneycomb >= this.computePrice());
     }
 
     onPurchaseButtonTimeout() {
@@ -354,14 +227,27 @@ class ShopItem {
         }
     }
 
+    computePrice(level) {
+        level = level || this.currentLevel;
+        return Math.trunc(this.data.costBase * Math.pow(this.data.costGrowth, level));
+    }
+
+    computeValue(level) {
+        level = level || this.currentLevel;
+        return this.data.valueBase + (level * this.data.valueGrowthMultiplier);
+    }
+
     onPurchaseConfirmed() {
 
         this.onPurchaseButtonTimeout();
         
-        currentPlayer.availableHoneycomb -= this.levelData.price;
-        currentPlayer.shopPurchases[this.key] = this.levelKey;
+        const price = this.computePrice();
+        currentPlayer.spendHoneycomb(price);
 
-        this.data.onPurchased(this.key, this.data, this.levelKey, this.levelData);
+        this.currentLevel += 1;        
+        const newValue = this.computeValue();
+        currentPlayer.shopPurchases[this.key] = this.currentLevel;
+        this.data.onPurchased(this.key, this.data, this.currentLevel, newValue);
 
         currentPlayer.save();
 
@@ -371,36 +257,19 @@ class ShopItem {
 
     refresh() {
 
-        let candidateLevelKey = 1;
-        if (currentPlayer.shopPurchases && currentPlayer.shopPurchases.hasOwnProperty(this.key)) {
-            const playerLevelKey = currentPlayer.shopPurchases[this.key];
-            candidateLevelKey = playerLevelKey + 1;            
-        }
-
-        if (this.data.levels.hasOwnProperty(candidateLevelKey)) {
-            this.levelKey = candidateLevelKey;
-            this.levelData = this.data.levels[this.levelKey];
+        if (currentPlayer.shopPurchases && currentPlayer.shopPurchases.hasOwnProperty(this.key)) {            
+            this.currentLevel = currentPlayer.shopPurchases[this.key];
         } else {
-            this.levelKey = undefined;
-            this.levelData = undefined;
+            this.currentLevel = 0;
         }
-
-        if (this.levelData) {
-            this.purchaseButton.classList.remove('hidden');
             
-            while (this.purchaseButton.firstChild) {
-                this.purchaseButton.removeChild(this.purchaseButton.lastChild);
-            }
-            
-            this.purchaseButton.appendChild(document.createTextNode(this.levelData.price));
-            this.purchaseButton.appendChild(document.createElement('br'));
-            this.purchaseButton.appendChild(document.createTextNode('honeycomb'));
-
-            this.descriptionEl.innerText = this.levelData.description;
-        } else {
-            this.purchaseButton.classList.add('hidden');
-            this.descriptionEl.innerText = this.data.maxDescription;
+        while (this.purchaseButton.firstChild) {
+            this.purchaseButton.removeChild(this.purchaseButton.lastChild);
         }
+        
+        this.purchaseButton.appendChild(document.createTextNode(this.computePrice()));
+        this.purchaseButton.appendChild(document.createElement('br'));
+        this.purchaseButton.appendChild(document.createTextNode('honeycomb'));
     }
 }
 

@@ -1,4 +1,6 @@
 import { EntityType } from "./entities.js";
+import { currentLevel } from "./levels.js";
+import { currentPlayer } from "./player.js";
 import { spriteAtlas } from "./sprites.js";
 
 export class Honeycomb extends EngineObject{
@@ -22,6 +24,13 @@ export class Honeycomb extends EngineObject{
 
         // Use time since spawn to ensure all the honeycomb aren't synced in their rotation
         this.angle = wave(0.2, 0.5 * PI, time - this.spawnTime);
+
+        if (currentPlayer.beeHoneycombAttration) {
+            const distanceToBee = currentLevel.bee.pos.subtract(this.pos);
+            if (distanceToBee.length() <= currentPlayer.beeHoneycombAttrationDistance) {
+                this.velocity = distanceToBee.normalize(currentPlayer.beeHoneycombAttration);
+            }            
+        }
 
         if (this.lifeTimer.elapsed()) {
             this.destroy();
