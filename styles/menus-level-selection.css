@@ -14,13 +14,26 @@
 
   .level {
     position: relative;
-    background-color: darkgoldenrod;
-    color: black;
+    color: gray;
+    background-color: goldenrod;
     font-size: 24px;
     border: 1px solid black;
     width: var(--level-button-size);
     height: var(--level-button-size);
     margin: var(--spacing-default);
+
+    .level-locked-status {
+      display: block;
+    }
+
+    &.unlocked {
+      background-color: darkgoldenrod;
+      color: black;
+
+      .level-locked-status {
+        display: none;
+      }
+    }
   }
 
   .level-badge-container {
