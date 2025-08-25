@@ -107,7 +107,7 @@ class Player {
         this.achivements = {};
 
         // Statistics
-        this.availableHoneycomb = 10000;
+        this.availableHoneycomb = 0;
         this.totalHoneycombCollected = 0;
         this.killCount = 0;
         this.deathCount = 0;
