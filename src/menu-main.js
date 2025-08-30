@@ -1,3 +1,4 @@
+import { startTimeTrial } from './levels.js';
 import { Menu } from './menu.js'
 import { MENUS } from './menus.js';
 import { currentPlayer } from './player.js';
@@ -15,6 +16,7 @@ export class MainMenu extends Menu {
         registerClick('#main-menu-statistics', this.openMenu.bind(this, () => MENUS.STATISTICS));
         registerClick('#main-menu-achivements', this.openMenu.bind(this, () =>MENUS.ACHIVEMENTS));
         registerClick('#main-menu-reset-save', this.resetSave.bind(this));
+        registerClick('#main-menu-time-trial', this.startTimeTrial.bind(this));
     }
     
     openMenu(menuSelector) {
@@ -26,5 +28,11 @@ export class MainMenu extends Menu {
 
     resetSave() {
         currentPlayer.reset();
+    }
+
+    startTimeTrial() {
+        this.close();
+
+        startTimeTrial();
     }
 }

@@ -21,8 +21,8 @@ const SHOP_ITEMS = {
     },
 
     BULLET_RATE: {
-        title: 'Sing Rate',
-        description: 'Increases the rate you can shoot your stinger.',
+        title: 'Sting Rate',
+        description: 'Increases the rate you can shoot your stinger. It does not help with singing.',
         onPurchased: (itemKey, itemData, levelKey, levelData) => {
             currentPlayer.beeFireRate = levelData;
         },

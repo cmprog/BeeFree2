@@ -5,6 +5,13 @@ export class ShootingBehavior {
     fire() {
         
     }
+
+    /**
+     * Gets a copy of the behavior. This is only really needed for stateful behaviors.
+     */
+    copy() {
+        return this;
+    }
 }
 
 export class PassiveShooting extends ShootingBehavior {    

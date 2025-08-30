@@ -1,12 +1,13 @@
 import { logDebug } from "./logging.js";
 import { EntityType, ProgressBar } from './entities.js';
-import { FixedVelocityMovement, StaticMovement } from "./movement.js";
-import { PassiveShooting, SingleBulletShooting } from "./shooting.js";
+import { BeeAttractiveMovementBehavior, FixedVelocityMovement, StaticMovement, WaveyMovement } from "./movement.js";
+import { MultiBulletShooting, PassiveShooting, SingleBulletShooting } from "./shooting.js";
 import { spriteAtlas } from "./sprites.js";
 import { Honeycomb } from "./honeycomb.js";
 import { currentLevel } from "./levels.js";
 import { DEFAULT_BIRD_ATTRIBUTES } from "./settings.js";
 import { BirdBulletFactory } from "./bullet.js";
+import { rgb255 } from "./util.js";
 
 export class BirdTemplate {
     constructor(name, description, health, touchDamange) {
@@ -21,6 +22,20 @@ export class BirdTemplate {
         this.damage = DEFAULT_BIRD_ATTRIBUTES.DAMAGE;
         this.critChance = DEFAULT_BIRD_ATTRIBUTES.CRIT_CHANCE;
         this.critMultiplier = DEFAULT_BIRD_ATTRIBUTES.CRIT_MULTIPLIER;
+
+        // These values are used to help control dynamic spawning during
+        // endless / time trial random spawning.        
+        this.minSpawnX = undefined;
+        this.minSpawnY = undefined;
+        this.maxSpawnX = undefined;
+        this.maxSpawnY = undefined;
+    }
+
+    withSpawnBounds(minX, minY, maxX, maxY) {
+        this.minSpawnX = minX;
+        this.minSpawnY = minY;
+        this.maxSpawnX = maxX;
+        this.maxSpawnY = maxY;
     }
 
     withShooting(shootingBehavior) {
@@ -104,6 +119,99 @@ export function initBirdTemplates() {
                 rate: (1.0 / 0.9),
             }))            
             .withColors(BLUE, RED),
+
+        thing3: new BirdTemplate('Thing 3', 'The twin to Thing 4, this bird moves up and to the right while shooting.', 3, 4)
+            .withMovement(new FixedVelocityMovement(vec2(1, 1).normalize(DEFAULT_BIRD_ATTRIBUTES.SPEED)))
+            .withShooting(new SingleBulletShooting({
+                bulletFactory: new BirdBulletFactory({
+                    damage: 4,
+                }),
+                direction: vec2(-1, 0),
+                rate: (1.0 / 0.9),
+            }))            
+            .withColors(BLUE, RED),
+
+        thing4: new BirdTemplate('Thing 4', 'The twin to Thing 3, this bird moves down and to the right while shooting.', 3, 4)
+            .withMovement(new FixedVelocityMovement(vec2(1, -1).normalize(DEFAULT_BIRD_ATTRIBUTES.SPEED)))
+            .withShooting(new SingleBulletShooting({
+                bulletFactory: new BirdBulletFactory({
+                    damage: 4,
+                }),
+                direction: vec2(-1, 0),
+                rate: (1.0 / 0.9),
+            }))            
+            .withColors(BLUE, RED),
+
+        greg: new BirdTemplate('Greg', 'Greg is a simple bird who is a little drunk.', 3, 6)
+            .withMovement(new WaveyMovement(vec2(-1, 0).normalize(DEFAULT_BIRD_ATTRIBUTES.SPEED), vec2(1, 1), 1))
+            .withShooting(new PassiveShooting())          
+            .withColors(GREEN, GREEN),
+
+        frank: new BirdTemplate('Frank', 'Frank is Greg\'s friend but he flings poo.', 4, 7)
+            .withMovement(new WaveyMovement(vec2(-1, 0).normalize(DEFAULT_BIRD_ATTRIBUTES.SPEED), vec2(1, 1), 1))
+            .withShooting(new SingleBulletShooting({
+                bulletFactory: new BirdBulletFactory(),
+                direction: vec2(-1, 0),
+                rate: (1.0 / 0.8),
+            }))
+            .withDamange(6)
+            .withColors(YELLOW, YELLOW),
+
+        kathy: new BirdTemplate('Kathy', 'Kathy is a little etreme when it comes to stalking bee\'s.', 6, 8)
+            .withMovement(new BeeAttractiveMovementBehavior(vec2(-1, 0).normalize(DEFAULT_BIRD_ATTRIBUTES.SPEED), 6, DEFAULT_BIRD_ATTRIBUTES.SPEED * 1.5))
+            .withShooting(new SingleBulletShooting({
+                bulletFactory: new BirdBulletFactory(),
+                direction: vec2(-1, 0),
+                rate: (1.0 / 1.0),
+            }))
+            .withDamange(8)
+            .withColors(GRAY, BLACK),
+
+        whitney_left: new BirdTemplate('Whitney', 'Whitney has managed to throw poo in such a way as to track bees!', 7, 13)            
+            .withMovement(new FixedVelocityMovement(vec2(-1, 0).normalize(DEFAULT_BIRD_ATTRIBUTES.SPEED)))
+            .withShooting(new SingleBulletShooting({
+                bulletFactory: new BirdBulletFactory({
+                    movement: new BeeAttractiveMovementBehavior(vec2(-1, 0), 5, DEFAULT_BIRD_ATTRIBUTES.BULLET_SPEED * 1.5)
+                }),
+                direction: vec2(-1, 0),
+                rate: (1.0 / 1.2),
+            }))
+            .withDamange(7)
+            // Very lime green
+            .withColors(rgb255(0, 255, 0), rgb255(152, 251, 152)),
+
+        whitney_left_up: new BirdTemplate('Whitney', 'Whitney has managed to throw poo in such a way as to track bees!', 7, 13)            
+            .withMovement(new FixedVelocityMovement(vec2(-1, 2).normalize(DEFAULT_BIRD_ATTRIBUTES.SPEED)))
+            .withShooting(new SingleBulletShooting({
+                bulletFactory: new BirdBulletFactory({
+                    movement: new BeeAttractiveMovementBehavior(vec2(-1, 0), 5, DEFAULT_BIRD_ATTRIBUTES.BULLET_SPEED * 1.5)
+                }),
+                direction: vec2(-1, 0),
+                rate: (1.0 / 1.2),
+            }))
+            .withDamange(7)
+            // Very lime green
+            .withColors(rgb255(0, 255, 0), rgb255(152, 251, 152)),
+
+        whitney_down_up: new BirdTemplate('Whitney', 'Whitney has managed to throw poo in such a way as to track bees!', 7, 13)            
+            .withMovement(new FixedVelocityMovement(vec2(-1, -2).normalize(DEFAULT_BIRD_ATTRIBUTES.SPEED)))
+            .withShooting(new SingleBulletShooting({
+                bulletFactory: new BirdBulletFactory({
+                    movement: new BeeAttractiveMovementBehavior(vec2(-1, 0), 5, DEFAULT_BIRD_ATTRIBUTES.BULLET_SPEED * 1.5)
+                }),
+                direction: vec2(-1, 0),
+                rate: (1.0 / 1.2),
+            }))
+            .withDamange(7)
+            // Very lime green
+            .withColors(rgb255(0, 255, 0), rgb255(152, 251, 152)),
+
+        whitney_down_up: new BirdTemplate('Tom', 'A more resiliant basic passive bird.', 25, 15)            
+            .withMovement(new FixedVelocityMovement(vec2(-1, -2).normalize(DEFAULT_BIRD_ATTRIBUTES.SPEED)))
+            .withShooting(new PassiveShooting())
+            .withDamange(7)
+            // Darker red than fred
+            .withColors(rgb255(139, 26, 26), rgb255(238, 44, 44)),
     }
 }
 
@@ -187,8 +295,8 @@ export class Bird extends EngineObject
         this.critChance = template.critChance;
         this.critMultiplier = template.critMultiplier;
         this.touchDamange = template.touchDamange;
-        this.shooting = template.shooting;
-        this.movement = template.movement    
+        this.shooting = template.shooting.copy();
+        this.movement = template.movement.copy(); 
     }
     
     update() {

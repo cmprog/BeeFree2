@@ -28,10 +28,11 @@ export class BirdBulletFactory extends BulletFactory {
         opts = opts || {};
 
         this.speed = opts.speed || DEFAULT_BIRD_ATTRIBUTES.BULLET_SPEED;
+        this.movement = opts.movement;
     }
 
     createBullet(entity, direction) {
-        return new BirdBullet(entity, direction.normalize(this.speed));
+        return new BirdBullet(entity, direction.normalize(this.speed), this.movement);
     }
 }
 
@@ -91,10 +92,19 @@ export class BeeBullet extends Bullet {
 
 export class BirdBullet extends Bullet {
 
-    constructor(spawningEntity, velocity) {
+    constructor(spawningEntity, velocity, movement) {
         super(spawningEntity, velocity, spriteAtlas.ammo.bird);
         this.entityType = EntityType.BIRD_BULLET;
+        this.movement = movement;
     }  
+
+    update() {
+        super.update();
+
+        if (this.movement) {
+            this.movement.update(this);
+        }
+    }
 
     isValidTarget(o) {
         return o.entityType == EntityType.BEE;

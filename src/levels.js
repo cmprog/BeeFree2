@@ -1,7 +1,7 @@
 import { Bee } from "./bee.js";
 import { BIRD_TEMPLATES, BirdTemplate } from "./birds.js";
 import { ProgressBar } from "./entities.js";
-import { logInfo } from "./logging.js";
+import { logDebug, logInfo } from "./logging.js";
 import { MENUS } from "./menus.js";
 import { Owl } from "./owl.js";
 import { currentPlayer } from "./player.js";
@@ -93,7 +93,21 @@ class Level extends EngineObject {
     }
 
     update() {
-        
+
+        if (this.levelFailed || this.isLevelComplete()) {
+            this.destroy();
+
+            const exitMenu = this.getExitMenu();
+            exitMenu.open();            
+        }
+    }
+
+    getExitMenu() {
+        return MENUS.MAIN;
+    }
+
+    isLevelComplete() {
+        return false;
     }
 
     isComplete() {
@@ -161,13 +175,19 @@ class StandardLevel extends Level {
         this.trackObj(this.timeRemainingBar);
     }
 
-    update() {
-        this.spawner.update();
+    isLevelComplete() {
+        return this.levelTimer.elapsed();
+    }
 
-        if (this.levelFailed || this.levelTimer.elapsed()) {
-            this.destroy();
-            MENUS.LEVEL_SELECTION.open();            
-        }
+    getExitMenu() {
+        return MENUS.LEVEL_SELECTION;
+    }
+
+    update() {
+
+        super.update();
+
+        this.spawner.update();
 
         const timeRemaining = -this.levelTimer.get();
         this.timeRemainingBar.value = timeRemaining / this.levelDefinition.totalDuration;
@@ -207,6 +227,86 @@ class StandardLevel extends Level {
         drawTextOverlay(formattedSecondsRemaining, this.timeRemainingBar.pos, 0.8 * this.timeRemainingBar.size.y, BLACK, undefined, undefined, undefined, FONTS.SECONDARY);
         drawTextOverlay('time remaining', this.timeRemainingBar.pos.add(vec2(0, -this.timeRemainingBar.size.y)), 0.8 * this.timeRemainingBar.size.y, BLACK, undefined, undefined, undefined, FONTS.SECONDARY);
     }
+}
+
+ class TimeTrialLevel extends Level {
+
+    constructor() {
+        super();
+
+        this.timeRemainingBar = new ProgressBar();
+        this.trackObj(this.timeRemainingBar);
+
+        this.timeRemainingBar.size = vec2(10, 1.0);
+        this.timeRemainingBar.value = 1;
+
+        this.sammyChance = currentPlayer.sammyChance;
+
+        const currentDate = new Date();
+        const currentDateValue = currentDate.setHours(0, 0, 0, 0);
+
+        // Seed the random generator with a value representing the current date
+        // This means the level is the same per calendar day but will change daily.
+        this.rand = new RandomGenerator(currentDateValue);
+        this.spawnTimer = new Timer();
+
+        this.availableBirdKeys = Object.keys(BIRD_TEMPLATES);
+
+        this.levelDuration = 0;
+
+        const margin = vec2(0.1);
+
+        this.timeRemainingBar.pos = screenToWorld(mainCanvasSize).scale(-1)
+            .add(vec2((this.timeRemainingBar.size.x * 0.5) + margin.x, (-this.timeRemainingBar.size.y * 0.5) - margin.y));
+
+        this.resetSpawnTimer();
+    }
+
+    resetSpawnTimer() {
+        const spawnBaseValue = 0.99;
+        this.spawnTimer.set(2 * Math.pow(spawnBaseValue, this.levelDuration));
+    }
+
+    spawn() {
+
+
+        // const worldSize = canvasFixedSize;
+
+        // const posX = this.rand.float(-20, 20);
+        const posX = 20;
+        const posY = this.rand.float(-12, 12);
+        const pos = vec2(posX, posY);
+
+        const birdTemplateKey = this.availableBirdKeys[this.rand.int(0, this.availableBirdKeys.length)];
+        const birdTemplate = BIRD_TEMPLATES[birdTemplateKey];
+        const bird = birdTemplate.create(pos);
+
+        logDebug(`Spawning '${birdTemplate.name}' at '${pos}'.`);
+
+        this.trackObj(bird);
+        this.onBirdSpawned();
+    }
+
+    update() {
+
+        super.update();
+
+        this.levelDuration = time - this.spawnTime;
+
+        if (this.spawnTimer.elapsed()) {
+            this.spawn();
+            this.resetSpawnTimer();
+        }
+    }
+
+    render() {
+        const formattedLevelDuration = `${(time - this.spawnTime).toFixed(1)} s`
+        drawTextOverlay(formattedLevelDuration, this.timeRemainingBar.pos, 0.8 * this.timeRemainingBar.size.y, BLACK, undefined, undefined, undefined, FONTS.SECONDARY);
+    }
+}
+
+export function startTimeTrial() {
+    currentLevel = new TimeTrialLevel();
 }
 
 let FORMATIONS;
@@ -257,6 +357,13 @@ function initFormations() {
         twinsRight: new FormationDefinition("Twins (Right - 1 & 2)")
             .withSpawn(BIRD_TEMPLATES.thing1, 0.0, vec2(20, -12))
             .withSpawn(BIRD_TEMPLATES.thing2, 0.0, vec2(20, 12)),
+
+        /** The thing 1 & 2 twin birds which always come from the right
+         * side of the screen and move diagonally.
+         */
+        twinsLeft: new FormationDefinition("Twins (Left - 3 & 4)")
+            .withSpawn(BIRD_TEMPLATES.thing1, 0.0, vec2(-20, -12))
+            .withSpawn(BIRD_TEMPLATES.thing2, 0.0, vec2(-20, 12)),
 
         /** Releases a set of birds in the shape of a greater than (>) sign.
          * This spawns 5 'columns' of birds where the third and fifth column
@@ -322,6 +429,13 @@ export function initLevels() {
 
         new LevelDefinition(4, 'Level 5')
             .withDelay(2)
+            .withFormation(FORMATIONS.greaterThan)
+            .withDelay(2)
+            .withFormation(FORMATIONS.greaterThan)
+            .withDelay(5),
+
+        new LevelDefinition(5, 'Level 6')
+            .withDelay(2)
             .withFormation(FORMATIONS.vert3)
             .withDelay(1)
             .withFormation(FORMATIONS.twinsRight)
@@ -335,6 +449,31 @@ export function initLevels() {
             .withFormation(FORMATIONS.twinsRight)
             .withDelay(5),
 
+        new LevelDefinition(6, 'Level 7')
+            .withDelay(2)
+            .withFormation(FORMATIONS.twinsRight)
+            .withDelay(1)
+            .withFormation(FORMATIONS.twinsLeft)
+            .withDelay(2)            
+            .withFormation(FORMATIONS.backSlash)
+            .withDelay(2)
+            .withFormation(FORMATIONS.vert3, new FormationCreationOptions()
+                .withTemplateMapping(BIRD_TEMPLATES.fred, BIRD_TEMPLATES.bill)
+            )
+            .withDelay(5),
+
+        new LevelDefinition(9, 'Level 8')
+            .withDelay(2)
+            .withFormation(FORMATIONS.twinsRight)
+            .withDelay(1)
+            .withFormation(FORMATIONS.twinsLeft)
+            .withDelay(2)            
+            .withFormation(FORMATIONS.backSlash)
+            .withDelay(2)
+            .withFormation(FORMATIONS.vert3, new FormationCreationOptions()
+                .withTemplateMapping(BIRD_TEMPLATES.fred, BIRD_TEMPLATES.bill)
+            )
+            .withDelay(5),
             
         // new LevelDefinition(5, 'Level 6'),
         // new LevelDefinition(6, 'Level 7'),
