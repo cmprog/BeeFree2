@@ -19,3 +19,4 @@ Just a little game I made forever ago. I'm revamping it because my daughter enjo
 - Double shot chance attrbute
 - Cosmetic purchaces - do not reset on pretige
 - Passkve honeycomb earnings. Buy a bee hive and collect from it every day. Adds potential options for duration and amount. 
+- challenge mode prestige?
