@@ -3,6 +3,7 @@ import { MultiBulletShooting, SingleBulletShooting } from "./shooting.js";
 import { spriteAtlas } from "./sprites.js";
 import { currentLevel } from "./levels.js";
 import { BeeBulletFactory } from './bullet.js';
+import { logDebug } from './logging.js';
 
 export class Bee extends EngineObject {
 
@@ -104,7 +105,12 @@ export class Bee extends EngineObject {
             currentLevel.onBeeDamageTaken();
         }
 
-        this.health = Math.max(0, this.health - amount);
+        const targetHealth = Math.max(0, this.health - amount);
+
+        logDebug(`Bee taking ${amount} damange (${this.health.toFixed(1)} -> ${targetHealth.toFixed(1)})`);
+
+        this.health = targetHealth;
+
         if (!this.health) {            
             this.destroy();
 

@@ -98,47 +98,47 @@ const ACHIVEMENTS = [
     // Level Start
     // ****************************************************
     new Achivement(0, 'First Level', 'Started your first level.', undefined, undefined, {        
-        getCurrentValue: () => currentPlayer.levelsStarted,
+        getCurrentValue: () => currentPlayer.levelsStartCount,
         targetValue: 1,
         rewardedHoneycomb: 1,
     }),
     new Achivement(1, 'Fifth Level', 'Started 5 total levels.', undefined, undefined, {
-        getCurrentValue: () => currentPlayer.levelsStarted,
+        getCurrentValue: () => currentPlayer.levelsStartCount,
         targetValue: 5,
         rewardedHoneycomb: 1,
     }),
     new Achivement(2, 'Tenth Level', 'Started 10 total levels.', undefined, undefined, {
-        getCurrentValue: () => currentPlayer.levelsStarted,
+        getCurrentValue: () => currentPlayer.levelsStartCount,
         targetValue: 10,
         rewardedHoneycomb: 5,
     }),
     new Achivement(3, 'Twenty-fifth Level', 'Started 25 total levels.', undefined, undefined, {
-        getCurrentValue: () => currentPlayer.levelsStarted,
+        getCurrentValue: () => currentPlayer.levelsStartCount,
         targetValue: 25,
         rewardedHoneycomb: 10,
     }),
     new Achivement(4, 'Fiftieth Level', 'Started 50 total levels.', undefined, undefined, {
-        getCurrentValue: () => currentPlayer.levelsStarted,
+        getCurrentValue: () => currentPlayer.levelsStartCount,
         targetValue: 50,
         rewardedHoneycomb: 20,
     }),
     new Achivement(5, 'Hundredth Level', 'Started 100 total levels.', undefined, undefined, {
-        getCurrentValue: () => currentPlayer.levelsStarted,
+        getCurrentValue: () => currentPlayer.levelsStartCount,
         targetValue: 100,
         rewardedHoneycomb: 25,
     }),
     new Achivement(6, 'Two-hundredth Level', 'Started 200 total levels.', undefined, undefined, {
-        getCurrentValue: () => currentPlayer.levelsStarted,
+        getCurrentValue: () => currentPlayer.levelsStartCount,
         targetValue: 200,
         rewardedHoneycomb: 50,
     }),
     new Achivement(7, 'Five-hundredth Level', 'Started 500 total levels.', undefined, undefined, {
-        getCurrentValue: () => currentPlayer.levelsStarted,
+        getCurrentValue: () => currentPlayer.levelsStartCount,
         targetValue: 500,
         rewardedHoneycomb: 100,
     }),
     new Achivement(8, 'Thousandth Level', 'Started 1,000 total levels.', undefined, undefined, {
-        getCurrentValue: () => currentPlayer.levelsStarted,
+        getCurrentValue: () => currentPlayer.levelsStartCount,
         targetValue: 1000,
         rewardedHoneycomb: 200,
     }),
@@ -147,47 +147,47 @@ const ACHIVEMENTS = [
     // Level Completion
     // ****************************************************
     new Achivement(9, 'First Level Complete', 'Completed your first level.', undefined, undefined, {        
-        getCurrentValue: () => currentPlayer.levelsCompleted,
+        getCurrentValue: () => currentPlayer.levelsCompletedCount,
         targetValue: 1,
         rewardedHoneycomb: 1,
     }),
     new Achivement(10, 'Fifth Level Complete', 'Completed 5 total levels.', undefined, undefined, {
-        getCurrentValue: () => currentPlayer.levelsCompleted,
+        getCurrentValue: () => currentPlayer.levelsCompletedCount,
         targetValue: 5,
         rewardedHoneycomb: 1,
     }),
     new Achivement(11, 'Tenth Level Complete', 'Completed 10 total levels.', undefined, undefined, {
-        getCurrentValue: () => currentPlayer.levelsCompleted,
+        getCurrentValue: () => currentPlayer.levelsCompletedCount,
         targetValue: 10,
         rewardedHoneycomb: 5,
     }),
     new Achivement(12, 'Twenty-fifth Level Complete', 'Completed 25 total levels.', undefined, undefined, {
-        getCurrentValue: () => currentPlayer.levelsCompleted,
+        getCurrentValue: () => currentPlayer.levelsCompletedCount,
         targetValue: 25,
         rewardedHoneycomb: 10,
     }),
     new Achivement(13, 'Fiftieth Level Complete', 'Completed 50 total levels.', undefined, undefined, {
-        getCurrentValue: () => currentPlayer.levelsCompleted,
+        getCurrentValue: () => currentPlayer.levelsCompletedCount,
         targetValue: 50,
         rewardedHoneycomb: 20,
     }),
     new Achivement(14, 'Hundredth Level Complete', 'Completed 100 total levels.', undefined, undefined, {
-        getCurrentValue: () => currentPlayer.levelsCompleted,
+        getCurrentValue: () => currentPlayer.levelsCompletedCount,
         targetValue: 100,
         rewardedHoneycomb: 25,
     }),
     new Achivement(15, 'Two-hundredth Level Complete', 'Completed 200 total levels.', undefined, undefined, {
-        getCurrentValue: () => currentPlayer.levelsCompleted,
+        getCurrentValue: () => currentPlayer.levelsCompletedCount,
         targetValue: 200,
         rewardedHoneycomb: 50,
     }),
     new Achivement(16, 'Five-hundredth Level Complete', 'Completed 500 total levels.', undefined, undefined, {
-        getCurrentValue: () => currentPlayer.levelsCompleted,
+        getCurrentValue: () => currentPlayer.levelsCompletedCount,
         targetValue: 500,
         rewardedHoneycomb: 100,
     }),
     new Achivement(17, 'Thousandth Level Complete', 'Completed 1,000 total levels.', undefined, undefined, {
-        getCurrentValue: () => currentPlayer.levelsCompleted,
+        getCurrentValue: () => currentPlayer.levelsCompletedCount,
         targetValue: 1000,
         rewardedHoneycomb: 200,
     }),
@@ -196,22 +196,22 @@ const ACHIVEMENTS = [
     // Level Failure
     // ****************************************************
     new Achivement(18, 'First Level Complete', 'Failed your first level.', undefined, undefined, {        
-        getCurrentValue: () => currentPlayer.levelsFailed,
+        getCurrentValue: () => currentPlayer.levelsFailureCount,
         targetValue: 1,
         rewardedHoneycomb: 1,
     }),
     new Achivement(19, 'Fifth Level Complete', 'Failed 5 total levels.', undefined, undefined, {
-        getCurrentValue: () => currentPlayer.levelsFailed,
+        getCurrentValue: () => currentPlayer.levelsFailureCount,
         targetValue: 5,
         rewardedHoneycomb: 1,
     }),
     new Achivement(20, 'Tenth Level Complete', 'Failed 10 total levels.', undefined, undefined, {
-        getCurrentValue: () => currentPlayer.levelsFailed,
+        getCurrentValue: () => currentPlayer.levelsFailureCount,
         targetValue: 10,
         rewardedHoneycomb: 5,
     }),
     new Achivement(21, 'Twenty-fifth Level Complete', 'Failed 25 total levels.', undefined, undefined, {
-        getCurrentValue: () => currentPlayer.levelsFailed,
+        getCurrentValue: () => currentPlayer.levelsFailureCount,
         targetValue: 25,
         rewardedHoneycomb: 10,
     }),

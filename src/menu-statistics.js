@@ -83,13 +83,13 @@ export class StatisticsMenu extends Menu {
                 return currentPlayer.deathCount.toString();
             }),
             new StatisticField('#statistic-levels-started', () => {
-                return currentPlayer.levelsStarted.toString();
+                return currentPlayer.levelsStartCount.toString();
             }),
             new StatisticField('#statistic-levels-completed', () => {
-                return currentPlayer.levelsCompleted.toString();
+                return currentPlayer.levelsCompletedCount.toString();
             }),
             new StatisticField('#statistic-levels-failed', () => {
-                return currentPlayer.levelsFailed.toString();
+                return currentPlayer.levelsFailureCount.toString();
             }),
             new StatisticField('#statistic-perfect-levels-completed', () => {
                 return currentPlayer.perfectLevelsCompleted.toString();

@@ -1,85 +1,12 @@
 import { Bee } from "./bee.js";
 import { logDebug, logError } from "./logging.js";
+import { PlayerLevel } from "./player-level.js";
 import { DEFAULT_ATTRIBUTE_VALUES } from "./settings.js";
 import { SingleBulletShooting } from "./shooting.js";
 
 const SAVE_KEY = "save";
 const SAVE_KEY_BACKUP = "save_bk";
 
-class PlayerLevel {
-    constructor(id) {
-        
-        this.id = id;
-        this.isUnlocked = false;
-        this.playCount = 0;
-        this.completedCount = 0;
-        this.flawlessCount = 0;
-        this.perfectCount = 0;
-        this.failureCount = 0;
-    }
-
-    onLevelStarted() {
-
-        if (!this.isUnlocked) {
-            logError(`Level started but not unlocked.`);
-        }
-
-        this.playCount += 1;
-    }
-
-    onLevelCompleted(failed, flawless, perfect) {
-
-        if (!this.isUnlocked) {
-            logError(`Level completed but not unlocked.`);
-        }
-
-        if (failed) {
-            this.failureCount += 1;
-
-        } else {
-
-            this.completedCount += 1;
-            if (flawless) {
-                this.flawlessCount += 1;
-            }
-
-            if (perfect) {
-                this.perfectCount += 1;
-            }
-        }
-        
-    }
-
-    markAvailable() {
-        this.isUnlocked = true;
-    }
-
-    toSaveObj() {
-        return {            
-            id: this.id,
-            isUnlocked: this.isUnlocked,
-            playCount: this.playCount,
-            completedCount: this.completedCount,
-            flawlessCount: this.flawlessCount,
-            perfectCount: this.perfectCount,
-            failureCount: this.failureCount,
-        }
-    }
-
-    loadSaveObj(saveObj) {
-        
-        if (saveObj.id != this.id) {
-            logError(`Unexpected level id. Expected ${this.id} but got ${saveObj.id}.`);            
-        }
-        
-        this.isUnlocked = saveObj.isUnlocked;
-        this.playCount = saveObj.playCount;
-        this.completedCount = saveObj.completedCount;
-        this.flawlessCount = saveObj.flawlessCount;
-        this.perfectCount = saveObj.perfectCount;
-        this.failureCount = saveObj.failureCount;
-    }
-}
 
 class Player {
     constructor() {
@@ -103,6 +30,42 @@ class Player {
         this.beeCritMultiplier = DEFAULT_ATTRIBUTE_VALUES.BEE_CRIT_MULTIPLER;
         this.sammyChance = DEFAULT_ATTRIBUTE_VALUES.SAMMY_CHANCE;
 
+        /**
+         * The number of times the player has prestiged.
+         * @type {number}
+         */
+        this.prestigeCount = 0;
+
+        /** 
+         * The total honeycomb multipler which comes from performing a prestige.
+         * @type {number}
+         */
+        this.prestigeHoneycombMultiplier = 1;
+
+        /**
+         * The date of the longest time trial ever completed.
+         * @type {Date}
+         */
+        this.longestGlobalTimeTrialDate = undefined;
+
+        /**
+         * The duration (in seconds) of the longest time trial ever completed.
+         * @type {number}
+         */
+        this.longestGlobalTimeTrialDuration = undefined;
+
+        /**
+         * The date of the current time trial. This is needed so we know if the current time trial duration is old.
+         * @type {Date}
+         */
+        this.longestCurrentTimeTrialDate = undefined
+
+        /**
+         * The duration (in seconds) of the longest time trial for the current date.
+         * @type {number}
+         */
+        this.longestCurrentTimeTrialDuration = undefined
+
         this.levels = {};
         this.achivements = {};
 
@@ -111,12 +74,19 @@ class Player {
         this.totalHoneycombCollected = 0;
         this.killCount = 0;
         this.deathCount = 0;
-        this.levelsStarted = 0;
-        this.levelsCompleted = 0;
-        this.levelsFailed = 0;
-        this.perfectLevelsCompleted = 0;
-        this.flawlessLevelsCompleted = 0;
-        this.luckyOwlsSpawned = 0;
+        this.shotCount = 0;
+        this.bulletCount = 0;
+        this.luckyOwlSpawnCount = 0;
+        this.luckyOwlCollectCount = 0;
+        this.distanceTraveled = 0;
+
+        this.prestigeKillCount = 0;
+        this.prestigeDeathCount = 0;        
+        this.prestigeShotCount = 0;
+        this.prestigeBulletCount = 0;
+        this.prestigeLuckeyOwlSpawnCount = 0;
+        this.prestigeLuckeyOwlCollectCount = 0;
+        this.prestigeDistanceTraveled = 0;
 
         this.shopPurchases = { };
 
@@ -132,6 +102,11 @@ class Player {
         this.availableHoneycomb -= amount;
     }
 
+    /**
+     * Gets the player level for the given level id. If the level doesn't exist then it is created.
+     * @param {number} levelId 
+     * @returns {PlayerLevel}
+     */
     getLevel(levelId) {
         if (!(levelId in this.levels)) {
             this.levels[levelId] = new PlayerLevel();
@@ -141,22 +116,29 @@ class Player {
     }
 
     onLevelStarted(levelId) {
-        this.levelsStarted += 1;
+        this.levelsStartCount += 1;
         this.getLevel(levelId).onLevelStarted();
         this.save();
     }
 
+
+    /**
+     * Signals that a level was completed - updates stats.
+     * @param {number} levelId 
+     * @param {boolean} failed 
+     * @param {boolean} noDamage 
+     * @param {boolean} noSurvivors 
+     */
     onLevelCompleted(levelId, failed, flawless, perfect) {
 
-        const level = this.getLevel(levelId);
 
         if (failed) {
 
-            this.levelsFailed += 1;
+            this.levelsFailureCount += 1;
 
         } else {          
             
-            this.levelsCompleted += 1;
+            this.levelsCompletedCount += 1;
             
             if (flawless) {
                 this.flawlessLevelsCompleted += 1;
@@ -167,6 +149,7 @@ class Player {
             }
         }
 
+        const level = this.getLevel(levelId);
         level.onLevelCompleted(failed, flawless, perfect);
         this.save();
     }
@@ -224,9 +207,9 @@ class Player {
             totalHoneycombCollected: this.totalHoneycombCollected,
             killCount: this.killCount,
             deathCount: this.deathCount,
-            levelsAttempted: this.levelsStarted,
-            levelsCompleted: this.levelsCompleted,
-            levelsFailed: this.levelsFailed,
+            levelsAttempted: this.levelsStartCount,
+            levelsCompleted: this.levelsCompletedCount,
+            levelsFailed: this.levelsFailureCount,
             perfectLevelsCompleted: this.perfectLevelsCompleted,
             flawlessLevelsCompleted: this.flawlessLevelsCompleted,
             luckyOwlsSpawned: this.luckyOwlsSpawned,
@@ -299,9 +282,9 @@ class Player {
         this.totalHoneycombCollected = saveObj.totalHoneycombCollected;
         this.killCount = saveObj.killCount;
         this.deathCount = saveObj.deathCount;
-        this.levelsStarted = saveObj.levelsAttempted;
-        this.levelsCompleted = saveObj.levelsCompleted;
-        this.levelsFailed = saveObj.levelsFailed;
+        this.levelsStartCount = saveObj.levelsAttempted;
+        this.levelsCompletedCount = saveObj.levelsCompleted;
+        this.levelsFailureCount = saveObj.levelsFailed;
         this.perfectLevelsCompleted = saveObj.perfectLevelsCompleted;
         this.flawlessLevelsCompleted = saveObj.flawlessLevelsCompleted;
         this.luckyOwlsSpawned = saveObj.luckyOwlsSpawned;

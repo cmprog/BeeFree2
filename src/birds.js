@@ -7,7 +7,8 @@ import { Honeycomb } from "./honeycomb.js";
 import { currentLevel } from "./levels.js";
 import { DEFAULT_BIRD_ATTRIBUTES } from "./settings.js";
 import { BirdBulletFactory } from "./bullet.js";
-import { rgb255 } from "./util.js";
+import { isWellOutsideWorldBoundary, rgb255 } from "./util.js";
+import { SPAWN_REGIONS } from "./spawning.js";
 
 export class BirdTemplate {
     constructor(name, description, health, touchDamange) {
@@ -23,19 +24,13 @@ export class BirdTemplate {
         this.critChance = DEFAULT_BIRD_ATTRIBUTES.CRIT_CHANCE;
         this.critMultiplier = DEFAULT_BIRD_ATTRIBUTES.CRIT_MULTIPLIER;
 
-        // These values are used to help control dynamic spawning during
-        // endless / time trial random spawning.        
-        this.minSpawnX = undefined;
-        this.minSpawnY = undefined;
-        this.maxSpawnX = undefined;
-        this.maxSpawnY = undefined;
+        // Defines the valid spawn regions for the bird.        
+        this.spawnRegions = [];
     }
-
-    withSpawnBounds(minX, minY, maxX, maxY) {
-        this.minSpawnX = minX;
-        this.minSpawnY = minY;
-        this.maxSpawnX = maxX;
-        this.maxSpawnY = maxY;
+    
+    withSpawnRegion(region) {
+        this.spawnRegions.push(region);
+        return this;
     }
 
     withShooting(shootingBehavior) {
@@ -77,15 +72,12 @@ export function initBirdTemplates() {
     
     BIRD_TEMPLATES = {
 
-        test: new BirdTemplate('Test', 'A test bird. Does not do anything.', 1, 1)
-            .withMovement(new StaticMovement())
-            .withShooting(new PassiveShooting())
-            .withColors(RED, RED),
-
         /** A simple bird, simple movement and no shooting. */
         fred: new BirdTemplate('Fred', 'A simple bird, simple movement and no shooting.', 1, 1)
             .withMovement(new FixedVelocityMovement(vec2(-1, 0).normalize(DEFAULT_BIRD_ATTRIBUTES.SPEED)))
             .withShooting(new PassiveShooting())
+            .withSpawnRegion(SPAWN_REGIONS.RIGHT_UPPER)
+            .withSpawnRegion(SPAWN_REGIONS.RIGHT_LOWER)
             .withColors(RED, RED),
 
         /** The most basic aggressive bird. Simple movement and shots forward. */
@@ -96,6 +88,8 @@ export function initBirdTemplates() {
                 direction: vec2(-1, 0),
                 rate: 1,
             }))
+            .withSpawnRegion(SPAWN_REGIONS.RIGHT_UPPER)
+            .withSpawnRegion(SPAWN_REGIONS.RIGHT_LOWER)
             .withColors(BLUE, BLUE),
 
         /** Twin to Thing 2 - this bird moves up and to the left while shooting. */
@@ -106,6 +100,8 @@ export function initBirdTemplates() {
                 direction: vec2(-1, 0),
                 rate: 1,
             }))
+            .withSpawnRegion(SPAWN_REGIONS.RIGHT_LOWER)
+            .withSpawnRegion(SPAWN_REGIONS.BOTTOM_RIGHT)
             .withColors(BLUE, RED),
 
         /** The twin to Thing 1 - this bird moves down and to the left while shooting. */
@@ -117,7 +113,9 @@ export function initBirdTemplates() {
                 }),
                 direction: vec2(-1, 0),
                 rate: (1.0 / 0.9),
-            }))            
+            })) 
+            .withSpawnRegion(SPAWN_REGIONS.RIGHT_UPPER)
+            .withSpawnRegion(SPAWN_REGIONS.TOP_RIGHT)           
             .withColors(BLUE, RED),
 
         thing3: new BirdTemplate('Thing 3', 'The twin to Thing 4, this bird moves up and to the right while shooting.', 3, 4)
@@ -128,7 +126,9 @@ export function initBirdTemplates() {
                 }),
                 direction: vec2(-1, 0),
                 rate: (1.0 / 0.9),
-            }))            
+            }))      
+            .withSpawnRegion(SPAWN_REGIONS.BOTTOM_LEFT)
+            .withSpawnRegion(SPAWN_REGIONS.LEFT_LOWER)      
             .withColors(BLUE, RED),
 
         thing4: new BirdTemplate('Thing 4', 'The twin to Thing 3, this bird moves down and to the right while shooting.', 3, 4)
@@ -139,12 +139,16 @@ export function initBirdTemplates() {
                 }),
                 direction: vec2(-1, 0),
                 rate: (1.0 / 0.9),
-            }))            
+            }))  
+            .withSpawnRegion(SPAWN_REGIONS.TOP_LEFT)
+            .withSpawnRegion(SPAWN_REGIONS.LEFT_UPPER)          
             .withColors(BLUE, RED),
 
         greg: new BirdTemplate('Greg', 'Greg is a simple bird who is a little drunk.', 3, 6)
             .withMovement(new WaveyMovement(vec2(-1, 0).normalize(DEFAULT_BIRD_ATTRIBUTES.SPEED), vec2(1, 1), 1))
-            .withShooting(new PassiveShooting())          
+            .withShooting(new PassiveShooting())  
+            .withSpawnRegion(SPAWN_REGIONS.RIGHT_UPPER)
+            .withSpawnRegion(SPAWN_REGIONS.RIGHT_LOWER)        
             .withColors(GREEN, GREEN),
 
         frank: new BirdTemplate('Frank', 'Frank is Greg\'s friend but he flings poo.', 4, 7)
@@ -154,16 +158,20 @@ export function initBirdTemplates() {
                 direction: vec2(-1, 0),
                 rate: (1.0 / 0.8),
             }))
+            .withSpawnRegion(SPAWN_REGIONS.RIGHT_UPPER)
+            .withSpawnRegion(SPAWN_REGIONS.RIGHT_LOWER)
             .withDamange(6)
             .withColors(YELLOW, YELLOW),
 
-        kathy: new BirdTemplate('Kathy', 'Kathy is a little etreme when it comes to stalking bee\'s.', 6, 8)
-            .withMovement(new BeeAttractiveMovementBehavior(vec2(-1, 0).normalize(DEFAULT_BIRD_ATTRIBUTES.SPEED), 6, DEFAULT_BIRD_ATTRIBUTES.SPEED * 1.5))
+        kathy: new BirdTemplate('Kathy', 'Kathy is a little extreme when it comes to stalking bee\'s.', 6, 8)
+            .withMovement(new BeeAttractiveMovementBehavior(vec2(-1, 0).normalize(DEFAULT_BIRD_ATTRIBUTES.SPEED), 10, DEFAULT_BIRD_ATTRIBUTES.SPEED * 1.5))
             .withShooting(new SingleBulletShooting({
                 bulletFactory: new BirdBulletFactory(),
                 direction: vec2(-1, 0),
                 rate: (1.0 / 1.0),
             }))
+            .withSpawnRegion(SPAWN_REGIONS.RIGHT_UPPER)
+            .withSpawnRegion(SPAWN_REGIONS.RIGHT_LOWER)
             .withDamange(8)
             .withColors(GRAY, BLACK),
 
@@ -177,6 +185,8 @@ export function initBirdTemplates() {
                 rate: (1.0 / 1.2),
             }))
             .withDamange(7)
+            .withSpawnRegion(SPAWN_REGIONS.RIGHT_UPPER)
+            .withSpawnRegion(SPAWN_REGIONS.RIGHT_LOWER)
             // Very lime green
             .withColors(rgb255(0, 255, 0), rgb255(152, 251, 152)),
 
@@ -190,6 +200,8 @@ export function initBirdTemplates() {
                 rate: (1.0 / 1.2),
             }))
             .withDamange(7)
+            .withSpawnRegion(SPAWN_REGIONS.BOTTOM_RIGHT)
+            .withSpawnRegion(SPAWN_REGIONS.RIGHT_LOWER)
             // Very lime green
             .withColors(rgb255(0, 255, 0), rgb255(152, 251, 152)),
 
@@ -203,13 +215,17 @@ export function initBirdTemplates() {
                 rate: (1.0 / 1.2),
             }))
             .withDamange(7)
+            .withSpawnRegion(SPAWN_REGIONS.RIGHT_UPPER)
+            .withSpawnRegion(SPAWN_REGIONS.TOP_RIGHT)
             // Very lime green
             .withColors(rgb255(0, 255, 0), rgb255(152, 251, 152)),
 
-        whitney_down_up: new BirdTemplate('Tom', 'A more resiliant basic passive bird.', 25, 15)            
+        tom: new BirdTemplate('Tom', 'A more resiliant basic passive bird.', 25, 15)            
             .withMovement(new FixedVelocityMovement(vec2(-1, -2).normalize(DEFAULT_BIRD_ATTRIBUTES.SPEED)))
             .withShooting(new PassiveShooting())
             .withDamange(7)
+            .withSpawnRegion(SPAWN_REGIONS.RIGHT_UPPER)
+            .withSpawnRegion(SPAWN_REGIONS.RIGHT_LOWER)
             // Darker red than fred
             .withColors(rgb255(139, 26, 26), rgb255(238, 44, 44)),
     }
@@ -274,7 +290,7 @@ export class Bird extends EngineObject
     constructor(pos, template)
     {
         super(pos, vec2(1, 1));
-
+        
         this.entityType = EntityType.BIRD;
 
         this.setCollision();
@@ -287,11 +303,13 @@ export class Bird extends EngineObject
         this.legs = new BirdLegs(pos, this);
         this.body = new BirdBody(pos, this, template.bodyColor);
         this.head = new BirdHead(pos, this, template.headColor);
-        
+
+        this.name = template.name;
+
         this.maxHealth = template.health;
         this.health = this.maxHealth;        
 
-        this.damage = template.critChance;
+        this.damage = template.damage;
         this.critChance = template.critChance;
         this.critMultiplier = template.critMultiplier;
         this.touchDamange = template.touchDamange;
@@ -308,6 +326,10 @@ export class Bird extends EngineObject
         // rate limit based on the fire rate of the bird.
         this.shooting.fire(this);
         this.movement.update(this);
+
+        if (isWellOutsideWorldBoundary(this)) {            
+            this.destroy();
+        }
 
         super.update();
     }
@@ -333,10 +355,11 @@ export class Bird extends EngineObject
     }
 
     getDamage() {        
-        let damage = this.damange;
+        let damage = this.damage;
         if (rand(0, 1) >= this.critChance) {
             damage = damage * this.critMultiplier;
         }
+        return damage;
     }
 
     collideWithObject(o) {

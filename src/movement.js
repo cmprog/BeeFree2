@@ -80,6 +80,7 @@ export class BeeAttractiveMovementBehavior extends MovementBehavior {
 
         super();
 
+        this.initializedVelocity = false;
         this.initialVelocity = initialVelocity;
         this.normalSpeed = initialVelocity.length();
 
@@ -90,8 +91,9 @@ export class BeeAttractiveMovementBehavior extends MovementBehavior {
     update(obj) {
 
         // Ensure we have an initial velocity set
-        if (!obj.velocity) {
+        if (!this.initializedVelocity) {
             obj.velocity = this.initialVelocity;
+            this.initializedVelocity;
         }
 
         const vectToBee = currentLevel.bee.pos.subtract(obj.pos);

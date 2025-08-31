@@ -5,7 +5,7 @@ import { logDebug, logInfo } from "./logging.js";
 import { MENUS } from "./menus.js";
 import { Owl } from "./owl.js";
 import { currentPlayer } from "./player.js";
-import { FormationDefinition, SpawnDefinition, SpawnerCollection, FormationCreationOptions } from "./spawning.js";
+import { FormationDefinition, SpawnDefinition, SpawnerCollection, FormationCreationOptions, SPAWN_REGIONS } from "./spawning.js";
 import { FONTS, getWorldSize } from "./util.js";
 
 export let currentLevel;
@@ -269,16 +269,26 @@ class StandardLevel extends Level {
 
     spawn() {
 
-
-        // const worldSize = canvasFixedSize;
-
-        // const posX = this.rand.float(-20, 20);
-        const posX = 20;
-        const posY = this.rand.float(-12, 12);
-        const pos = vec2(posX, posY);
-
         const birdTemplateKey = this.availableBirdKeys[this.rand.int(0, this.availableBirdKeys.length)];
         const birdTemplate = BIRD_TEMPLATES[birdTemplateKey];
+
+        // This gets the bottom right - but to get a positive size
+        // we just flip the y-sign
+        const worldSize = screenToWorld(mainCanvasSize);
+        worldSize.y = -worldSize.y;
+
+        const margin = vec2(1, 1);
+
+        const spawnRegions = birdTemplate.spawnRegions;
+        if (!spawnRegions.length) {
+            // Just default to the right side of the screen.
+            spawnRegions.push(SPAWN_REGIONS.RIGHT_UPPER);
+            spawnRegions.push(SPAWN_REGIONS.RIGHT_LOWER);
+        }
+
+        const targetSpawnRegion = spawnRegions[this.rand.int(0, spawnRegions.length)];
+        const pos = targetSpawnRegion.getRandomPosition(this.rand, worldSize, margin);
+
         const bird = birdTemplate.create(pos);
 
         logDebug(`Spawning '${birdTemplate.name}' at '${pos}'.`);

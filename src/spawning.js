@@ -1,5 +1,118 @@
 import { currentLevel } from "./levels.js";
 
+export const SPAWN_REGIONS = {
+
+    RIGHT_UPPER: {
+        /**
+         * Gets a random position within this spawn region.
+         * @param {RandomGenerator} rand 
+         * @param {Vector2} worldSize 
+         * @param {vec2} margin 
+         */
+        getRandomPosition(rand, worldSize, margin) {
+            const posX = worldSize.x + (rand.float() * margin.x);
+            const posY = rand.float() * worldSize.y;
+            return vec2(posX, posY);
+        }
+    },
+    RIGHT_LOWER: {
+        /**
+         * Gets a random position within this spawn region.
+         * @param {RandomGenerator} rand 
+         * @param {Vector2} worldSize 
+         * @param {vec2} margin 
+         */
+        getRandomPosition(rand, worldSize, margin) {
+            const posX = worldSize.x + (rand.float() * margin.x);
+            const posY = rand.float() * -worldSize.y;
+            return vec2(posX, posY);
+        }
+    },
+
+    TOP_LEFT: {
+        /**
+         * Gets a random position within this spawn region.
+         * @param {RandomGenerator} rand 
+         * @param {Vector2} worldSize 
+         * @param {vec2} margin 
+         */
+        getRandomPosition(rand, worldSize, margin) {
+            const posX = rand.float() * -worldSize.x;
+            const posY = worldSize.y + (rand.float() * margin.y);
+            return vec2(posX, posY);
+        }
+    },
+    TOP_RIGHT: {
+        /**
+         * Gets a random position within this spawn region.
+         * @param {RandomGenerator} rand 
+         * @param {Vector2} worldSize 
+         * @param {vec2} margin 
+         */
+        getRandomPosition(rand, worldSize, margin) {
+            const posX = rand.float() * worldSize.x;
+            const posY = worldSize.y + (rand.float() * margin.y);
+            return vec2(posX, posY);
+        }
+    },
+
+    BOTTOM_LEFT: {
+        /**
+         * Gets a random position within this spawn region.
+         * @param {RandomGenerator} rand 
+         * @param {Vector2} worldSize 
+         * @param {vec2} margin 
+         */
+        getRandomPosition(rand, worldSize, margin) {
+            const posX = rand.float() * -worldSize.x;
+            const posY = -worldSize.y - (rand.float() * margin.y);
+            return vec2(posX, posY);
+        }
+    },
+    BOTTOM_RIGHT: {
+        /**
+         * Gets a random position within this spawn region.
+         * @param {RandomGenerator} rand 
+         * @param {Vector2} worldSize 
+         * @param {vec2} margin 
+         */
+        getRandomPosition(rand, worldSize, margin) {
+            const posX = rand.float() * worldSize.x;
+            const posY = -worldSize.y - (rand.float() * margin.y);
+            return vec2(posX, posY);
+        }
+    },
+
+    LEFT_UPPER: {
+        /**
+         * Gets a random position within this spawn region.
+         * @param {RandomGenerator} rand 
+         * @param {Vector2} worldSize 
+         * @param {vec2} margin 
+         */
+        getRandomPosition(rand, worldSize, margin) {
+            const posX = -worldSize.x - (rand.float() * margin.x);
+            const posY = rand.float() * worldSize.y;
+            return vec2(posX, posY);
+        }
+    },
+    LEFT_LOWER: {
+        /**
+         * Gets a random position within this spawn region.
+         * @param {RandomGenerator} rand 
+         * @param {Vector2} worldSize 
+         * @param {vec2} margin 
+         */
+        getRandomPosition(rand, worldSize, margin) {
+            const posX = -worldSize.x - (rand.float() * margin.x);
+            const posY = rand.float() * -worldSize.y;
+            return vec2(posX, posY);
+        }
+    }
+
+
+}
+
 export class FormationCreationOptions {
 
     constructor() {

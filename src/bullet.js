@@ -1,7 +1,7 @@
 import { EntityType } from './entities.js';
 import { DEFAULT_BIRD_ATTRIBUTES } from './settings.js';
 import { spriteAtlas } from "./sprites.js";
-import { scaleTileSizeHeight } from "./util.js";
+import { isWellOutsideWorldBoundary, scaleTileSizeHeight } from "./util.js";
 
 export class BulletFactory {
 
@@ -47,15 +47,12 @@ export class Bullet extends EngineObject {
         this.setCollision();
         
         this.size = scaleTileSizeHeight(this.tileInfo, 0.5);
-
-        // Just a means to ensure it gets auto-cleaned up
-        this.lifeTimer = new Timer(10);
     }
 
     update() {
         super.update();
-
-        if (this.lifeTimer.elapsed()) {
+        
+        if (isWellOutsideWorldBoundary(this)) {            
             this.destroy();
         }
     }

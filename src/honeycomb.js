@@ -2,6 +2,7 @@ import { EntityType } from "./entities.js";
 import { currentLevel } from "./levels.js";
 import { currentPlayer } from "./player.js";
 import { spriteAtlas } from "./sprites.js";
+import { isWellOutsideWorldBoundary } from "./util.js";
 
 export class Honeycomb extends EngineObject{
 
@@ -11,9 +12,6 @@ export class Honeycomb extends EngineObject{
 
         this.setCollision();
         this.tileInfo = spriteAtlas.honeycomb
-
-        // Just a means to ensure it gets auto-cleaned up
-        this.lifeTimer = new Timer(10);
 
         this.entityType = EntityType.HONEYCOMB;
         this.value = value;        
@@ -32,7 +30,7 @@ export class Honeycomb extends EngineObject{
             }            
         }
 
-        if (this.lifeTimer.elapsed()) {
+        if (isWellOutsideWorldBoundary(this)) {            
             this.destroy();
         }
     }
