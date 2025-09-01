@@ -1,5 +1,7 @@
 import { Menu } from './menu.js'
+import { PlayerLevel } from './player-level.js';
 import { currentPlayer } from './player.js';
+import { StandardLevelStatistics } from './statistics.js';
 
 class StatisticField {
 
@@ -74,33 +76,52 @@ export class StatisticsMenu extends Menu {
             }),
 
             new StatisticField('#statistic-total-honeycomb-collected', () => {
-                return currentPlayer.totalHoneycombCollected.toString();
+                return currentPlayer.prestigeStatistics.totalHoneycombCollected.toString();
             }),
             new StatisticField('#statistic-kill-count', () => {
-                return currentPlayer.killCount.toString();
+                return currentPlayer.prestigeStatistics.killCount.toString();
             }),
             new StatisticField('#statistic-death-count', () => {
-                return currentPlayer.deathCount.toString();
+                return currentPlayer.prestigeStatistics.deathCount.toString();
             }),
             new StatisticField('#statistic-levels-started', () => {
-                return currentPlayer.levelsStartCount.toString();
+                return this.sumLevelStats(v => v.prestigeStatistics.startCount).toString();
             }),
             new StatisticField('#statistic-levels-completed', () => {
-                return currentPlayer.levelsCompletedCount.toString();
+                return this.sumLevelStats(v => v.prestigeStatistics.completedCount).toString();
             }),
             new StatisticField('#statistic-levels-failed', () => {
-                return currentPlayer.levelsFailureCount.toString();
+                return this.sumLevelStats(v => v.prestigeStatistics.failureCount).toString();
             }),
             new StatisticField('#statistic-perfect-levels-completed', () => {
-                return currentPlayer.perfectLevelsCompleted.toString();
+                return this.sumLevelStats(v => v.prestigeStatistics.noSurvivorsCount).toString();
             }),
             new StatisticField('#statistic-flawless-levels-completed', () => {
-                return currentPlayer.flawlessLevelsCompleted.toString();
+                return this.sumLevelStats(v => v.prestigeStatistics.noDamangeCount).toString();
             }),
             new StatisticField('#statistic-lucky-owls-spawned', () => {
-                return currentPlayer.luckyOwlsSpawned.toString();
+                return currentPlayer.prestigeStatistics.sammySpawnCount.toString();
             }),
         ];
+    }
+
+    /**
+     * @callback LevelSelectorCallback
+     * @param {PlayerLevel}
+     * @returns {number}
+     */
+
+    /**
+     * Sums the standard level statistics using a selection function for the specific statistic value.
+     * @param {LevelSelectorCallback} levelSelector 
+     * @returns {number}
+     */
+    sumLevelStats(levelSelector) {
+        let total = 0;
+        currentPlayer.levels.forEach(value => {
+            total += levelSelector(value);
+        });
+        return total;
     }
 
     onOpening() {

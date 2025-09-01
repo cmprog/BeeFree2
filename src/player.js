@@ -1,8 +1,10 @@
+import { AttributeSet, LevelAttributeSet } from "./attributes.js";
 import { Bee } from "./bee.js";
 import { logDebug, logError } from "./logging.js";
 import { PlayerLevel } from "./player-level.js";
-import { DEFAULT_ATTRIBUTE_VALUES } from "./settings.js";
+import { DEFAULT_BEE_ATTRIBUTES, DEFAULT_LEVEL_ATTRIBUTES, DEFAULT_SAMMY_ATTRIBUTE_MULTIPLIERS } from "./settings.js";
 import { SingleBulletShooting } from "./shooting.js";
+import { StatisticsSet, TimeTrialStatistics } from "./statistics.js";
 
 const SAVE_KEY = "save";
 const SAVE_KEY_BACKUP = "save_bk";
@@ -16,25 +18,60 @@ class Player {
         this.lastPlayedOn = new Date();
         this.lastSavedOn = undefined;
 
-        // Attributes
-        this.beeSpeed = DEFAULT_ATTRIBUTE_VALUES.BEE_SPEED;
-        this.beeMaxHealth = DEFAULT_ATTRIBUTE_VALUES.BEE_MAX_HEALTH;
-        this.beeHealthRegen = DEFAULT_ATTRIBUTE_VALUES.BEE_HEALTH_REGEN;
-        this.beeFireRate = DEFAULT_ATTRIBUTE_VALUES.BEE_FIRE_RATE;
-        this.beeDamage = DEFAULT_ATTRIBUTE_VALUES.BEE_DAMAGE;
-        this.beeShotCount = DEFAULT_ATTRIBUTE_VALUES.BEE_SHOT_COUNT;
-        this.beeHoneycombAttration = DEFAULT_ATTRIBUTE_VALUES.BEE_HONEYCOMB_ATTRACTION;
-        this.beeHoneycombAttrationDistance = DEFAULT_ATTRIBUTE_VALUES.BEE_HONEYCOMB_ATTRACTION_DISTANCE;
-        this.beeBulletSpeed = DEFAULT_ATTRIBUTE_VALUES.BEE_BULLET_SPEED;
-        this.beeCritChance = DEFAULT_ATTRIBUTE_VALUES.BEE_CRIT_CHANCE;
-        this.beeCritMultiplier = DEFAULT_ATTRIBUTE_VALUES.BEE_CRIT_MULTIPLER;
-        this.sammyChance = DEFAULT_ATTRIBUTE_VALUES.SAMMY_CHANCE;
+        /**
+         * The amount of available honeycomb which can be spent.
+         */
+        this.availableHoneycomb = 0;
+
+        /**
+         * The current set of attributes for the bee for the current prestige.
+         * @type {AttributeSet}
+         */
+        this.beeAttributes = DEFAULT_BEE_ATTRIBUTES.copy();
+
+        /**
+         * Keeps track of the highest value ever achived for a given attribute
+         * across all prestiges.
+         * @type {AttributeSet}
+         */
+        this.highestBeeAttributes = this.beeAttributes.copy();
+
+        /**
+         * This is a special set of attributes which contain multipliers which are
+         * in affect during a special sammy powerup.
+         * @type {AttributeSet}
+         */
+        this.sammyAttributeMultipliers = DEFAULT_SAMMY_ATTRIBUTE_MULTIPLIERS.copy();
+
+        /**
+         * Keeps track of the highest value ever achived for the sammy attributes.
+         * @type {AttributeSet}
+         */
+        this.highestSammyAttributeMultipliers = this.sammyAttributeMultipliers.copy();
+        
+        /**
+         * The current set of level attributes for the bee for the current prestige.
+         */
+        this.levelAttributes = DEFAULT_LEVEL_ATTRIBUTES.copy();
+
+        /**
+         * Keeps track of the highest value ever achived for a given level attribute
+         * across all prestiges.
+         * @type {LevelAttributeSet}
+         */
+        this.highestLevelAttributes = this.levelAttributes.copy();
 
         /**
          * The number of times the player has prestiged.
          * @type {number}
          */
         this.prestigeCount = 0;
+
+        /**
+         * The timestamp of the last time the player prestiged.
+         * @type {Date}
+         */
+        this.lastPrestigedOn = undefined;
 
         /** 
          * The total honeycomb multipler which comes from performing a prestige.
@@ -43,52 +80,17 @@ class Player {
         this.prestigeHoneycombMultiplier = 1;
 
         /**
-         * The date of the longest time trial ever completed.
-         * @type {Date}
+         * @type {Map<number, PlayerLevel>}
          */
-        this.longestGlobalTimeTrialDate = undefined;
-
-        /**
-         * The duration (in seconds) of the longest time trial ever completed.
-         * @type {number}
-         */
-        this.longestGlobalTimeTrialDuration = undefined;
-
-        /**
-         * The date of the current time trial. This is needed so we know if the current time trial duration is old.
-         * @type {Date}
-         */
-        this.longestCurrentTimeTrialDate = undefined
-
-        /**
-         * The duration (in seconds) of the longest time trial for the current date.
-         * @type {number}
-         */
-        this.longestCurrentTimeTrialDuration = undefined
-
-        this.levels = {};
+        this.levels = new Map();
         this.achivements = {};
-
-        // Statistics
-        this.availableHoneycomb = 0;
-        this.totalHoneycombCollected = 0;
-        this.killCount = 0;
-        this.deathCount = 0;
-        this.shotCount = 0;
-        this.bulletCount = 0;
-        this.luckyOwlSpawnCount = 0;
-        this.luckyOwlCollectCount = 0;
-        this.distanceTraveled = 0;
-
-        this.prestigeKillCount = 0;
-        this.prestigeDeathCount = 0;        
-        this.prestigeShotCount = 0;
-        this.prestigeBulletCount = 0;
-        this.prestigeLuckeyOwlSpawnCount = 0;
-        this.prestigeLuckeyOwlCollectCount = 0;
-        this.prestigeDistanceTraveled = 0;
-
         this.shopPurchases = { };
+
+        this.overallStatistics = new StatisticsSet();
+        this.prestigeStatistics = new StatisticsSet();
+
+        this.dailyTimeTrialStatistics = new TimeTrialStatistics();
+        this.overallTimeTrailStatistics = new TimeTrialStatistics();
 
         this.markLevelAvailable(0);
     }
@@ -108,11 +110,11 @@ class Player {
      * @returns {PlayerLevel}
      */
     getLevel(levelId) {
-        if (!(levelId in this.levels)) {
-            this.levels[levelId] = new PlayerLevel();
+        if (!this.levels.has(levelId)) {
+            this.levels.set(levelId, new PlayerLevel(levelId));
         }
 
-        return this.levels[levelId];
+        return this.levels.get(levelId);
     }
 
     onLevelStarted(levelId) {
@@ -120,7 +122,6 @@ class Player {
         this.getLevel(levelId).onLevelStarted();
         this.save();
     }
-
 
     /**
      * Signals that a level was completed - updates stats.
@@ -130,25 +131,6 @@ class Player {
      * @param {boolean} noSurvivors 
      */
     onLevelCompleted(levelId, failed, flawless, perfect) {
-
-
-        if (failed) {
-
-            this.levelsFailureCount += 1;
-
-        } else {          
-            
-            this.levelsCompletedCount += 1;
-            
-            if (flawless) {
-                this.flawlessLevelsCompleted += 1;
-            }
-
-            if (perfect) {
-                this.perfectLevelsCompleted += 1;
-            }
-        }
-
         const level = this.getLevel(levelId);
         level.onLevelCompleted(failed, flawless, perfect);
         this.save();
@@ -168,6 +150,51 @@ class Player {
         return (id in this.achivements) && this.achivements[id];
     }
 
+    /**
+     * Creates a bare DTO save object containing the player data.
+     */
+    toSaveObj() {
+
+        const saveObj = {
+            
+            name: this.name,
+            createdOn: this.createdOn.valueOf(),
+            lastPlayedOn: this.lastPlayedOn.valueOf(),
+            lastSavedOn: Date.now(),
+
+            availableHoneycomb: this.availableHoneycomb,
+
+            beeAttributes: this.beeAttributes.toSaveObj(),
+            highestBeeAttributes: this.highestBeeAttributes.toSaveObj(),
+            
+            sammyAttributeMultipliers: this.sammyAttributeMultipliers.toSaveObj(),
+            sammyAttributeMultipliers: this.sammyAttributeMultipliers.toSaveObj(),
+            
+            levelAttributes: this.levelAttributes.toSaveObj(),
+            highestLevelAttributes: this.highestLevelAttributes.toSaveObj(),
+
+            prestigeCount: this.prestigeCount,
+            lastPrestigedOn: this.lastPrestigedOn,
+            prestigeHoneycombMultiplier: this.prestigeHoneycombMultiplier,        
+
+            achivements: this.achivements,            
+            shopPurchases: this.shopPurchases,
+
+            overallStatistics: this.overallStatistics.toSaveObj(),
+            prestigeStatistics: this.prestigeStatistics.toSaveObj(),
+
+            dailyTimeTrialStatistics: this.dailyTimeTrialStatistics.toSaveObj(),
+            overallTimeTrailStatistics: this.overallTimeTrailStatistics.toSaveObj(),
+        };
+
+        saveObj.levels = {};
+        for (const [key, value] of this.levels) {
+            saveObj.levels[key] = value.toSaveObj();
+        }
+
+        return saveObj;
+    }
+
     save() {
 
         logDebug(`Saving player data...`);
@@ -175,93 +202,52 @@ class Player {
         // Backup the current save in case something happens
         localStorage.setItem(SAVE_KEY_BACKUP, localStorage.getItem(SAVE_KEY));
 
-        const timestamp = new Date();
-
-        const saveObj = {
-            
-            name: this.name,
-            createdOn: this.createdOn,
-            lastPlayedOn: this.lastPlayedOn,
-            lastSavedOn: timestamp,
-
-            beeSpeed: this.beeSpeed,
-            beeMaxHealth: this.beeMaxHealth,
-            beeHealthRegen: this.beeHealthRegen,
-            beeFireRate: this.beeFireRate,
-            beeDamage: this.beeDamage,
-            beeShotCount: this.beeShotCount,
-            beeHoneycombAttration: this.beeHoneycombAttration,
-            beeHoneycombAttrationDistance: this.beeHoneycombAttrationDistance,
-            beeBulletSpeed: this.beeBulletSpeed,
-            beeCritChance: this.beeCritChance,
-            beeCritMultiplier: this.beeCritMultiplier,
-            sammyChance: this.sammyChance,
-
-            // Will populate afterwards
-            levels: {},            
-
-            achivements: this.achivements,            
-            shopPurchases: this.shopPurchases,
-
-            availableHoneycomb: this.availableHoneycomb,
-            totalHoneycombCollected: this.totalHoneycombCollected,
-            killCount: this.killCount,
-            deathCount: this.deathCount,
-            levelsAttempted: this.levelsStartCount,
-            levelsCompleted: this.levelsCompletedCount,
-            levelsFailed: this.levelsFailureCount,
-            perfectLevelsCompleted: this.perfectLevelsCompleted,
-            flawlessLevelsCompleted: this.flawlessLevelsCompleted,
-            luckyOwlsSpawned: this.luckyOwlsSpawned,
-        };
-
-        for (const key of Object.keys(this.levels)) {
-            saveObj.levels[key] = this.levels[key].toSaveObj();
-        }
-
+        const saveObj = this.toSaveObj();
         localStorage.setItem(SAVE_KEY, JSON.stringify(saveObj));
 
-        this.lastSavedOn = timestamp;
+        this.lastSavedOn = new Date(saveObj.lastSavedOn);
 
         logDebug(`Player data saved successfully!`);
     }
 
-    load() {
-        logDebug(`Loading player data...`);
+    /**
+     * Loads the player state from the given save object.
+     * @param {Object} saveObj 
+     */
+    loadSaveObj(saveObj) {
 
-        const saveObj = JSON.parse(localStorage.getItem(SAVE_KEY));
-        if (!saveObj) {
-            logDebug(`Save data not found.`);
-            return;
-        }
+        // ********************************************************
+        // CARE SHOULD BE HAD TO ENSURE WE CAN LOAD OLD SAVES
+        // ********************************************************
             
-        this.name = saveObj.name;
-        this.createdOn = saveObj.createdOn;
-        this.lastPlayedOn = saveObj.lastPlayedOn;
-        this.lastSavedOn = saveObj.lastSavedOn;
+        this.name = saveObj.name || 'Amelia';
+        this.createdOn = new Date(saveObj.createdOn || Date.now());
+        this.lastPlayedOn = new Date(saveObj.lastPlayedOn || Date.now());
+        this.lastSavedOn = new Date(saveObj.lastSavedOn || Date.now());
 
-        this.beeSpeed = saveObj.beeSpeed || DEFAULT_ATTRIBUTE_VALUES.BEE_SPEED;
-        this.beeMaxHealth = saveObj.beeMaxHealth || DEFAULT_ATTRIBUTE_VALUES.BEE_MAX_HEALTH;
-        this.beeHealthRegen = saveObj.beeHealthRegen || DEFAULT_ATTRIBUTE_VALUES.BEE_HEALTH_REGEN;
-        this.beeFireRate = saveObj.beeFireRate || DEFAULT_ATTRIBUTE_VALUES.BEE_FIRE_RATE;
-        this.beeDamage = saveObj.beeDamage || DEFAULT_ATTRIBUTE_VALUES.BEE_DAMAGE;
-        this.beeShotCount = saveObj.beeShotCount || DEFAULT_ATTRIBUTE_VALUES.BEE_SHOT_COUNT;
-        this.beeHoneycombAttration = saveObj.beeHoneycombAttration || DEFAULT_ATTRIBUTE_VALUES.BEE_HONEYCOMB_ATTRACTION;
-        this.beeHoneycombAttrationDistance = saveObj.beeHoneycombAttrationDistance || DEFAULT_ATTRIBUTE_VALUES.BEE_HONEYCOMB_ATTRACTION_DISTANCE;
-        this.beeBulletSpeed = saveObj.beeBulletSpeed || DEFAULT_ATTRIBUTE_VALUES.BEE_BULLET_SPEED;
-        this.beeCritChance = saveObj.beeCritChance || DEFAULT_ATTRIBUTE_VALUES.BEE_CRIT_CHANCE;
-        this.beeCritMultiplier = saveObj.beeCritMultiplier || DEFAULT_ATTRIBUTE_VALUES.BEE_CRIT_MULTIPLER;
-        this.sammyChance = saveObj.sammyChance || DEFAULT_ATTRIBUTE_VALUES.SAMMY_CHANCE;
+        this.availableHoneycomb = saveObj.availableHoneycomb || 0;
+        
+        this.beeAttributes.loadSaveObj(saveObj.beeAttributes, DEFAULT_BEE_ATTRIBUTES);
+        this.highestBeeAttributes.loadSaveObj(saveObj.highestBeeAttributes, this.beeAttributes);
+        
+        this.sammyAttributeMultipliers.loadSaveObj(saveObj.sammyAttributeMultipliers, DEFAULT_SAMMY_ATTRIBUTE_MULTIPLIERS);
+        this.highestSammyAttributeMultipliers.loadSaveObj(saveObj.highestSammyAttributeMultipliers, this.sammyAttributeMultipliers);
+        
+        this.levelAttributes.loadSaveObj(saveObj.levelAttributes, DEFAULT_LEVEL_ATTRIBUTES);
+        this.highestLevelAttributes.loadSaveObj(saveObj.highestLevelAttributes, this.levelAttributes);
 
-        // Clear the current levels as a new obj
-        this.levels = {};
-        for (const key of Object.keys(saveObj.levels)) {
-            const levelObj = saveObj.levels[key];
+        this.prestigeCount = saveObj.prestigeCount || 0;
+        this.lastPrestigedOn = saveObj.lastPrestigedOn ? new Date(saveObj.lastPrestigedOn) : undefined;
+        this.prestigeHoneycombMultiplier = saveObj.prestigeHoneycombMultiplier;
+                
+        this.levels.clear();
+        for (const levelIdText of Object.keys(saveObj.levels)) {
+            const levelObj = saveObj.levels[levelIdText];
             
             const playerLevel = new PlayerLevel(levelObj.id);
             playerLevel.loadSaveObj(levelObj);
             
-            this.levels[key] = playerLevel;            
+            this.levels.set(levelObj.id, playerLevel);         
         }
 
         this.shopPurchases = { };
@@ -278,16 +264,29 @@ class Player {
             }
         }
 
-        this.availableHoneycomb = saveObj.availableHoneycomb;
-        this.totalHoneycombCollected = saveObj.totalHoneycombCollected;
-        this.killCount = saveObj.killCount;
-        this.deathCount = saveObj.deathCount;
-        this.levelsStartCount = saveObj.levelsAttempted;
-        this.levelsCompletedCount = saveObj.levelsCompleted;
-        this.levelsFailureCount = saveObj.levelsFailed;
-        this.perfectLevelsCompleted = saveObj.perfectLevelsCompleted;
-        this.flawlessLevelsCompleted = saveObj.flawlessLevelsCompleted;
-        this.luckyOwlsSpawned = saveObj.luckyOwlsSpawned;
+        this.overallStatistics.loadSaveObj(saveObj.overallStatistics);
+        this.prestigeStatistics.loadSaveObj(saveObj.prestigeStatistics);
+
+        this.dailyTimeTrialStatistics.loadSaveObj(saveObj.dailyTimeTrialStatistics);
+        this.overallTimeTrailStatistics.loadSaveObj(saveObj.overallTimeTrailStatistics);
+    }
+
+    load() {
+        logDebug(`Loading player data...`);
+
+        const saveObjText = localStorage.getItem(SAVE_KEY);
+        if (!saveObjText) {
+            logDebug(`Save data not found.`);
+            return;
+        }
+
+        const saveObj = JSON.parse(saveObjText);
+        if (!saveObj) {
+            logDebug(`Save data not found.`);
+            return;
+        }
+
+        this.loadSaveObj(saveObj);
 
         medalsForEach(m => m.reload());
 

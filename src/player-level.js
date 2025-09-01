@@ -1,51 +1,13 @@
+import { StandardLevelStatistics } from "./statistics.js";
+
 export class PlayerLevel {
     constructor(id) {
         
         this.id = id;
         this.isUnlocked = false;
 
-        this.startCount = 0;
-        this.completedCount = 0;
-        this.failureCount = 0;
-        this.noDamangeCount = 0;
-        this.noSurvivorsCount = 0;    
-        this.perfectCount = 0;
-
-        /**
-         * The number of times the level was started in the current prestige.
-         * @type {number}
-         */
-        this.prestigeStartCount = 0;
-
-        /**
-         * The number of times the level was completed in the current prestige.
-         * @type {number}
-         */
-        this.prestigeCompleteCount = 0;
-
-        /**
-         * The number of times the level was failed in the current prestige.
-         * @type {number}
-         */
-        this.prestigeFailureCount = 0;
-
-        /**
-         * The number of times the level was completed without taking damange in the current prestige.
-         * @type {number}
-         */
-        this.prestigeNoDamangeCount = 0;
-
-        /**
-         * The number of times the level was completed without any bird survivors in the current prestige.
-         * @type {number}
-         */
-        this.prestigeNoSurvivorsCount = 0;
-
-        /**
-         * The number of times the level was completed both without taking damange or leaving survivors in the current prestige.
-         * @type {number}
-         */
-        this.prestigePerfectCount = 0;
+        this.overallStatistics = new StandardLevelStatistics();
+        this.prestigeStatistics = new StandardLevelStatistics();
     }
 
     onLevelStarted() {
@@ -112,44 +74,24 @@ export class PlayerLevel {
             id: this.id,
             isUnlocked: this.isUnlocked,
 
-            startCount: this.startCount,
-            completedCount: this.completedCount,
-            failureCount: this.failureCount,
-            noDamangeCount: this.noDamangeCount,
-            noSurvivorsCount: this.noSurvivorsCount,
-            perfectCount: this.perfectCount,
-
-            prestigeStartCount: this.prestigeStartCount,
-            prestigeCompleteCount: this.prestigeCompleteCount,
-            prestigeFailureCount: this.prestigeFailureCount,
-            prestigeNoDamangeCount: this.prestigeNoDamangeCount,
-            prestigeNoSurvivorsCount: this.prestigeNoSurvivorsCount,
-            prestigePerfectCount: this.prestigePerfectCount,
+            overallStatistics: this.overallStatistics.toSaveObj(),
+            prestigeStatistics: this.prestigeStatistics.toSaveObj(),
         }
     }
 
     loadSaveObj(saveObj) {
         
         if (saveObj.id != this.id) {
-            logError(`Unexpected level id. Expected ${this.id} but got ${saveObj.id}.`);            
+            logError(`Unexpected level id. Expected ${this.id} but got ${saveObj.id}.`);           
         }
 
+        // ********************************************************
         // CARE SHOULD BE HAD TO ENSURE WE CAN LOAD OLD SAVES
+        // ********************************************************
         
         this.isUnlocked = saveObj.isUnlocked;
 
-        this.startCount = saveObj.startCount || 0;        
-        this.completedCount = saveObj.completedCount || 0;
-        this.failureCount = saveObj.failureCount || 0;
-        this.noDamangeCount = saveObj.noDamangeCount || 0;
-        this.noSurvivorsCount = saveObj.noSurvivorsCount || 0;
-        this.perfectCount = saveObj.perfectCount || 0;
-
-        this.prestigeStartCount = saveObj.prestigeStartCount || 0;        
-        this.prestigeCompleteCount = saveObj.prestigeCompleteCount || 0;
-        this.prestigeFailureCount = saveObj.prestigeFailureCount || 0;
-        this.prestigeNoDamangeCount = saveObj.prestigeNoDamangeCount || 0;
-        this.prestigeNoSurvivorsCount = saveObj.prestigeNoSurvivorsCount || 0;
-        this.prestigePerfectCount = saveObj.prestigePerfectCount || 0;
+        this.overallStatistics.loadSaveObj(saveObj.overallStatistics);
+        this.prestigeStatistics.loadSaveObj(saveObj.prestigeStatistics);
     }
 }

@@ -1,7 +1,7 @@
 import { appendChildHtml } from './html.js';
 import { Menu } from './menu.js'
 import { currentPlayer } from './player.js';
-import { DEFAULT_ATTRIBUTE_VALUES } from './settings.js';
+import { DEFAULT_BEE_ATTRIBUTES } from './settings.js';
 import { registerClick } from './util.js';
 
 const SHOP_ITEMS = {    
@@ -16,7 +16,7 @@ const SHOP_ITEMS = {
         },
         costBase: 5,
         costGrowth: 1.2,
-        valueBase: DEFAULT_ATTRIBUTE_VALUES.BEE_SPEED,
+        valueBase: DEFAULT_BEE_ATTRIBUTES.BEE_SPEED,
         valueGrowthMultiplier: 0.025,
     },
 
@@ -31,7 +31,7 @@ const SHOP_ITEMS = {
         },
         costBase: 1,
         costGrowth: 1.80,
-        valueBase: DEFAULT_ATTRIBUTE_VALUES.BEE_FIRE_RATE,        
+        valueBase: DEFAULT_BEE_ATTRIBUTES.BEE_FIRE_RATE,        
         valueGrowthMultiplier: 0.1,
     },
 
@@ -46,7 +46,7 @@ const SHOP_ITEMS = {
         },
         costBase: 5,
         costGrowth: 1.5,
-        valueBase: DEFAULT_ATTRIBUTE_VALUES.BEE_DAMAGE,
+        valueBase: DEFAULT_BEE_ATTRIBUTES.BEE_DAMAGE,
         valueGrowthMultiplier: 0.5,
     },
 
@@ -61,7 +61,7 @@ const SHOP_ITEMS = {
         },
         costBase: 75,
         costGrowth: 3,
-        valueBase: DEFAULT_ATTRIBUTE_VALUES.BEE_SHOT_COUNT,
+        valueBase: DEFAULT_BEE_ATTRIBUTES.BEE_SHOT_COUNT,
         valueGrowthMultiplier: 1,
     },
 
@@ -76,7 +76,7 @@ const SHOP_ITEMS = {
         },
         costBase: 5,
         costGrowth: 1.20,
-        valueBase: DEFAULT_ATTRIBUTE_VALUES.BEE_BULLET_SPEED,
+        valueBase: DEFAULT_BEE_ATTRIBUTES.BEE_BULLET_SPEED,
         valueGrowthMultiplier: 0.06,
     },
 
@@ -91,7 +91,7 @@ const SHOP_ITEMS = {
         },
         costBase: 5,
         costGrowth: 1.30,
-        valueBase: DEFAULT_ATTRIBUTE_VALUES.BEE_HONEYCOMB_ATTRACTION,
+        valueBase: DEFAULT_BEE_ATTRIBUTES.BEE_HONEYCOMB_ATTRACTION,
         valueGrowthMultiplier: 0.01,
     },
 
@@ -106,7 +106,7 @@ const SHOP_ITEMS = {
         },
         costBase: 10,
         costGrowth: 1.6,
-        valueBase: DEFAULT_ATTRIBUTE_VALUES.BEE_HONEYCOMB_ATTRACTION_DISTANCE,
+        valueBase: DEFAULT_BEE_ATTRIBUTES.BEE_HONEYCOMB_ATTRACTION_DISTANCE,
         valueGrowthMultiplier: 0.3,
     },
 
@@ -121,7 +121,7 @@ const SHOP_ITEMS = {
         },
         costBase: 5,
         costGrowth: 1.1,
-        valueBase: DEFAULT_ATTRIBUTE_VALUES.BEE_MAX_HEALTH,
+        valueBase: DEFAULT_BEE_ATTRIBUTES.BEE_MAX_HEALTH,
         valueGrowthMultiplier: 1,
     },
 
@@ -136,7 +136,7 @@ const SHOP_ITEMS = {
         },
         costBase: 5,
         costGrowth: 1.2,
-        valueBase: DEFAULT_ATTRIBUTE_VALUES.BEE_HEALTH_REGEN,
+        valueBase: DEFAULT_BEE_ATTRIBUTES.BEE_HEALTH_REGEN,
         valueGrowthMultiplier: 0.1,
     },
 
@@ -151,7 +151,7 @@ const SHOP_ITEMS = {
         },
         costBase: 5,
         costGrowth: 1.2,
-        valueBase: DEFAULT_ATTRIBUTE_VALUES.BEE_CRIT_CHANCE,
+        valueBase: DEFAULT_BEE_ATTRIBUTES.BEE_CRIT_CHANCE,
         valueGrowthMultiplier: 0.05,
     },
 
@@ -166,7 +166,7 @@ const SHOP_ITEMS = {
         },
         costBase: 5,
         costGrowth: 1.2,
-        valueBase: DEFAULT_ATTRIBUTE_VALUES.BEE_CRIT_MULTIPLER,
+        valueBase: DEFAULT_BEE_ATTRIBUTES.BEE_CRIT_MULTIPLER,
         valueGrowthMultiplier: 0.1,
     },
 
@@ -181,7 +181,7 @@ const SHOP_ITEMS = {
         },
         costBase: 5,
         costGrowth: 1.2,
-        valueBase: DEFAULT_ATTRIBUTE_VALUES.SAMMY_CHANCE,
+        valueBase: DEFAULT_BEE_ATTRIBUTES.SAMMY_CHANCE,
         valueGrowthMultiplier: 0.1,
     },
 }
