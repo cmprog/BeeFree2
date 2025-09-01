@@ -533,7 +533,7 @@ export class Bird extends EngineObject
     collideWithObject(o) {
 
         if (o.entityType == EntityType.BEE) {            
-            o.applyDamage(this.attributes.touchDamange);
+            o.applyDamage(this.attributes.touchDamage);
             this.destroy();
         }
 

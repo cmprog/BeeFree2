@@ -7,7 +7,17 @@ const CLASS_MENU_CLOSED = 'menu-closed'
 export class Menu {
 
     constructor(selector) {
+
+        /**
+         * The root level element representing the menu.
+         * @type {HTMLElement}
+         */
         this.element = document.querySelector(selector);
+
+        /**
+         * Whether or not the menu is currently open.
+         * @type {boolean}
+         */
         this.isOpen = false;
 
         this.element.querySelectorAll('button.main-menu-return').forEach(el => {

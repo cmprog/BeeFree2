@@ -137,8 +137,8 @@ export class Player {
         this.overallStatistics.shotCount += 1;
         this.prestigeStatistics.shotCount += 1;
 
-        this.overallStatistics.bulletCount += amount;
-        this.prestigeStatistics.bulletCount += amount;
+        this.overallStatistics.bulletCount += bulletCount;
+        this.prestigeStatistics.bulletCount += bulletCount;
     }
 
     onSammySpawned() {

@@ -16,8 +16,8 @@ export class PlayerLevel {
             logError(`Level started but not unlocked.`);
         }
 
-        this.startCount += 1;
-        this.prestigeStartCount += 1;
+        this.prestigeStatistics.onStarted();
+        this.overallStatistics.onStarted();
     }
 
     /**
@@ -32,30 +32,8 @@ export class PlayerLevel {
             logError(`Level completed but not unlocked.`);
         }
 
-        if (failed) {
-            this.failureCount += 1;
-            this.prestigeFailureCount += 1;
-
-        } else {
-
-            this.completedCount += 1;
-            this.prestigeCompleteCount += 1;
-
-            if (noDamage) {
-                this.noDamangeCount += 1;
-                this.prestigeNoDamangeCount += 1;
-            }
-
-            if (noSurvivors) {
-                this.noSurvivorsCount += 1;
-                this.prestigeNoSurvivorsCount += 1;
-            }
-
-            if (noDamage && noSurvivors) {
-                this.perfectCount += 1;
-                this.prestigePerfectCount += 1;
-            }
-        }
+        this.prestigeStatistics.onCompleted(failed, noDamage, noSurvivors);
+        this.overallStatistics.onCompleted(failed, noDamage, noSurvivors);
         
     }
 

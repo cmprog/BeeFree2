@@ -36,10 +36,14 @@ export class SingleBulletShooting extends ShootingBehavior {
     fire(shooter) {
 
         if (!this.cooldownTimer.isSet() || this.cooldownTimer.elapsed()) {
-            const bullet = this.bulletFactory.createBullet(shooter, this.direction);
-            currentLevel.trackObj(bullet);
-            this.cooldownTimer.set(this.rate);
-            return 1;
+
+            if (currentLevel) {
+
+                currentLevel.trackObj(this.bulletFactory.createBullet(shooter, this.direction));
+                this.cooldownTimer.set(this.rate);
+                return 1;
+
+            }            
         }
 
         return 0;

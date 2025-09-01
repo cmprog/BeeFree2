@@ -138,6 +138,39 @@ export class StandardLevelStatistics {
         };
     }
 
+    onStarted() {
+        this.startCount += 1;
+    }
+
+    /**
+     * Signals that the level was completed - updates stats.
+     * @param {boolean} failed 
+     * @param {boolean} noDamage 
+     * @param {boolean} noSurvivors 
+     */
+    onCompleted(failed, noDamage, noSurvivors) {
+
+        if (failed) {
+            this.failureCount += 1;
+
+        } else {
+
+            this.completedCount += 1;
+
+            if (noDamage) {
+                this.noDamangeCount += 1;
+            }
+
+            if (noSurvivors) {
+                this.noSurvivorsCount += 1;
+            }
+
+            if (noDamage && noSurvivors) {
+                this.perfectCount += 1;
+            }
+        }
+    }
+
     /**
      * Populates this set of stats using the given save obj.
      * @param {Object} saveObj
