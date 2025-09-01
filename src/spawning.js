@@ -244,7 +244,7 @@ class SingleEnemySpawner extends Spawner {
     }
 
     update() {
-        if (this.timer.elapsed()) {
+        if (this.timer.elapsed() && currentLevel) {
             console.log(`Spawning bird '${this.template.name}' at ${this.pos}.`)
             const bird = this.template.create(this.pos)
             currentLevel.trackObj(bird);

@@ -9,8 +9,7 @@ import { StatisticsSet, TimeTrialStatistics } from "./statistics.js";
 const SAVE_KEY = "save";
 const SAVE_KEY_BACKUP = "save_bk";
 
-
-class Player {
+export class Player {
     constructor() {
         
         this.name = 'Amelia';

@@ -38,7 +38,7 @@ class Logger {
         this.listElement = document.querySelector('.log-messages');
         this.scrollElement = document.querySelector('.log-container > .content');
         
-        this.consoleLoggingEnabled = false;
+        this.consoleLoggingEnabled = true;
         this.uiLoggingEnabled = (document.location.href.indexOf('localhost') >= 0);
         
         if (!this.uiLoggingEnabled) {

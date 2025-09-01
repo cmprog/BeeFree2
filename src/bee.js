@@ -4,10 +4,16 @@ import { spriteAtlas } from "./sprites.js";
 import { currentLevel } from "./levels.js";
 import { BeeBulletFactory } from './bullet.js';
 import { logDebug } from './logging.js';
+import { AttributeSet } from './attributes.js';
 
 export class Bee extends EngineObject {
 
-    constructor(player) {
+    /**
+     * 
+     * @param {AttributeSet} attributes 
+     */
+    constructor(attributes) {
+
         super(vec2(0, 0), vec2(2, 2)); 
         this.entityType = EntityType.BEE;
 
@@ -18,29 +24,24 @@ export class Bee extends EngineObject {
 
         this.setCollision();
 
-        this.damange = player.beeDamage;
-        this.bulletSpeed = player.beeBulletSpeed;
-        this.speed = player.beeSpeed;        
-        this.maxHealth = player.beeMaxHealth;
-        this.health = this.maxHealth;
-        this.healthRegen = player.beeHealthRegen;
-        this.honeycombAttraction = player.beeHoneycombAttration;    
-        this.critChance = player.beeCritChance;
-        this.critMultiplier = player.beeCritMultiplier;
+        // Copy the set of attributes so we can 'own' them
+        this.attributes = attributes.copy();
 
-        if (player.beeShotCount > 1) {
+        this.health = attributes.maxHealth;
+
+        if (attributes.shotCount > 1) {
             this.shooting = new MultiBulletShooting({                
-                bulletFactory: new BeeBulletFactory(this),
-                count: player.beeShotCount,
+                bulletFactory: new BeeBulletFactory(this.attributes),
+                count: attributes.shotCount,
                 spread: Math.PI / 6,
                 direction: vec2(1, 0),
-                rate: 1.0 / player.beeFireRate,
+                rate: 1.0 / attributes.fireRate,
             });
         } else {
             this.shooting = new SingleBulletShooting({
-                bulletFactory: new BeeBulletFactory(this),
+                bulletFactory: new BeeBulletFactory(this.attributes),
                 direction: vec2(1, 0),
-                rate: 1.0 / player.beeFireRate,
+                rate: 1.0 / attributes.fireRate,
             });
         }
         
@@ -51,11 +52,11 @@ export class Bee extends EngineObject {
         super.update();
 
         if (this.healthRegenTimer.elapsed()) {
-            this.health = min(this.maxHealth, this.health + this.healthRegen);
+            this.health = min(this.attributes.maxHealth, this.health + this.attributes.healthRegen);
             this.healthRegenTimer.set(1);
         }
 
-        this.healthBar.value = this.health / this.maxHealth;
+        this.healthBar.value = this.health / this.attributes.maxHealth;
         
         let direction;
         let holdingFire = false;
@@ -78,7 +79,7 @@ export class Bee extends EngineObject {
         }
 
         if (direction.length()) {
-            this.velocity = direction.normalize(this.speed);
+            this.velocity = direction.normalize(this.attributes.speed);
         } else {
             this.velocity = vec2(0);
         }      
@@ -122,9 +123,9 @@ export class Bee extends EngineObject {
 
     getDamage() {
         
-        let damage = this.damange;
-        if (rand(0, 1) >= this.critChance) {
-            damage = damage * this.critMultiplier;
+        let damage = this.attributes.damage;
+        if (rand(0, 1) >= this.attributes.critChance) {
+            damage = damage * this.attributes.critMultiplier;
         }
 
         return damage;

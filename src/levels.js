@@ -72,7 +72,7 @@ class Level extends EngineObject {
 
         super();
 
-        this.bee = new Bee(currentPlayer);
+        this.bee = new Bee(currentPlayer.beeAttributes);
 
         this.trackedObjects = [];
         this.trackObj(this.bee);

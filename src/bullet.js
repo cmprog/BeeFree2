@@ -1,3 +1,4 @@
+import { AttributeSet } from './attributes.js';
 import { EntityType } from './entities.js';
 import { DEFAULT_BIRD_ATTRIBUTES } from './settings.js';
 import { spriteAtlas } from "./sprites.js";
@@ -8,15 +9,19 @@ export class BulletFactory {
 }
 
 export class BeeBulletFactory extends BulletFactory {
-    constructor(bee) {
+    /**
+     * 
+     * @param {AttributeSet} attributes
+     */
+    constructor(attributes) {
 
         super();
 
-        this.speed = bee.bulletSpeed;
+        this.attributes = attributes;
     }
 
     createBullet(entity, direction) {
-        return new BeeBullet(entity, direction.normalize(this.speed));
+        return new BeeBullet(entity, direction.normalize(this.attributes.bulletSpeed));
     }
 }
 

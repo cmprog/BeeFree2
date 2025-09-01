@@ -17,6 +17,13 @@ export class AttributeSet {
         this.critChance = 0;
         this.critMultiplier = 1;
         this.doubleShotChance = 0;
+
+        /**
+         * The amount of damage done when touching an entity. Generally
+         * only applies when dealing damage to the bee for running into a bird.
+         * @type {number}
+         */
+        this.touchDamage = 1;
     }
 
     /**
@@ -24,9 +31,9 @@ export class AttributeSet {
      */
     copy() {
 
-        const ret = new AttributeSet();
-        for (const field in Object.keys(this)) {
-            ret[field] = this[field];
+        const ret = new AttributeSet();        
+        for (const propertyName of Object.keys(this)) {
+            ret[propertyName] = this[propertyName];
         }
 
         return ret;
@@ -50,6 +57,7 @@ export class AttributeSet {
             critChance: this.critChance,
             critMultiplier: this.critMultiplier,            
             doubleShotChance: this.doubleShotChance,
+            touchDamage: this.touchDamage,
         };
     }
 
@@ -74,6 +82,7 @@ export class AttributeSet {
         this.critChance = saveObj.critChance || defaults.critChance;
         this.critMultiplier = saveObj.critMultiplier || defaults.critMultiplier;
         this.doubleShotChance = saveObj.doubleShotChance || defaults.doubleShotChance;
+        this.touchDamage = saveObj.touchDamage || defaults.touchDamage;
     }
 }
 
@@ -105,7 +114,7 @@ export class LevelAttributeSet {
     copy() {
         
         const ret = new LevelAttributeSet();
-        for (const field in Object.keys(this)) {
+        for (const field of Object.keys(this)) {
             ret[field] = this[field];
         }
 

@@ -1,7 +1,7 @@
 import { logDebug } from "./logging.js";
 import { EntityType, ProgressBar } from './entities.js';
-import { BeeAttractiveMovementBehavior, FixedVelocityMovement, StaticMovement, WaveyMovement } from "./movement.js";
-import { MultiBulletShooting, PassiveShooting, SingleBulletShooting } from "./shooting.js";
+import { BeeAttractiveMovementBehavior, FixedVelocityMovement, MovementBehavior, StaticMovement, WaveyMovement } from "./movement.js";
+import { MultiBulletShooting, PassiveShooting, ShootingBehavior, SingleBulletShooting } from "./shooting.js";
 import { spriteAtlas } from "./sprites.js";
 import { Honeycomb } from "./honeycomb.js";
 import { currentLevel } from "./levels.js";
@@ -9,20 +9,46 @@ import { DEFAULT_BIRD_ATTRIBUTES } from "./settings.js";
 import { BirdBulletFactory } from "./bullet.js";
 import { isWellOutsideWorldBoundary, rgb255 } from "./util.js";
 import { SPAWN_REGIONS } from "./spawning.js";
+import { AttributeSet } from "./attributes.js";
+
+/**
+ * @callback ShootingBehaviorFactory
+ * @param {AttributeSet}
+ * @returns {ShootingBehavior}
+ */
+
+/**
+ * @callback MovementBehaviorFactory
+ * @param {AttributeSet}
+ * @returns {MovementBehavior}
+ */
 
 export class BirdTemplate {
-    constructor(name, description, health, touchDamange) {
+    constructor(name, description) {
+
         this.name = name;
         this.description = description;
-        this.health = health;
-        this.touchDamange = touchDamange;
-        this.shooting = new PassiveShooting();
-        this.movement = new FixedVelocityMovement(-0.5);
+
+        this.attributes = DEFAULT_BIRD_ATTRIBUTES.copy();
+
+        /**
+         * Creates an instance of the shooting behavior associated with the bird.
+         * @type {ShootingBehaviorFactory} attributes 
+         */
+        this.createShootingBehavior = (attr) => {
+            return new PassiveShooting();
+        };
+
+        /**
+         * Creates an instance of the movement behavior associated with the bird.
+         * @type {MovementBehaviorFactory} attributes 
+         */
+        this.createMovementBehavior = (attr) => {
+            return new StaticMovement();
+        };
+
         this.bodyColor = WHITE;
         this.headColor = WHITE;
-        this.damage = DEFAULT_BIRD_ATTRIBUTES.DAMAGE;
-        this.critChance = DEFAULT_BIRD_ATTRIBUTES.CRIT_CHANCE;
-        this.critMultiplier = DEFAULT_BIRD_ATTRIBUTES.CRIT_MULTIPLIER;
 
         // Defines the valid spawn regions for the bird.        
         this.spawnRegions = [];
@@ -33,13 +59,21 @@ export class BirdTemplate {
         return this;
     }
 
-    withShooting(shootingBehavior) {
-        this.shooting = shootingBehavior;
+    /**
+     * @param {ShootingBehaviorFactory} factory 
+     * @returns {BirdTemplate}
+     */
+    withShooting(factory) {
+        this.createShootingBehavior = factory;
         return this;
     }
 
-    withMovement(movementBehavior) {
-        this.movement = movementBehavior;
+    /**
+     * @param {MovementBehaviorFactory} factory
+     * @returns {BirdTemplate}
+     */
+    withMovement(factory) {
+        this.createMovementBehavior = factory;
         return this;
     }
 
@@ -49,14 +83,29 @@ export class BirdTemplate {
         return this;
     }
 
-    withDamange(value) {
-        this.damage = value;
+    withDamage(value) {
+        this.attributes.damage = value;
         return this;
     }
 
     withCritical(chance, multipler) {
-        this.critChance = chance;
-        this.multipler = multipler;
+        this.attributes.critChance = chance;
+        this.attributes.multipler = multipler;
+        return this;
+    }
+
+    /**
+     * @callback ConfigureAttributesCallback
+     * @param {AttributeSet}
+     */
+
+    /**
+     * Used to generally configure any of the attributes of the bird.
+     * @param {ConfigureAttributesCallback} callback 
+     * @return {BirdTemplate}
+     */
+    configureAttributes(callback) {
+        callback(this.attributes);
         return this;
     }
 
@@ -74,156 +123,259 @@ export function initBirdTemplates() {
 
         /** A simple bird, simple movement and no shooting. */
         fred: new BirdTemplate('Fred', 'A simple bird, simple movement and no shooting.', 1, 1)
-            .withMovement(new FixedVelocityMovement(vec2(-1, 0).normalize(DEFAULT_BIRD_ATTRIBUTES.SPEED)))
-            .withShooting(new PassiveShooting())
+            .configureAttributes(attr => {
+                attr.maxHealth = 1;
+                attr.touchDamage = 1;
+            })
+            .withMovement(attr => {
+                return new FixedVelocityMovement(vec2(-1, 0).normalize(attr.speed));
+            })
             .withSpawnRegion(SPAWN_REGIONS.RIGHT_UPPER)
             .withSpawnRegion(SPAWN_REGIONS.RIGHT_LOWER)
             .withColors(RED, RED),
 
         /** The most basic aggressive bird. Simple movement and shots forward. */
-        bill: new BirdTemplate('Bill', 'The most basic aggressive bird. Simple movement and shots forward.', 2, 2)
-            .withMovement(new FixedVelocityMovement(vec2(-1, 0).normalize(DEFAULT_BIRD_ATTRIBUTES.SPEED)))
-            .withShooting(new SingleBulletShooting({
-                bulletFactory: new BirdBulletFactory(),
-                direction: vec2(-1, 0),
-                rate: 1,
-            }))
+        bill: new BirdTemplate('Bill', 'The most basic aggressive bird. Simple movement and shots forward.')
+            .configureAttributes(attr => {
+                attr.maxHealth = 2;
+                attr.touchDamage = 2;
+            })
+            .withMovement(attr => {
+                return new FixedVelocityMovement(vec2(-1, 0).normalize(attr.speed));
+            })
+            .withShooting(attr => {
+                return new SingleBulletShooting({
+                    bulletFactory: new BirdBulletFactory(),
+                    direction: vec2(-1, 0),
+                    rate: attr.fireRate,
+                });
+            })            
             .withSpawnRegion(SPAWN_REGIONS.RIGHT_UPPER)
             .withSpawnRegion(SPAWN_REGIONS.RIGHT_LOWER)
             .withColors(BLUE, BLUE),
 
         /** Twin to Thing 2 - this bird moves up and to the left while shooting. */
-        thing1: new BirdTemplate('Thing 1', 'Twin to Thing 2 - this bird moves up and to the left while shooting.', 3, 4)
-            .withMovement(new FixedVelocityMovement(vec2(-1, 1).normalize(DEFAULT_BIRD_ATTRIBUTES.SPEED)))
-            .withShooting(new SingleBulletShooting({
-                bulletFactory: new BirdBulletFactory(),
-                direction: vec2(-1, 0),
-                rate: 1,
-            }))
+        thing1: new BirdTemplate('Thing 1', 'Twin to Thing 2 - this bird moves up and to the left while shooting.')
+            .configureAttributes(attr => {
+                attr.maxHealth = 3;
+                attr.touchDamage = 4;
+            })
+            .withMovement(attr => {
+                return new FixedVelocityMovement(vec2(-1, 1).normalize(attr.speed));
+            })
+            .withShooting(attr => {
+                return new SingleBulletShooting({
+                    bulletFactory: new BirdBulletFactory(),
+                    direction: vec2(-1, 0),
+                    rate: attr.fireRate,
+                });
+            })     
             .withSpawnRegion(SPAWN_REGIONS.RIGHT_LOWER)
             .withSpawnRegion(SPAWN_REGIONS.BOTTOM_RIGHT)
             .withColors(BLUE, RED),
 
         /** The twin to Thing 1 - this bird moves down and to the left while shooting. */
-        thing2: new BirdTemplate('Thing 2', 'The twin to Thing 1 - this bird moves down and to the left while shooting.', 3, 4)
-            .withMovement(new FixedVelocityMovement(vec2(-1, -1).normalize(DEFAULT_BIRD_ATTRIBUTES.SPEED)))
-            .withShooting(new SingleBulletShooting({
-                bulletFactory: new BirdBulletFactory({
-                    damage: 4,
-                }),
-                direction: vec2(-1, 0),
-                rate: (1.0 / 0.9),
-            })) 
+        thing2: new BirdTemplate('Thing 2', 'The twin to Thing 1 - this bird moves down and to the left while shooting.')
+            .configureAttributes(attr => {
+                attr.maxHealth = 3;
+                attr.touchDamage = 4;
+                attr.damage = 4;
+                attr.fireRate = (1.0 / 0.9);
+            })
+            .withMovement(attr => {
+                return new FixedVelocityMovement(vec2(-1, -1).normalize(attr.speed));
+            })
+            .withShooting(attr => {
+                return new SingleBulletShooting({
+                    bulletFactory: new BirdBulletFactory(),
+                    direction: vec2(-1, 0),
+                    rate: attr.fireRate,
+                });
+            })     
             .withSpawnRegion(SPAWN_REGIONS.RIGHT_UPPER)
             .withSpawnRegion(SPAWN_REGIONS.TOP_RIGHT)           
             .withColors(BLUE, RED),
 
-        thing3: new BirdTemplate('Thing 3', 'The twin to Thing 4, this bird moves up and to the right while shooting.', 3, 4)
-            .withMovement(new FixedVelocityMovement(vec2(1, 1).normalize(DEFAULT_BIRD_ATTRIBUTES.SPEED)))
-            .withShooting(new SingleBulletShooting({
-                bulletFactory: new BirdBulletFactory({
-                    damage: 4,
-                }),
-                direction: vec2(-1, 0),
-                rate: (1.0 / 0.9),
-            }))      
+        thing3: new BirdTemplate('Thing 3', 'The twin to Thing 4, this bird moves up and to the right while shooting.')
+            .configureAttributes(attr => {
+                attr.maxHealth = 3;
+                attr.touchDamage = 4;
+                attr.damage = 4;
+                attr.fireRate = (1.0 / 0.9);
+            })
+            .withMovement(attr => {
+                return new FixedVelocityMovement(vec2(1, 1).normalize(attr.speed));
+            })
+            .withShooting(attr => {
+                return new SingleBulletShooting({
+                    bulletFactory: new BirdBulletFactory(),
+                    direction: vec2(-1, 0),
+                    rate: attr.fireRate,
+                });
+            })         
             .withSpawnRegion(SPAWN_REGIONS.BOTTOM_LEFT)
             .withSpawnRegion(SPAWN_REGIONS.LEFT_LOWER)      
             .withColors(BLUE, RED),
 
-        thing4: new BirdTemplate('Thing 4', 'The twin to Thing 3, this bird moves down and to the right while shooting.', 3, 4)
-            .withMovement(new FixedVelocityMovement(vec2(1, -1).normalize(DEFAULT_BIRD_ATTRIBUTES.SPEED)))
-            .withShooting(new SingleBulletShooting({
-                bulletFactory: new BirdBulletFactory({
-                    damage: 4,
-                }),
-                direction: vec2(-1, 0),
-                rate: (1.0 / 0.9),
-            }))  
+        thing4: new BirdTemplate('Thing 4', 'The twin to Thing 3, this bird moves down and to the right while shooting.')
+            .configureAttributes(attr => {
+                attr.maxHealth = 3;
+                attr.touchDamage = 4;
+                attr.damage = 4;
+                attr.fireRate = (1.0 / 0.9);
+            })
+            .withMovement(attr => {
+                return new FixedVelocityMovement(vec2(1, -1).normalize(attr.speed));
+            })
+            .withShooting(attr => {
+                return new SingleBulletShooting({
+                    bulletFactory: new BirdBulletFactory(),
+                    direction: vec2(-1, 0),
+                    rate: attr.fireRate,
+                });
+            }) 
+            .configureAttributes(attr => {
+                attr.damage = 4;
+                attr.fireRate = 1.0 / 0.9;
+            })
             .withSpawnRegion(SPAWN_REGIONS.TOP_LEFT)
             .withSpawnRegion(SPAWN_REGIONS.LEFT_UPPER)          
             .withColors(BLUE, RED),
 
-        greg: new BirdTemplate('Greg', 'Greg is a simple bird who is a little drunk.', 3, 6)
-            .withMovement(new WaveyMovement(vec2(-1, 0).normalize(DEFAULT_BIRD_ATTRIBUTES.SPEED), vec2(1, 1), 1))
-            .withShooting(new PassiveShooting())  
+        greg: new BirdTemplate('Greg', 'Greg is a simple bird who is a little drunk.')
+            .configureAttributes(attr => {
+                attr.maxHealth = 3;
+                attr.touchDamage = 6;
+            })
+            .withMovement(attr => {
+                return new WaveyMovement(vec2(-1, 0).normalize(attr.speed), vec2(1, 1), 1);
+            })            
             .withSpawnRegion(SPAWN_REGIONS.RIGHT_UPPER)
             .withSpawnRegion(SPAWN_REGIONS.RIGHT_LOWER)        
             .withColors(GREEN, GREEN),
 
-        frank: new BirdTemplate('Frank', 'Frank is Greg\'s friend but he flings poo.', 4, 7)
-            .withMovement(new WaveyMovement(vec2(-1, 0).normalize(DEFAULT_BIRD_ATTRIBUTES.SPEED), vec2(1, 1), 1))
-            .withShooting(new SingleBulletShooting({
-                bulletFactory: new BirdBulletFactory(),
-                direction: vec2(-1, 0),
-                rate: (1.0 / 0.8),
-            }))
+        frank: new BirdTemplate('Frank', 'Frank is Greg\'s friend but he flings poo.')
+            .configureAttributes(attr => {
+                attr.maxHealth = 4;
+                attr.touchDamage = 7;
+                attr.damage = 6;
+                attr.fireRate = (1.0 / 0.8);
+            })
+            .withMovement(attr => {
+                return new WaveyMovement(vec2(-1, 0).normalize(attr.speed), vec2(1, 1), 1);
+            })
+            .withShooting(attr => {
+                return new SingleBulletShooting({
+                    bulletFactory: new BirdBulletFactory(),
+                    direction: vec2(-1, 0),
+                    rate: attr.fireRate,
+                });
+            }) 
             .withSpawnRegion(SPAWN_REGIONS.RIGHT_UPPER)
             .withSpawnRegion(SPAWN_REGIONS.RIGHT_LOWER)
-            .withDamange(6)
             .withColors(YELLOW, YELLOW),
 
-        kathy: new BirdTemplate('Kathy', 'Kathy is a little extreme when it comes to stalking bee\'s.', 6, 8)
-            .withMovement(new BeeAttractiveMovementBehavior(vec2(-1, 0).normalize(DEFAULT_BIRD_ATTRIBUTES.SPEED), 10, DEFAULT_BIRD_ATTRIBUTES.SPEED * 1.5))
-            .withShooting(new SingleBulletShooting({
-                bulletFactory: new BirdBulletFactory(),
-                direction: vec2(-1, 0),
-                rate: (1.0 / 1.0),
-            }))
+        kathy: new BirdTemplate('Kathy', 'Kathy is a little extreme when it comes to stalking bee\'s.')
+            .configureAttributes(attr => {
+                attr.maxHealth = 6;
+                attr.touchDamage = 8;
+                attr.damage = 8;
+            })
+            .withMovement(attr => {
+                return new BeeAttractiveMovementBehavior(vec2(-1, 0).normalize(attr.speed), 10, DEFAULT_BIRD_ATTRIBUTES.speed * 1.25);
+            })
+            .withShooting(attr => {
+                return new SingleBulletShooting({
+                    bulletFactory: new BirdBulletFactory(),
+                    direction: vec2(-1, 0),
+                    rate: attr.fireRate,
+                });
+            }) 
             .withSpawnRegion(SPAWN_REGIONS.RIGHT_UPPER)
             .withSpawnRegion(SPAWN_REGIONS.RIGHT_LOWER)
-            .withDamange(8)
             .withColors(GRAY, BLACK),
 
-        whitney_left: new BirdTemplate('Whitney', 'Whitney has managed to throw poo in such a way as to track bees!', 7, 13)            
-            .withMovement(new FixedVelocityMovement(vec2(-1, 0).normalize(DEFAULT_BIRD_ATTRIBUTES.SPEED)))
-            .withShooting(new SingleBulletShooting({
-                bulletFactory: new BirdBulletFactory({
-                    movement: new BeeAttractiveMovementBehavior(vec2(-1, 0), 5, DEFAULT_BIRD_ATTRIBUTES.BULLET_SPEED * 1.5)
-                }),
-                direction: vec2(-1, 0),
-                rate: (1.0 / 1.2),
-            }))
-            .withDamange(7)
+        whitney_left: new BirdTemplate('Whitney', 'Whitney has managed to throw poo in such a way as to track bees!')  
+            .configureAttributes(attr => {
+                attr.maxHealth = 7;
+                attr.touchDamage = 13;
+                attr.damage = 7;
+                attr.fireRate = (1.0 / 1.2);
+            })          
+            .withMovement(attr => {
+                return new FixedVelocityMovement(vec2(-1, 0).normalize(attr.speed));
+            })
+            .withShooting(attr => {
+                return new SingleBulletShooting({
+                    bulletFactory: new BirdBulletFactory({                        
+                        movement: new BeeAttractiveMovementBehavior(vec2(-1, 0), 5, attr.bulletSpeed * 1.5)
+                    }),
+                    direction: vec2(-1, 0),
+                    rate: attr.fireRate,
+                });
+            }) 
             .withSpawnRegion(SPAWN_REGIONS.RIGHT_UPPER)
             .withSpawnRegion(SPAWN_REGIONS.RIGHT_LOWER)
             // Very lime green
             .withColors(rgb255(0, 255, 0), rgb255(152, 251, 152)),
 
-        whitney_left_up: new BirdTemplate('Whitney', 'Whitney has managed to throw poo in such a way as to track bees!', 7, 13)            
-            .withMovement(new FixedVelocityMovement(vec2(-1, 2).normalize(DEFAULT_BIRD_ATTRIBUTES.SPEED)))
-            .withShooting(new SingleBulletShooting({
-                bulletFactory: new BirdBulletFactory({
-                    movement: new BeeAttractiveMovementBehavior(vec2(-1, 0), 5, DEFAULT_BIRD_ATTRIBUTES.BULLET_SPEED * 1.5)
-                }),
-                direction: vec2(-1, 0),
-                rate: (1.0 / 1.2),
-            }))
-            .withDamange(7)
+        whitney_left_up: new BirdTemplate('Whitney', 'Whitney has managed to throw poo in such a way as to track bees!')    
+            .configureAttributes(attr => {
+                attr.maxHealth = 7;
+                attr.touchDamage = 13;
+                attr.damage = 7;
+                attr.fireRate = (1.0 / 1.2);
+            })                  
+            .withMovement(attr => {
+                return new FixedVelocityMovement(vec2(-1, 2).normalize(attr.speed));
+            })
+            .withShooting(attr => {
+                return new SingleBulletShooting({
+                    bulletFactory: new BirdBulletFactory({                        
+                        movement: new BeeAttractiveMovementBehavior(vec2(-1, 0), 5, attr.bulletSpeed * 1.5)
+                    }),
+                    direction: vec2(-1, 0),
+                    rate: attr.fireRate,
+                });
+            }) 
             .withSpawnRegion(SPAWN_REGIONS.BOTTOM_RIGHT)
             .withSpawnRegion(SPAWN_REGIONS.RIGHT_LOWER)
             // Very lime green
             .withColors(rgb255(0, 255, 0), rgb255(152, 251, 152)),
 
-        whitney_down_up: new BirdTemplate('Whitney', 'Whitney has managed to throw poo in such a way as to track bees!', 7, 13)            
-            .withMovement(new FixedVelocityMovement(vec2(-1, -2).normalize(DEFAULT_BIRD_ATTRIBUTES.SPEED)))
-            .withShooting(new SingleBulletShooting({
-                bulletFactory: new BirdBulletFactory({
-                    movement: new BeeAttractiveMovementBehavior(vec2(-1, 0), 5, DEFAULT_BIRD_ATTRIBUTES.BULLET_SPEED * 1.5)
-                }),
-                direction: vec2(-1, 0),
-                rate: (1.0 / 1.2),
-            }))
-            .withDamange(7)
+        whitney_down_up: new BirdTemplate('Whitney', 'Whitney has managed to throw poo in such a way as to track bees!')   
+            .configureAttributes(attr => {
+                attr.maxHealth = 7;
+                attr.touchDamage = 13;
+                attr.damage = 7;
+                attr.fireRate = (1.0 / 1.2);
+            })                   
+            .withMovement(attr => {
+                return new FixedVelocityMovement(vec2(-1, -2).normalize(attr.speed));
+            })
+            .withShooting(attr => {
+                return new SingleBulletShooting({
+                    bulletFactory: new BirdBulletFactory({                        
+                        movement: new BeeAttractiveMovementBehavior(vec2(-1, 0), 5, attr.bulletSpeed * 1.5)
+                    }),
+                    direction: vec2(-1, 0),
+                    rate: attr.fireRate,
+                });
+            }) 
             .withSpawnRegion(SPAWN_REGIONS.RIGHT_UPPER)
             .withSpawnRegion(SPAWN_REGIONS.TOP_RIGHT)
             // Very lime green
             .withColors(rgb255(0, 255, 0), rgb255(152, 251, 152)),
 
-        tom: new BirdTemplate('Tom', 'A more resiliant basic passive bird.', 25, 15)            
-            .withMovement(new FixedVelocityMovement(vec2(-1, -2).normalize(DEFAULT_BIRD_ATTRIBUTES.SPEED)))
-            .withShooting(new PassiveShooting())
-            .withDamange(7)
+        tom: new BirdTemplate('Tom', 'A more resiliant basic passive bird.')         
+            .configureAttributes(attr => {
+                attr.maxHealth = 25;
+                attr.touchDamage = 15;
+                attr.damage = 7;
+            })             
+            .withMovement(attr => {
+                return new FixedVelocityMovement(vec2(-1, 0).normalize(attr.speed));
+            })
             .withSpawnRegion(SPAWN_REGIONS.RIGHT_UPPER)
             .withSpawnRegion(SPAWN_REGIONS.RIGHT_LOWER)
             // Darker red than fred
@@ -287,6 +439,11 @@ class BirdLegs extends BirdPart {
 
 export class Bird extends EngineObject
 {
+    /**
+     * 
+     * @param {Vector2} pos 
+     * @param {BirdTemplate} template 
+     */
     constructor(pos, template)
     {
         super(pos, vec2(1, 1));
@@ -306,21 +463,18 @@ export class Bird extends EngineObject
 
         this.name = template.name;
 
-        this.maxHealth = template.health;
-        this.health = this.maxHealth;        
+        this.attributes = template.attributes.copy();
 
-        this.damage = template.damage;
-        this.critChance = template.critChance;
-        this.critMultiplier = template.critMultiplier;
-        this.touchDamange = template.touchDamange;
-        this.shooting = template.shooting.copy();
-        this.movement = template.movement.copy(); 
+        this.health = this.attributes.maxHealth;        
+
+        this.shooting = template.createShootingBehavior(this.attributes);
+        this.movement = template.createMovementBehavior(this.attributes);
     }
     
     update() {
         
-        this.healthBar.value = this.health / this.maxHealth;
-        this.healthBar.shouldRender = (this.health < this.maxHealth);
+        this.healthBar.value = this.health / this.attributes.maxHealth;
+        this.healthBar.shouldRender = (this.health < this.attributes.maxHealth);
 
         // Birds always try shooting, the shooting behavior will
         // rate limit based on the fire rate of the bird.
@@ -355,9 +509,9 @@ export class Bird extends EngineObject
     }
 
     getDamage() {        
-        let damage = this.damage;
-        if (rand(0, 1) >= this.critChance) {
-            damage = damage * this.critMultiplier;
+        let damage = this.attributes.damage;
+        if (rand(0, 1) >= this.attributes.critChance) {
+            damage = damage * this.attributes.critMultiplier;
         }
         return damage;
     }
@@ -365,7 +519,7 @@ export class Bird extends EngineObject
     collideWithObject(o) {
 
         if (o.entityType == EntityType.BEE) {            
-            o.applyDamage(this.touchDamange);
+            o.applyDamage(this.attributes.touchDamange);
             this.destroy();
         }
 
