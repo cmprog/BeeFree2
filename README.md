@@ -13,9 +13,9 @@ Just a little game I made forever ago. I'm revamping it because my daughter enjo
 - Remove unused gamepd buttons
 - Prestige mechanics
 - Sammy powerups
-- Reduced honeycomb collection on death
+- ~~Reduced honeycomb collection on death~~
 - Reflection chance attribute
-- Bonus honeycomb on success criteria
+- ~~Bonus honeycomb on success criteria~~
 - Double shot chance attrbute
 - Cosmetic purchaces - do not reset on pretige
 - Passkve honeycomb earnings. Buy a bee hive and collect from it every day. Adds potential options for duration and amount. 
@@ -24,3 +24,4 @@ Just a little game I made forever ago. I'm revamping it because my daughter enjo
 - Shielding attribute
     - Maximum damage reduction - Shield acts as damage reduction
     - Maximum shield amount - Shield has only so much life before it no longer works.
+- Distance calculation is not working.

@@ -477,6 +477,19 @@ export class Bird extends EngineObject
         this.healthBar.value = this.health / this.attributes.maxHealth;
         this.healthBar.shouldRender = (this.health < this.attributes.maxHealth);
 
+        if (currentLevel && currentLevel.isSammyPartyTime()) {
+            this.angle = (-PI / 4) + wave(1, PI / 2, time - this.spawnTime);
+            for (const child of this.children) {
+                child.drawSize = child.size.scale(0.8 + wave(1, 0.4, time - this.spawnTime));
+            }
+            
+        } else {
+            this.angle = 0;
+            for (const child of this.children) {
+                child.drawSize = undefined;
+            }
+        }
+
         // Birds always try shooting, the shooting behavior will
         // rate limit based on the fire rate of the bird.
         this.shooting.fire(this);

@@ -1,4 +1,4 @@
-import { CompositeEntityPart } from "./entities.js";
+import { CompositeEntityPart, EntityType } from "./entities.js";
 import { logDebug, logWarning } from "./logging.js";
 import { spriteAtlas } from "./sprites.js";
 
@@ -48,6 +48,8 @@ export class Owl extends EngineObject {
     constructor(pos) {
         super(pos, vec2(1, 1));
 
+        this.entityType = EntityType.SAMMY;
+
         this.setCollision();
         this.mass = 0;
 
@@ -57,7 +59,12 @@ export class Owl extends EngineObject {
     }
 
     render() {
+        // Just disabling default rendering
+    }
 
+    collideWithObject() {        
+        // Just want to disable physics handling
+        return false;
     }
 
 }

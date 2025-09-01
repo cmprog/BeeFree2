@@ -1,7 +1,7 @@
 import { appendChildHtml } from './html.js';
 import { Menu } from './menu.js'
 import { currentPlayer } from './player.js';
-import { DEFAULT_BEE_ATTRIBUTES } from './settings.js';
+import { DEFAULT_BEE_ATTRIBUTES, DEFAULT_LEVEL_ATTRIBUTES } from './settings.js';
 import { registerClick } from './util.js';
 
 const SHOP_ITEMS = {    
@@ -9,14 +9,14 @@ const SHOP_ITEMS = {
         title: 'Bee Speed',
         description: 'Work out those wings! Helps you better dodge those pesky birds and piles of poo!',
         onPurchased: (itemKey, itemData, levelKey, levelData) => {
-            currentPlayer.beeSpeed = levelData;
+            currentPlayer.beeAttributes.speed = levelData;
         },
         formatDisplayValue: (value) => {            
             return `${(value * 10).toFixed(1)} flaps per second`
         },
         costBase: 5,
         costGrowth: 1.2,
-        valueBase: DEFAULT_BEE_ATTRIBUTES.BEE_SPEED,
+        valueBase: DEFAULT_BEE_ATTRIBUTES.speed,
         valueGrowthMultiplier: 0.025,
     },
 
@@ -24,14 +24,14 @@ const SHOP_ITEMS = {
         title: 'Sting Rate',
         description: 'Increases the rate you can shoot your stinger. It does not help with singing.',
         onPurchased: (itemKey, itemData, levelKey, levelData) => {
-            currentPlayer.beeFireRate = levelData;
+            currentPlayer.beeAttributes.fireRate = levelData;
         },
         formatDisplayValue: (value) => {            
             return `${(1 / value).toFixed(2)} seconds per sting`
         },
         costBase: 1,
         costGrowth: 1.80,
-        valueBase: DEFAULT_BEE_ATTRIBUTES.BEE_FIRE_RATE,        
+        valueBase: DEFAULT_BEE_ATTRIBUTES.fireRate,        
         valueGrowthMultiplier: 0.1,
     },
 
@@ -39,14 +39,14 @@ const SHOP_ITEMS = {
         title: 'Damage',
         description: 'Increases how much damage is dealt by your stingers. Get them nice and sharp to take down those pesky birds.',        
         onPurchased: (itemKey, itemData, levelKey, levelData) => {
-            currentPlayer.beeDamage = levelData;
+            currentPlayer.beeAttributes.damage = levelData;
         },
         formatDisplayValue: (value) => {            
             return `${value.toFixed(1)} stinger power`
         },
         costBase: 5,
         costGrowth: 1.5,
-        valueBase: DEFAULT_BEE_ATTRIBUTES.BEE_DAMAGE,
+        valueBase: DEFAULT_BEE_ATTRIBUTES.damage,
         valueGrowthMultiplier: 0.5,
     },
 
@@ -54,14 +54,14 @@ const SHOP_ITEMS = {
         title: 'Multishot',
         description: 'Increase the number of stingers with each shot. Do not ask me how this works, but I\'ll bet it is painful... for the birds.',
         onPurchased: (itemKey, itemData, levelKey, levelData) => {
-            currentPlayer.beeShotCount = levelData;
+            currentPlayer.beeAttributes.shotCount = levelData;
         },
         formatDisplayValue: (value) => {            
             return `${value.toFixed(0)} stingers per shoot`
         },
         costBase: 75,
         costGrowth: 3,
-        valueBase: DEFAULT_BEE_ATTRIBUTES.BEE_SHOT_COUNT,
+        valueBase: DEFAULT_BEE_ATTRIBUTES.shotCount,
         valueGrowthMultiplier: 1,
     },
 
@@ -69,14 +69,14 @@ const SHOP_ITEMS = {
         title: 'Stinger Speed',
         description: 'Makes the stingers move faster. This makes it easier to aim at those birds, especially the ones that move try to dodge.',
         onPurchased: (itemKey, itemData, levelKey, levelData) => {
-            currentPlayer.beeBulletSpeed = levelData;
+            currentPlayer.beeAttributes.bulletSpeed = levelData;
         },
         formatDisplayValue: (value) => {            
             return `${value.toFixed(2)} ouchies per second`
         },
         costBase: 5,
         costGrowth: 1.20,
-        valueBase: DEFAULT_BEE_ATTRIBUTES.BEE_BULLET_SPEED,
+        valueBase: DEFAULT_BEE_ATTRIBUTES.bulletSpeed,
         valueGrowthMultiplier: 0.06,
     },
 
@@ -84,14 +84,14 @@ const SHOP_ITEMS = {
         title: 'Homeycomb Magnet',
         description: 'Makes honeycomb slightly more attracted to you due to your charasmatic personality making it much easier to collect more honeycomb.',
         onPurchased: (itemKey, itemData, levelKey, levelData) => {
-            currentPlayer.beeHoneycombAttration = levelData;
+            currentPlayer.beeAttributes.honeycombAttraction = levelData;
         },
         formatDisplayValue: (value) => {            
             return `${value.toFixed(2)} electro-sticky-magnitism`
         },
         costBase: 5,
         costGrowth: 1.30,
-        valueBase: DEFAULT_BEE_ATTRIBUTES.BEE_HONEYCOMB_ATTRACTION,
+        valueBase: DEFAULT_BEE_ATTRIBUTES.honeycombAttraction,
         valueGrowthMultiplier: 0.01,
     },
 
@@ -99,14 +99,14 @@ const SHOP_ITEMS = {
         title: 'Homeycomb Magnet Distance',
         description: 'Honeycomb magnet works from slightly further distances.',
         onPurchased: (itemKey, itemData, levelKey, levelData) => {
-            currentPlayer.beeHoneycombAttrationDistance = levelData;
+            currentPlayer.beeAttributes.honeycombAttractionDistance = levelData;
         },
         formatDisplayValue: (value) => {            
             return `${value.toFixed(1)} reachability`
         },
         costBase: 10,
         costGrowth: 1.6,
-        valueBase: DEFAULT_BEE_ATTRIBUTES.BEE_HONEYCOMB_ATTRACTION_DISTANCE,
+        valueBase: DEFAULT_BEE_ATTRIBUTES.honeycombAttractionDistance,
         valueGrowthMultiplier: 0.3,
     },
 
@@ -114,14 +114,14 @@ const SHOP_ITEMS = {
         title: 'Health',
         description: 'Increases your maximum health making you more durable. It is recommended to just avoid taking damange in the first place.',
         onPurchased: (itemKey, itemData, levelKey, levelData) => {
-            currentPlayer.beeMaxHealth = levelData;
+            currentPlayer.beeAttributes.maxHealth = levelData;
         },
         formatDisplayValue: (value) => {            
             return `${value.toFixed(1)} hitpoints`
         },
         costBase: 5,
         costGrowth: 1.1,
-        valueBase: DEFAULT_BEE_ATTRIBUTES.BEE_MAX_HEALTH,
+        valueBase: DEFAULT_BEE_ATTRIBUTES.maxHealth,
         valueGrowthMultiplier: 1,
     },
 
@@ -129,14 +129,14 @@ const SHOP_ITEMS = {
         title: 'Health Regen',
         description: 'Increases your natural ability to heal. Scientists are still not sure how this works.',
         onPurchased: (itemKey, itemData, levelKey, levelData) => {
-            currentPlayer.beeHealthRegen = levelData;
+            currentPlayer.beeAttributes.healthRegen = levelData;
         },
         formatDisplayValue: (value) => {            
             return `${value.toFixed(1)} hitpoints per second`
         },
         costBase: 5,
         costGrowth: 1.2,
-        valueBase: DEFAULT_BEE_ATTRIBUTES.BEE_HEALTH_REGEN,
+        valueBase: DEFAULT_BEE_ATTRIBUTES.healthRegen,
         valueGrowthMultiplier: 0.1,
     },
 
@@ -144,14 +144,14 @@ const SHOP_ITEMS = {
         title: 'Critical Hit Chance',
         description: 'Increases the chance that your hits will be critical, dealing additional damange.',
         onPurchased: (itemKey, itemData, levelKey, levelData) => {
-            currentPlayer.beeHealthRegen = levelData;
+            currentPlayer.beeAttributes.critChance = levelData;
         },
         formatDisplayValue: (value) => {            
             return `${(value * 100).toFixed(1)}%`
         },
         costBase: 5,
         costGrowth: 1.2,
-        valueBase: DEFAULT_BEE_ATTRIBUTES.BEE_CRIT_CHANCE,
+        valueBase: DEFAULT_BEE_ATTRIBUTES.critChance,
         valueGrowthMultiplier: 0.05,
     },
 
@@ -159,14 +159,14 @@ const SHOP_ITEMS = {
         title: 'Critical Hit Multiplier',
         description: '',
         onPurchased: (itemKey, itemData, levelKey, levelData) => {
-            currentPlayer.beeHealthRegen = levelData;
+            currentPlayer.beeAttributes.critMultiplier = levelData;
         },
         formatDisplayValue: (value) => {            
             return `x${value.toFixed(1)}`
         },
         costBase: 5,
         costGrowth: 1.2,
-        valueBase: DEFAULT_BEE_ATTRIBUTES.BEE_CRIT_MULTIPLER,
+        valueBase: DEFAULT_BEE_ATTRIBUTES.critMultiplier,
         valueGrowthMultiplier: 0.1,
     },
 
@@ -174,14 +174,14 @@ const SHOP_ITEMS = {
         title: 'Sammy Chance',
         description: '',
         onPurchased: (itemKey, itemData, levelKey, levelData) => {
-            currentPlayer.beeHealthRegen = levelData;
+            currentPlayer.levelAttributes.sammyChance = levelData;
         },
         formatDisplayValue: (value) => {            
             return `${value.toFixed(1)} discoverability`
         },
         costBase: 5,
         costGrowth: 1.2,
-        valueBase: DEFAULT_BEE_ATTRIBUTES.SAMMY_CHANCE,
+        valueBase: DEFAULT_LEVEL_ATTRIBUTES.sammyChance,
         valueGrowthMultiplier: 0.1,
     },
 }

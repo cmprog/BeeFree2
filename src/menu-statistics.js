@@ -66,6 +66,84 @@ export class StatisticsMenu extends Menu {
 
         this.appendSeperator();
 
+        this.appendSectionHeading('Attributes')
+
+        this.appendField()
+            .withLabel('bee speed')
+            .withValue(() => {
+                return currentPlayer.beeAttributes.speed.toFixed(2);
+            });
+
+        this.appendField()
+            .withLabel('max health')
+            .withValue(() => {
+                return currentPlayer.beeAttributes.maxHealth.toFixed(2);
+            });
+
+        this.appendField()
+            .withLabel('health regen')
+            .withValue(() => {
+                return currentPlayer.beeAttributes.healthRegen.toFixed(2);
+            });
+
+        this.appendField()
+            .withLabel('stinger rate')
+            .withValue(() => {
+                return currentPlayer.beeAttributes.fireRate.toFixed(2);
+            });
+
+        this.appendField()
+            .withLabel('base damage')
+            .withValue(() => {
+                return currentPlayer.beeAttributes.damage.toFixed(2);
+            });
+
+        this.appendField()
+            .withLabel('shot count')
+            .withValue(() => {
+                return currentPlayer.beeAttributes.shotCount.toFixed(0);
+            });
+
+        this.appendField()
+            .withLabel('magnet strength')
+            .withValue(() => {
+                return currentPlayer.beeAttributes.honeycombAttraction.toFixed(2);
+            });
+
+        this.appendField()
+            .withLabel('magnet distance')
+            .withValue(() => {
+                return currentPlayer.beeAttributes.honeycombAttractionDistance.toFixed(2);
+            });
+
+        this.appendField()
+            .withLabel('stinger speed')
+            .withValue(() => {
+                return currentPlayer.beeAttributes.bulletSpeed.toFixed(2);
+            });
+
+        this.appendField()
+            .withLabel('crit chance')
+            .withValue(() => {
+                return `${(100 * currentPlayer.beeAttributes.critChance).toFixed(1)} %`;
+            });
+
+        this.appendField()
+            .withLabel('crit multiplier')
+            .withValue(() => {
+                return currentPlayer.beeAttributes.critMultiplier.toFixed(2);
+            });
+
+        this.appendField()
+            .withLabel('double shot chance')
+            .withValue(() => {
+                return `${(100 * currentPlayer.beeAttributes.doubleShotChance).toFixed(1)} %`;
+            });
+
+        this.appendSeperator();
+
+        this.appendSectionHeading('General')
+
         this.appendField()
             .withLabel('honeycomb collected')
             .withValue(() => {

@@ -77,8 +77,10 @@ class Level extends EngineObject {
         this.trackedObjects = [];
 
         this.bee = this.trackObj(new Bee(currentPlayer.beeAttributes));
-
+        
         this.attributes = DEFAULT_LEVEL_ATTRIBUTES.copy();
+
+        this.sammyTimer = new Timer();
 
         this.birdSpawnCount = 0;
         this.birdKillCount = 0;
@@ -117,7 +119,7 @@ class Level extends EngineObject {
             levelSummaryMenu.open();         
         }
 
-        if (randInt(0, BASE_SAMMY_CHANCE * (1 / this.sammyChance)) == 0) {
+        if (randInt(0, BASE_SAMMY_CHANCE * (1 / this.attributes.sammyChance)) == 0) {
             
             // This gets the bottom right - but to get a positive size
             // we just flip the y-sign
@@ -131,15 +133,13 @@ class Level extends EngineObject {
             const sammyPos = spawnRegion.getRandomPosition(rand, worldSize, margin);
 
             const sammy = this.trackObj(new Owl(sammyPos));
-            sammy.velocity = vec2(0.1, 0);
+            sammy.velocity = vec2(1, 0).normalize(this.attributes.sammySpeed);
 
             if (currentPlayer) {
                 currentPlayer.onSammySpawned();
             }
 
-            logInfo(`Lucky Owl Spawn at ${sammy.pos}!`);
-            
-            this.trackObj(sammy);
+            logInfo(`Sammy spawn at ${sammy.pos}!`);
         }
     }
 
@@ -180,7 +180,16 @@ class Level extends EngineObject {
     }
 
     onSammyCollected() {
-        // TODO: Party time!
+        
+        this.sammyTimer.set(this.attributes.sammyDuration);
+    }
+
+    /**
+     * Checks if it is currently Sammy party time - what more is there to be said?
+     * @returns {boolean}
+     */
+    isSammyPartyTime() {
+        return this.sammyTimer.active();
     }
 
     destroy() {
@@ -220,8 +229,6 @@ class StandardLevel extends Level {
         this.timeRemainingBar.renderOrder = RENDER_LAYERS.HUD;
 
         this.scoreTracker = this.trackObj(new LevelScoreTracker());
-
-        this.sammyChance = currentPlayer.sammyChance;
 
         const margin = vec2(0.1);
 
