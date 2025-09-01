@@ -447,7 +447,7 @@ export class Bird extends EngineObject
      */
     constructor(pos, template)
     {
-        super(pos, vec2(1, 1));
+        super(pos, vec2(2, 2));
         
         this.entityType = EntityType.BIRD;
 

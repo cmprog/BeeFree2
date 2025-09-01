@@ -1,4 +1,4 @@
-import { EntityType, ProgressBar } from './entities.js';
+import { EntityType, ProgressBar, Score } from './entities.js';
 import { MultiBulletShooting, SingleBulletShooting } from "./shooting.js";
 import { spriteAtlas } from "./sprites.js";
 import { currentLevel } from "./levels.js";
@@ -116,6 +116,8 @@ export class Bee extends EngineObject {
 
     applyDamage(amount) {
 
+        return;
+
         if ((amount > 0) && currentLevel) {
             currentLevel.onBeeDamageTaken();
         }
@@ -159,18 +161,25 @@ export class Bee extends EngineObject {
         return damage;
     }
 
+    /**
+     * @param {EngineObject} o 
+     * @returns 
+     */
     collideWithObject(o) {
 
         if (o.entityType == EntityType.HONEYCOMB) {
 
             if (currentLevel) {
                 currentLevel.onHoneycombCollected(o.value);
+                currentLevel.trackObj(new Score(o.pos, o.value));
             }
 
             // Don't signal to the player. Honeycomb isn't truely
             // collected until the end of the level.
 
             o.destroy();            
+
+
 
         } else if (o.entityType == EntityType.SAMMY) {
 

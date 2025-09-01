@@ -1,12 +1,14 @@
 import { Bee } from "./bee.js";
 import { BIRD_TEMPLATES, BirdTemplate } from "./birds.js";
-import { ProgressBar } from "./entities.js";
+import { LevelScoreTracker, ProgressBar } from "./entities.js";
+import { RENDER_LAYERS } from "./layers.js";
 import { logDebug, logInfo } from "./logging.js";
 import { MENUS } from "./menus.js";
 import { Owl } from "./owl.js";
 import { currentPlayer } from "./player.js";
 import { BASE_SAMMY_CHANCE, DEFAULT_LEVEL_ATTRIBUTES, STANDARD_LEVEL_FAILURE_EARN_RATE } from "./settings.js";
 import { FormationDefinition, SpawnDefinition, SpawnerCollection, FormationCreationOptions, SPAWN_REGIONS } from "./spawning.js";
+import { spriteAtlas } from "./sprites.js";
 import { FONTS, getWorldSize } from "./util.js";
 
 class LevelDefinition {
@@ -86,6 +88,11 @@ class Level extends EngineObject {
         touchGamepadEnable = true;   
     }
 
+    /**
+     * @template T
+     * @param {T} obj 
+     * @returns {T}
+     */
     trackObj(obj) {
         this.trackedObjects.push(obj);
         return obj;
@@ -194,17 +201,28 @@ class StandardLevel extends Level {
         this.levelTimer = new Timer(this.levelDefinition.totalDuration);
         this.spawner = levelDefinition.createSpawner();
 
-        this.timeRemainingBar = new ProgressBar();
+        this.timeRemainingBar = this.trackObj(new ProgressBar());
         this.timeRemainingBar.size = vec2(10, 1.0);
+        this.timeRemainingBar.renderOrder = RENDER_LAYERS.HUD;
+
+        this.scoreTracker = this.trackObj(new LevelScoreTracker());
 
         this.sammyChance = currentPlayer.sammyChance;
 
         const margin = vec2(0.1);
 
-        this.timeRemainingBar.pos = screenToWorld(mainCanvasSize).scale(-1)
-            .add(vec2((this.timeRemainingBar.size.x * 0.5) + margin.x, (-this.timeRemainingBar.size.y * 0.5) - margin.y));
-        
-        this.trackObj(this.timeRemainingBar);
+        const halfWorldSize = screenToWorld(mainCanvasSize);
+        halfWorldSize.y = -halfWorldSize.y;
+
+        this.timeRemainingBar.pos = vec2(
+            -halfWorldSize.x + (this.timeRemainingBar.size.x * 0.5) + margin.x,
+            halfWorldSize.y - (this.timeRemainingBar.size.y * 0.5) - margin.y,
+        );
+
+        this.scoreTracker.pos = vec2(
+            halfWorldSize.x - (this.scoreTracker.size.x * 0.5) - margin.x,
+            halfWorldSize.y - (this.scoreTracker.size.y * 0.5) - margin.y,
+        );
     }
 
     isLevelComplete() {
@@ -220,6 +238,8 @@ class StandardLevel extends Level {
         super.update();
 
         this.spawner.update();
+
+        this.scoreTracker.value = this.honeycombCollected;
 
         const timeRemaining = -this.levelTimer.get();
         this.timeRemainingBar.value = timeRemaining / this.levelDefinition.totalDuration;
