@@ -48,7 +48,7 @@ class Achivement extends Medal {
         this.unlocked = true;
 
         if (this.rewardedHoneycomb) {
-            currentPlayer.collectHoneycomb(this.rewardedHoneycomb);
+            currentPlayer.onHoneycombCollected(this.rewardedHoneycomb);
         }
 
         currentPlayer.achivements[this.id] = this.unlocked;

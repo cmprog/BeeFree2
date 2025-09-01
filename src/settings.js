@@ -1,5 +1,8 @@
 import { AttributeSet, LevelAttributeSet } from "./attributes.js";
 
+export const STANDARD_LEVEL_FAILURE_EARN_RATE = 0.5;
+export const BASE_SAMMY_CHANCE = 5000;
+
 export const DEFAULT_BEE_ATTRIBUTES = new AttributeSet();
 DEFAULT_BEE_ATTRIBUTES.speed = 0.1;
 DEFAULT_BEE_ATTRIBUTES.maxHealth = 5;

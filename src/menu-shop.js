@@ -282,6 +282,7 @@ class ShopItem {
         currentPlayer.shopPurchases[this.key] = this.currentLevel;
         this.data.onPurchased(this.key, this.data, this.currentLevel, newValue);
 
+        currentPlayer.onShopUpgradePurchased();
         currentPlayer.save();
 
         this.refresh();

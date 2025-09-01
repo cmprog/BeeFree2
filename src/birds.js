@@ -10,6 +10,7 @@ import { BirdBulletFactory } from "./bullet.js";
 import { isWellOutsideWorldBoundary, rgb255 } from "./util.js";
 import { SPAWN_REGIONS } from "./spawning.js";
 import { AttributeSet } from "./attributes.js";
+import { currentPlayer } from "./player.js";
 
 /**
  * @callback ShootingBehaviorFactory
@@ -493,17 +494,30 @@ export class Bird extends EngineObject
     }
 
     applyDamage(amount) {
-        this.health = Math.max(0, this.health - amount);
+
+        const actualAmount = Math.min(this.health, amount);
+        this.health = Math.max(0, this.health - actualAmount);
+        
+        if (currentPlayer) {
+            currentPlayer.onHit(actualAmount);
+        }
+
         if (!this.health) {
+
             this.destroy();
 
-            const honeycomb = new Honeycomb(this.pos, 1);
-            // Give it some velocity in the same direction of the bird - but not nearly as fast
-            honeycomb.velocity = this.velocity.normalize(rand(0, this.velocity.length() * 0.7));
-
             if (currentLevel) {
-                currentLevel.trackObj(honeycomb);
+
+                const honeycomb = currentLevel.trackObj(new Honeycomb(this.pos, 1));
+
+                // Give it some velocity in the same direction of the bird - but not nearly as fast
+                honeycomb.velocity = this.velocity.normalize(rand(0, this.velocity.length() * 0.7));
+
                 currentLevel.onBirdKilled();
+            }
+
+            if (currentPlayer) {
+                currentPlayer.onBirdKilled();
             }
         }
     }

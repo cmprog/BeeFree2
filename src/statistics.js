@@ -17,6 +17,23 @@ export class StatisticsSet {
          * @type {number}
          */
         this.timeTrialLevelsStarted = 0;
+
+        /**
+         * The total amount of damange taken.
+         */
+        this.damageTaken = 0;
+
+        /**
+         * The total amount of damage dealt.
+         * @type {number}
+         */
+        this.damageDealt = 0;
+
+        /**
+         * The amount of bullets which have hit a target.
+         * @type {number}
+         */
+        this.hitCount = 0;
     }
 
     /**
@@ -37,6 +54,9 @@ export class StatisticsSet {
             shopUpgradesPurchased: this.shopUpgradesPurchased,
             criticalHitCount: this.criticalHitCount,
             timeTrialLevelsStarted: this.timeTrialLevelsStarted,
+            damageDealt: this.damageDealt,
+            hitCount: this.hitCount,
+            damageTaken: this.damageTaken,
         };
     }
 
@@ -60,7 +80,10 @@ export class StatisticsSet {
         this.criticalHitCount = saveObj.criticalHitCount || 0;
         this.timeTrialLevelsStarted = saveObj.timeTrialLevelsStarted || 0;
         this.longestGlobalTimeTrialDate = saveObj.longestGlobalTimeTrialDate || 0;
-        this.longestGlobalTimeTrialDuration = saveObj.longestGlobalTimeTrialDuration || 0;        
+        this.longestGlobalTimeTrialDuration = saveObj.longestGlobalTimeTrialDuration || 0;  
+        this.damageDealt = saveObj.damageDealt || 0;
+        this.hitCount = saveObj.hitCount || 0;   
+        this.damageTaken = saveObj.damageTaken || 0;   
     }
 }
 
@@ -153,6 +176,33 @@ export class TimeTrialStatistics {
          */
         this.longestDuration = undefined;
     }
+
+    /**
+     * Resets the statistics back to their default values.
+     */
+    reset() {
+        this.startCount = 0;
+        this.longestDate = undefined;
+        this.longestDuration = undefined;
+    }
+
+    /**
+     * Tries to update the statistics based on the given stats.
+     * @param {Date} todayDate 
+     * @param {number} duration 
+     * @returns {boolean}
+     */
+    tryUpdate(todayDate, duration) {
+
+        if (!this.longestDuration || (duration > this.longestDuration)) {
+            this.longestDate = todayDate;
+            this.longestDuration = duration;
+            return true;
+        }
+
+        return false;
+    }
+
     /**
      * Creates a bare DTO save object representing this set of stats.
      * @returns {object}

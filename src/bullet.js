@@ -1,5 +1,6 @@
 import { AttributeSet } from './attributes.js';
 import { EntityType } from './entities.js';
+import { currentPlayer } from './player.js';
 import { DEFAULT_BIRD_ATTRIBUTES } from './settings.js';
 import { spriteAtlas } from "./sprites.js";
 import { isWellOutsideWorldBoundary, scaleTileSizeHeight } from "./util.js";
@@ -66,6 +67,14 @@ export class Bullet extends EngineObject {
         return false;
     }
 
+    /**
+     * Just a hook for when the bullet hits a valid target.
+     * @param {number} damage The amount of damange done.
+     */
+    onHit(damage) {
+
+    }
+
     collideWithObject(o) {
 
         if (this.isValidTarget(o)) {
@@ -74,6 +83,8 @@ export class Bullet extends EngineObject {
 
             const damage = this.spawningEntity.getDamage();
             o.applyDamage(damage);
+
+            this.onHit(damage);
         }
 
         return false;
@@ -89,6 +100,12 @@ export class BeeBullet extends Bullet {
 
     isValidTarget(o) {
         return o.entityType == EntityType.BIRD;
+    }
+
+    onHit(damage) {
+        if (currentPlayer) {
+            currentPlayer.onHit(damage);
+        }
     }
 }
 

@@ -5,6 +5,7 @@ import { PlayerLevel } from "./player-level.js";
 import { DEFAULT_BEE_ATTRIBUTES, DEFAULT_LEVEL_ATTRIBUTES, DEFAULT_SAMMY_ATTRIBUTE_MULTIPLIERS } from "./settings.js";
 import { SingleBulletShooting } from "./shooting.js";
 import { StatisticsSet, TimeTrialStatistics } from "./statistics.js";
+import { today } from "./util.js";
 
 const SAVE_KEY = "save";
 const SAVE_KEY_BACKUP = "save_bk";
@@ -94,9 +95,119 @@ export class Player {
         this.markLevelAvailable(0);
     }
 
-    collectHoneycomb(amount) {
+    /**
+     * @param {number} amount 
+     */
+    onHoneycombCollected(amount) {
         this.availableHoneycomb += amount;
-        this.totalHoneycombCollected += amount;
+        this.overallStatistics.totalHoneycombCollected += amount;
+        this.prestigeStatistics.totalHoneycombCollected += amount;
+    }
+
+    onBirdKilled(){
+        this.overallStatistics.killCount += 1;
+        this.prestigeStatistics.killCount += 1;
+    }
+
+    /**
+     * @param {number} amount 
+     */
+    onDamageTaken(amount) {
+        this.overallStatistics.damageTaken += amount;
+        this.prestigeStatistics.damageTaken += amount;
+    }
+
+    onBeeDeath() {
+        this.overallStatistics.deathCount += 1;
+        this.prestigeStatistics.deathCount += 1;
+    }
+
+    /**
+     * @param {number} damageDealt 
+     */
+    onHit(damageDealt) {
+        this.overallStatistics.hitCount += 1;
+        this.prestigeStatistics.hitCount += 1;
+
+        this.overallStatistics.damageDealt += damageDealt;
+        this.prestigeStatistics.damageDealt += damageDealt;
+    }
+
+    onShotFired(bulletCount) {
+        this.overallStatistics.shotCount += 1;
+        this.prestigeStatistics.shotCount += 1;
+
+        this.overallStatistics.bulletCount += amount;
+        this.prestigeStatistics.bulletCount += amount;
+    }
+
+    onSammySpawned() {
+        this.overallStatistics.sammySpawnCount += 1;
+        this.prestigeStatistics.sammySpawnCount += 1;
+    }
+
+    onSammyCollected() {
+        this.overallStatistics.sammyCollectionCount += 1;
+        this.prestigeStatistics.sammyCollectionCount += 1;
+    }
+
+    /**
+     * @param {number} distance 
+     */
+    onDistanceTraveled(distance) {
+        this.overallStatistics.distanceTraveled += distance;
+        this.prestigeStatistics.distanceTraveled += distance;
+    }
+
+    onShopUpgradePurchased() {
+        this.overallStatistics.shopUpgradesPurchased += 1;
+        this.prestigeStatistics.shopUpgradesPurchased += 1;
+    }
+
+    onCriticalHit() {
+        this.overallStatistics.criticalHitCount += 1;
+        this.prestigeStatistics.criticalHitCount += 1;
+    }
+
+    onTimeTrialStarted() {
+        this.overallStatistics.timeTrialLevelsStarted += 1;
+        this.prestigeStatistics.timeTrialLevelsStarted += 1;
+
+        this.tryResetDailyTimeTrialStatistics(today());
+
+        this.dailyTimeTrialStatistics.startCount += 1;
+        this.overallTimeTrailStatistics.startCount += 1;        
+    }
+
+    /**
+     * @param {number} duration 
+     */
+    onTimeTrialCompleted(duration) {
+        
+        const todayDate = today();
+        this.tryResetDailyTimeTrialStatistics(todayDate);
+        
+        this.dailyTimeTrialStatistics.tryUpdate(todayDate, duration);
+        this.overallTimeTrailStatistics.tryUpdate(todayDate, duration);
+    }
+
+    /**
+     * If the daily time trial stats are not for 'today' then it resets them.
+     * @param {Date} todayDate
+     */
+    tryResetDailyTimeTrialStatistics(todayDate) {
+
+        // Nothing to do if the daily stats are not defined
+        if (!this.dailyTimeTrialStatistics.longestDate) {
+            return false;
+        }
+
+        if (this.dailyTimeTrialStatistics.longestDate.valueOf() != todayDate.valueOf()) {
+            this.dailyTimeTrialStatistics.reset();
+            return true;
+        }
+
+        return false;
     }
 
     spendHoneycomb(amount) {
@@ -129,9 +240,9 @@ export class Player {
      * @param {boolean} noDamage 
      * @param {boolean} noSurvivors 
      */
-    onLevelCompleted(levelId, failed, flawless, perfect) {
+    onStandardLevelCompleted(levelId, failed, noDamage, perfect) {
         const level = this.getLevel(levelId);
-        level.onLevelCompleted(failed, flawless, perfect);
+        level.onLevelCompleted(failed, noDamage, perfect);
         this.save();
     }
 

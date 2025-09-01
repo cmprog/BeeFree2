@@ -2,7 +2,12 @@ import { currentLevel } from "./levels.js";
 
 export class ShootingBehavior {
 
-    fire() {
+    /**
+     * Attempts to fire a shot.
+     * @param {EngineObject} shooter The shooting object.
+     * @returns {number} The number of bullets fired.
+     */
+    fire(shooter) {
         
     }
 
@@ -29,11 +34,15 @@ export class SingleBulletShooting extends ShootingBehavior {
     }
 
     fire(shooter) {
+
         if (!this.cooldownTimer.isSet() || this.cooldownTimer.elapsed()) {
             const bullet = this.bulletFactory.createBullet(shooter, this.direction);
             currentLevel.trackObj(bullet);
-            this.cooldownTimer.set(this.rate);            
+            this.cooldownTimer.set(this.rate);
+            return 1;
         }
+
+        return 0;
     }
 }
 
@@ -90,6 +99,7 @@ export class MultiBulletShooting extends ShootingBehavior {
     }
 
     fire(shooter) {
+        
         if (!this.cooldownTimer.isSet() || this.cooldownTimer.elapsed()) {
 
             let currentDirection = this.startDirection;
@@ -102,6 +112,10 @@ export class MultiBulletShooting extends ShootingBehavior {
             }
 
             this.cooldownTimer.set(this.rate); 
+
+            return this.count;
         }
+
+        return 0;
     }
 }

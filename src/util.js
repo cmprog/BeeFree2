@@ -15,6 +15,16 @@ export function rgb255(r, g, b, a = 255) {
 }
 
 /**
+ * Gets a date instance representing 'today' with no time component.
+ * @returns {Date}
+ */
+export function today() {
+    const d = new Date();
+    d.setHours(0, 0, 0, 0);
+    return d;
+}
+
+/**
  * Checks if the given object is far outside of the world boundary.
  * @param {EngineObject} obj 
  */

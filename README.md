@@ -20,3 +20,7 @@ Just a little game I made forever ago. I'm revamping it because my daughter enjo
 - Cosmetic purchaces - do not reset on pretige
 - Passkve honeycomb earnings. Buy a bee hive and collect from it every day. Adds potential options for duration and amount. 
 - challenge mode prestige?
+- Extra life shop purchase?
+- Shielding attribute
+    - Maximum damage reduction - Shield acts as damage reduction
+    - Maximum shield amount - Shield has only so much life before it no longer works.

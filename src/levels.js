@@ -5,10 +5,9 @@ import { logDebug, logInfo } from "./logging.js";
 import { MENUS } from "./menus.js";
 import { Owl } from "./owl.js";
 import { currentPlayer } from "./player.js";
+import { BASE_SAMMY_CHANCE, DEFAULT_LEVEL_ATTRIBUTES, STANDARD_LEVEL_FAILURE_EARN_RATE } from "./settings.js";
 import { FormationDefinition, SpawnDefinition, SpawnerCollection, FormationCreationOptions, SPAWN_REGIONS } from "./spawning.js";
 import { FONTS, getWorldSize } from "./util.js";
-
-export let currentLevel;
 
 class LevelDefinition {
     constructor(id, name) {
@@ -72,24 +71,24 @@ class Level extends EngineObject {
 
         super();
 
-        this.bee = new Bee(currentPlayer.beeAttributes);
-
         this.trackedObjects = [];
-        this.trackObj(this.bee);
+
+        this.bee = this.trackObj(new Bee(currentPlayer.beeAttributes));
+
+        this.attributes = DEFAULT_LEVEL_ATTRIBUTES.copy();
 
         this.birdSpawnCount = 0;
         this.birdKillCount = 0;
         this.honeycombCollected = 0;
-        this.honeycombValueCollected = 0;
-        this.isFlawless = true;
-
-        touchGamepadEnable = true;       
-        
+        this.noDamage = true;
         this.levelFailed = false;
+
+        touchGamepadEnable = true;   
     }
 
     trackObj(obj) {
         this.trackedObjects.push(obj);
+        return obj;
     }
 
     update() {
@@ -99,6 +98,31 @@ class Level extends EngineObject {
 
             const exitMenu = this.getExitMenu();
             exitMenu.open();            
+        }
+
+        if (randInt(0, BASE_SAMMY_CHANCE * (1 / this.sammyChance)) == 0) {
+            
+            // This gets the bottom right - but to get a positive size
+            // we just flip the y-sign
+            const worldSize = screenToWorld(mainCanvasSize);
+            worldSize.y = -worldSize.y;
+
+            const rand = new RandomGenerator(time);
+
+            const margin = vec2(10, 10);
+            const spawnRegion = randInt(0, 2) == 0 ? SPAWN_REGIONS.LEFT_UPPER : SPAWN_REGIONS.LEFT_LOWER;
+            const sammyPos = spawnRegion.getRandomPosition(rand, worldSize, margin);
+
+            const sammy = this.trackObj(new Owl(sammyPos));
+            sammy.velocity = vec2(0.1, 0);
+
+            if (currentPlayer) {
+                currentPlayer.onSammySpawned();
+            }
+
+            logInfo(`Lucky Owl Spawn at ${sammy.pos}!`);
+            
+            this.trackObj(sammy);
         }
     }
 
@@ -123,16 +147,19 @@ class Level extends EngineObject {
     }
 
     onBeeDamageTaken() {
-        this.isFlawless = false;   
+        this.noDamage = false;   
     }
 
-    onBeeDestroyed() {
+    onBeeDeath() {
         this.levelFailed = true;
     }
 
-    onHoneycombCollected(value) {
-        this.honeycombCollected += 1;
-        this.honeycombValueCollected += value;
+    onHoneycombCollected(amount) {
+        this.honeycombCollected += amount;
+    }
+
+    onSammyCollected() {
+        // TODO: Party time!
     }
 
     destroy() {
@@ -150,6 +177,11 @@ class Level extends EngineObject {
         // Purposefully blank since we don't care about default rendering
     }
 }
+
+/**
+ * @type {Level}
+ */
+export let currentLevel;
 
 class StandardLevel extends Level {
     
@@ -191,16 +223,6 @@ class StandardLevel extends Level {
 
         const timeRemaining = -this.levelTimer.get();
         this.timeRemainingBar.value = timeRemaining / this.levelDefinition.totalDuration;
-
-        if (randInt(0, 5_000 * (1 / this.sammyChance)) == 0) {
-            const worldSize = getWorldSize();
-            const halfWorldSize = worldSize.scale(0.5);
-            const owl = new Owl(vec2(-halfWorldSize.x - 10, rand(-halfWorldSize.y, halfWorldSize.y)));
-            currentPlayer.luckyOwlsSpawned += 1;
-            logInfo(`Lucky Owl Spawn at ${owl.pos}!`);
-            owl.velocity = vec2(0.1, 0);
-            this.trackObj(owl);
-        }
     }
 
     isComplete() {
@@ -211,15 +233,17 @@ class StandardLevel extends Level {
         super.destroy();
 
         if (currentPlayer) {
-            const wasPerfect = this.birdSpawnCount == this.birdKillCount;
-            currentPlayer.onLevelCompleted(this.id, this.levelFailed, this.isFlawless, wasPerfect);
+            const noSurvivors = this.birdSpawnCount == this.birdKillCount;
+            currentPlayer.onStandardLevelCompleted(this.id, this.levelFailed, this.noDamage, noSurvivors);
         }
 
         if (this.id + 1 < LEVELS.length) {
             currentPlayer.markLevelAvailable(this.id + 1);
         }
 
-        currentPlayer.collectHoneycomb(this.honeycombValueCollected);
+        const honeycombEarnRate = this.levelFailed ? STANDARD_LEVEL_FAILURE_EARN_RATE : 1.0;
+        const honeycombEarned = this.honeycombCollected * honeycombEarnRate;
+        currentPlayer.onHoneycombCollected(honeycombEarned);
     }
 
     render() {
@@ -309,6 +333,18 @@ class StandardLevel extends Level {
         }
     }
 
+    destroy() {
+        super.destroy();
+        
+        if (currentPlayer) {
+            const duration = time - this.spawnTime;
+            currentPlayer.onTimeTrialCompleted(duration);
+        
+            const honeycombEarned = this.honeycombCollected;
+            currentPlayer.onHoneycombCollected(honeycombEarned);
+        }
+    }
+
     render() {
         const formattedLevelDuration = `${(time - this.spawnTime).toFixed(1)} s`
         drawTextOverlay(formattedLevelDuration, this.timeRemainingBar.pos, 0.8 * this.timeRemainingBar.size.y, BLACK, undefined, undefined, undefined, FONTS.SECONDARY);
@@ -316,6 +352,11 @@ class StandardLevel extends Level {
 }
 
 export function startTimeTrial() {
+
+    if (currentPlayer) {
+        currentPlayer.onTimeTrialStarted();
+    }
+
     currentLevel = new TimeTrialLevel();
 }
 
@@ -472,7 +513,7 @@ export function initLevels() {
             )
             .withDelay(5),
 
-        new LevelDefinition(9, 'Level 8')
+        new LevelDefinition(7, 'Level 8')
             .withDelay(2)
             .withFormation(FORMATIONS.twinsRight)
             .withDelay(1)
@@ -485,9 +526,6 @@ export function initLevels() {
             )
             .withDelay(5),
             
-        // new LevelDefinition(5, 'Level 6'),
-        // new LevelDefinition(6, 'Level 7'),
-        // new LevelDefinition(7, 'Level 8'),
         // new LevelDefinition(8, 'Level 9'),
         // new LevelDefinition(9, 'Level 10'),
         // new LevelDefinition(10, 'Level 11'),

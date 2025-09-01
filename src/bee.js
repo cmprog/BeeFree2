@@ -5,6 +5,7 @@ import { currentLevel } from "./levels.js";
 import { BeeBulletFactory } from './bullet.js';
 import { logDebug } from './logging.js';
 import { AttributeSet } from './attributes.js';
+import { currentPlayer } from './player.js';
 
 export class Bee extends EngineObject {
 
@@ -28,6 +29,7 @@ export class Bee extends EngineObject {
         this.attributes = attributes.copy();
 
         this.health = attributes.maxHealth;
+        this.previousPos = undefined;
 
         if (attributes.shotCount > 1) {
             this.shooting = new MultiBulletShooting({                
@@ -49,12 +51,20 @@ export class Bee extends EngineObject {
     } 
     
     update() {
+
         super.update();
 
         if (this.healthRegenTimer.elapsed()) {
             this.health = min(this.attributes.maxHealth, this.health + this.attributes.healthRegen);
             this.healthRegenTimer.set(1);
         }
+
+        if (this.previousPos && currentPlayer) {
+            const distance = this.pos.subtract(this.previousPos).length();
+            currentPlayer.onDistanceTraveled(distance);
+        }
+
+        this.previousPos = this.pos;
 
         this.healthBar.value = this.health / this.attributes.maxHealth;
         
@@ -85,7 +95,11 @@ export class Bee extends EngineObject {
         }      
 
         if (holdingFire) {
-            this.shooting.fire(this);
+            const bulletsFired = this.shooting.fire(this);
+
+            if (bulletsFired && currentPlayer) {
+                currentPlayer.onShotFired(bulletsFired);
+            }
         }
 
         // Bottom right position tells us the pos x half-width and neg y half-height of the world size
@@ -106,7 +120,12 @@ export class Bee extends EngineObject {
             currentLevel.onBeeDamageTaken();
         }
 
-        const targetHealth = Math.max(0, this.health - amount);
+        const actualAmount = Math.min(this.health, amount);
+        const targetHealth = Math.max(0, this.health - actualAmount);
+
+        if (currentPlayer) {
+            currentPlayer.onDamageTaken(actualAmount);
+        }
 
         logDebug(`Bee taking ${amount} damange (${this.health.toFixed(1)} -> ${targetHealth.toFixed(1)})`);
 
@@ -116,7 +135,11 @@ export class Bee extends EngineObject {
             this.destroy();
 
             if (currentLevel) {
-                currentLevel.onBeeDestroyed();
+                currentLevel.onBeeDeath();
+            }
+
+            if (currentPlayer) {
+                currentPlayer.onBeeDeath();
             }
         }
     }
@@ -126,6 +149,11 @@ export class Bee extends EngineObject {
         let damage = this.attributes.damage;
         if (rand(0, 1) >= this.attributes.critChance) {
             damage = damage * this.attributes.critMultiplier;
+
+            if (currentPlayer) {
+                currentPlayer.onCriticalHit();
+            }
+
         }
 
         return damage;
@@ -134,8 +162,27 @@ export class Bee extends EngineObject {
     collideWithObject(o) {
 
         if (o.entityType == EntityType.HONEYCOMB) {
-            currentLevel.onHoneycombCollected(o.value);
+
+            if (currentLevel) {
+                currentLevel.onHoneycombCollected(o.value);
+            }
+
+            // Don't signal to the player. Honeycomb isn't truely
+            // collected until the end of the level.
+
             o.destroy();            
+
+        } else if (o.entityType == EntityType.SAMMY) {
+
+            if (currentLevel) {
+                currentLevel.onSammyCollected();
+            }
+
+            if (currentPlayer) {
+                currentPlayer.onSammyCollected();
+            }
+
+            o.destroy();
         }
 
         return false;
