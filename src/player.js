@@ -261,6 +261,25 @@ export class Player {
     }
 
     /**
+     * @callback LevelSelectorCallback
+     * @param {PlayerLevel}
+     * @returns {number}
+     */
+
+    /**
+     * Sums the level statistics using a selection function for the specific statistic value.
+     * @param {LevelSelectorCallback} levelSelector 
+     * @returns {number}
+     */
+    sumLevelStats(levelSelector) {
+        let total = 0;
+        this.levels.forEach(value => {
+            total += levelSelector(value);
+        });
+        return total;
+    }
+
+    /**
      * Creates a bare DTO save object containing the player data.
      */
     toSaveObj() {
