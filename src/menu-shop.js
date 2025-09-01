@@ -340,6 +340,6 @@ export class ShopMenu extends Menu {
 
     refreshAvaialbleHoneycomb(){
         const availableHoneycombEl = this.element.querySelector('.available-honeycomb');
-        availableHoneycombEl.innerText = `${currentPlayer.availableHoneycomb} honeycomb`;
+        availableHoneycombEl.innerText = `${currentPlayer.availableHoneycomb.toFixed(1)} honeycomb`;
     }
 }

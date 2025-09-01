@@ -1,0 +1,56 @@
+@import url('./variables.css');
+@import url('./menus-common.css');
+
+  
+@keyframes fadein {
+    from {
+      color: transparent;
+    }
+    to {
+        color: black;
+    }
+}
+
+#menu-level-summary {
+
+  .header {
+    font-size: 72px;
+  }
+
+  .content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 24px;
+  }
+
+  table {
+    border-collapse: collapse;    
+  }
+
+  td {
+    text-align: right;
+    padding: 5px;
+    animation: fadein 2s forwards;
+    margin: 0px;
+  }
+
+  tr > td:nth-child(2) {
+    width: 150px;
+  }
+
+  tr > td:nth-child(3) {
+    width: 150px;
+  }
+
+  tfoot tr {    
+    background-color: #FFFFFF88;
+    border: 1px solid black;
+  }
+
+  button.return {
+    margin: 10px;
+    font-size: 24px;
+  }
+
+}

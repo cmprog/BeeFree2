@@ -3,6 +3,7 @@ import { BIRD_TEMPLATES, BirdTemplate } from "./birds.js";
 import { LevelScoreTracker, ProgressBar } from "./entities.js";
 import { RENDER_LAYERS } from "./layers.js";
 import { logDebug, logInfo } from "./logging.js";
+import { LevelSummaryMenu } from "./menu-level-summary.js";
 import { MENUS } from "./menus.js";
 import { Owl } from "./owl.js";
 import { currentPlayer } from "./player.js";
@@ -103,8 +104,17 @@ class Level extends EngineObject {
         if (this.levelFailed || this.isLevelComplete()) {
             this.destroy();
 
-            const exitMenu = this.getExitMenu();
-            exitMenu.open();            
+            /**
+             * @type {LevelSummaryMenu}
+             */
+            const levelSummaryMenu = MENUS.LEVEL_SUMMARY;
+            levelSummaryMenu.honeycombEarned = this.honeycombCollected;
+            levelSummaryMenu.levelFailed = this.levelFailed;
+            levelSummaryMenu.noDamageTaken = this.noDamage;
+            levelSummaryMenu.noSurvivors = (this.birdSpawnCount == this.birdKillCount);
+            levelSummaryMenu.returnMenu = this.getExitMenu();
+            levelSummaryMenu.returnMenuText = this.getExitMenuText();
+            levelSummaryMenu.open();         
         }
 
         if (randInt(0, BASE_SAMMY_CHANCE * (1 / this.sammyChance)) == 0) {
@@ -135,6 +145,10 @@ class Level extends EngineObject {
 
     getExitMenu() {
         return MENUS.MAIN;
+    }
+
+    getExitMenuText() {
+        return 'Return to main menu';
     }
 
     isLevelComplete() {
@@ -231,6 +245,10 @@ class StandardLevel extends Level {
 
     getExitMenu() {
         return MENUS.LEVEL_SELECTION;
+    }
+
+    getExitMenuText() {
+        return 'Return to level selection';
     }
 
     update() {

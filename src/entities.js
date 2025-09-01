@@ -49,6 +49,9 @@ export class ProgressBar extends EngineObject {
     update() {
 
         this.color = this.backgroundColor;
+        this.renderOrder = RENDER_LAYERS.HUD;
+
+        this.currentHealthObj.renderOrder = this.renderOrder + 1;
         this.currentHealthObj.color = this.foregroundColor;
        
         const clampedValue = clamp(this.value, 0, 1);

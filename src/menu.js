@@ -10,7 +10,7 @@ export class Menu {
 
         /**
          * The root level element representing the menu.
-         * @type {HTMLElement}
+         * @type {HTMLDivElement}
          */
         this.element = document.querySelector(selector);
 

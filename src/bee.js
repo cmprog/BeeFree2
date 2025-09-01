@@ -116,8 +116,6 @@ export class Bee extends EngineObject {
 
     applyDamage(amount) {
 
-        return;
-
         if ((amount > 0) && currentLevel) {
             currentLevel.onBeeDamageTaken();
         }
