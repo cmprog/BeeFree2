@@ -87,6 +87,7 @@ class Level extends EngineObject {
         this.honeycombCollected = 0;
         this.noDamage = true;
         this.levelFailed = false;
+        this.isBeeAlive = true;
 
         touchGamepadEnable = true;   
     }
@@ -103,7 +104,7 @@ class Level extends EngineObject {
 
     update() {
 
-        if (this.levelFailed || this.isLevelComplete()) {
+        if (!this.isBeeAlive || this.isLevelComplete()) {
             this.destroy();
 
             /**
@@ -172,7 +173,7 @@ class Level extends EngineObject {
     }
 
     onBeeDeath() {
-        this.levelFailed = true;
+        this.isBeeAlive = false;
     }
 
     onHoneycombCollected(amount) {
@@ -256,6 +257,11 @@ class StandardLevel extends Level {
 
     getExitMenuText() {
         return 'Return to level selection';
+    }
+
+    onBeeDeath() {
+        super.onBeeDeath();
+        this.levelFailed = true;
     }
 
     update() {

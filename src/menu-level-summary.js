@@ -1,7 +1,7 @@
 import { appendChildHtml } from "./html.js";
 import { Menu } from "./menu.js";
 import { MENUS } from "./menus.js";
-import { NO_DAMAGE_TOKEN_LEVEL_BONUS, NO_SURVIVORS_LEVEL_BONUS, PERFECT_LEVEL_BONUS } from "./settings.js";
+import { NO_DAMAGE_TOKEN_LEVEL_BONUS, NO_SURVIVORS_LEVEL_BONUS, PERFECT_LEVEL_BONUS, STANDARD_LEVEL_FAILURE_EARN_RATE } from "./settings.js";
 import { registerClick } from "./util.js";
 
 export class LevelSummaryMenu extends Menu {
@@ -54,6 +54,14 @@ export class LevelSummaryMenu extends Menu {
         window.setTimeout(this.appendHoneycombRow.bind(this), 500);
     }
 
+    scheduleFailureRow() {
+        if (this.levelFailed) {
+            window.setTimeout(this.appendFailureRow.bind(this), 500);
+        } else {
+            this.scheduleNoDamageRow();
+        }
+    }
+
     scheduleNoDamageRow() {
         if (this.noDamageTaken) {
             window.setTimeout(this.appendNoDamageRow.bind(this), 500);
@@ -74,7 +82,7 @@ export class LevelSummaryMenu extends Menu {
         if (this.noDamageTaken && this.noSurvivors) {
             window.setTimeout(this.appendPerfectRow.bind(this), 500);
         } else {
-            this.scheduleReturnButton();
+            this.scheduleTotalRow();
         }
     }
 
@@ -93,13 +101,30 @@ export class LevelSummaryMenu extends Menu {
                 <td>honeycomb collected</td>
                 <td></td>
                 <td>${this.honeycombEarned.toFixed(1)}</td>
+                <td></td>
+            </tr>
+        `;
+
+        appendChildHtml(this.tableEl.tBodies[0], templateHtml);
+
+        this.scheduleFailureRow();
+    } 
+
+    appendFailureRow() {
+        
+        const templateHtml = `
+            <tr>
+                <td>failure</td>
+                <td>${((1 - STANDARD_LEVEL_FAILURE_EARN_RATE) * 100).toFixed(0)}% penalty</td>
+                <td>- ${(this.honeycombEarned * (1 - STANDARD_LEVEL_FAILURE_EARN_RATE)).toFixed(1)}</td>
+                <td></td>
             </tr>
         `;
 
         appendChildHtml(this.tableEl.tBodies[0], templateHtml);
 
         this.scheduleNoDamageRow();
-    } 
+    }
     
     appendNoDamageRow() {
 
@@ -107,7 +132,8 @@ export class LevelSummaryMenu extends Menu {
             <tr>
                 <td>no damage taken</td>
                 <td>${(NO_DAMAGE_TOKEN_LEVEL_BONUS * 100).toFixed(0)}% bonus</td>
-                <td>+ ${(this.honeycombEarned * NO_DAMAGE_TOKEN_LEVEL_BONUS).toFixed(1)}</td>
+                <td>+ ${(this.honeycombEarned * NO_DAMAGE_TOKEN_LEVEL_BONUS).toFixed(1)}</td>                
+                <td><div class="level-badge level-badge-no-damage"></div></td>
             </tr>
         `;
 
@@ -123,6 +149,7 @@ export class LevelSummaryMenu extends Menu {
                 <td>no survivors</td>
                 <td>${(NO_SURVIVORS_LEVEL_BONUS * 100).toFixed(0)}% bonus</td>
                 <td>+ ${(this.honeycombEarned * NO_SURVIVORS_LEVEL_BONUS).toFixed(1)}</td>
+                <td><div class="level-badge level-badge-no-survivors"></div></td>
             </tr>
         `;
 
@@ -138,6 +165,7 @@ export class LevelSummaryMenu extends Menu {
                 <td>perfection!</td>
                 <td>${(PERFECT_LEVEL_BONUS * 100).toFixed(0)}% bonus</td>
                 <td>+ ${(this.honeycombEarned * PERFECT_LEVEL_BONUS).toFixed(1)}</td>
+                <td><div class="level-badge level-badge-perfect"></div></td>
             </tr>
         `;
 
@@ -149,6 +177,10 @@ export class LevelSummaryMenu extends Menu {
     appendTotalRow() {        
 
         let total = this.honeycombEarned;
+
+        if (this.levelFailed) {
+            total *= STANDARD_LEVEL_FAILURE_EARN_RATE;
+        }
 
         if (this.noDamageTaken) {
             total += this.honeycombEarned * NO_DAMAGE_TOKEN_LEVEL_BONUS;
@@ -167,6 +199,7 @@ export class LevelSummaryMenu extends Menu {
                 <td>total</td>
                 <td></td>
                 <td>${(total).toFixed(1)}</td>
+                <td></td>
             </tr>
         `;
 

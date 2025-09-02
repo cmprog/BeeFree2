@@ -17,8 +17,9 @@ class LevelSelectionItem {
                 <div class="level-title">${levelDefinition.name}</div>
                 <div class="level-locked-status">(locked)</div>
                 <div class="level-badge-container">
-                    <div class="level-badge level-badge-flawless">F</div>
-                    <div class="level-badge level-badge-perfect">P</div>
+                    <div class="level-badge level-badge-no-damage"></div>
+                    <div class="level-badge level-badge-no-survivors"></div>
+                    <div class="level-badge level-badge-perfect"></div>
                 </div>
             </div>
         `;
@@ -26,8 +27,9 @@ class LevelSelectionItem {
         this.listItemEl = document.createElement('li');
         appendChildHtml(this.listItemEl, templateHtml);
 
-        this.flawlessBadgeElement = this.listItemEl.querySelector('.level-badge-flawless');
-        this.perfectBadgeElement = this.listItemEl.querySelector('.level-badge-perfect');
+        this.noDamageEl = this.listItemEl.querySelector('.level-badge-no-damage');
+        this.noSurvivorsEl = this.listItemEl.querySelector('.level-badge-no-survivors');
+        this.perfectEl = this.listItemEl.querySelector('.level-badge-perfect');
         this.element = this.listItemEl.querySelector('button');
        
         registerClick(this.element, this.loadLevel.bind(this));
@@ -39,8 +41,9 @@ class LevelSelectionItem {
 
         const levelData = currentPlayer.getLevel(this.definition.id);
 
-        this.updateBadgeClass(this.flawlessBadgeElement, levelData.flawlessCount > 0);
-        this.updateBadgeClass(this.perfectBadgeElement, levelData.perfectCount > 0);
+        this.updateBadgeClass(this.noDamageEl, levelData.prestigeStatistics.noDamangeCount > 0);
+        this.updateBadgeClass(this.noSurvivorsEl, levelData.prestigeStatistics.noSurvivorsCount > 0);
+        this.updateBadgeClass(this.perfectEl, levelData.prestigeStatistics.perfectCount > 0);
 
         const CLASS_NAME_UNLOCKED = 'unlocked';
 

@@ -45,6 +45,7 @@
     right: 5px;
     font-family: 'Bistroblock';
     font-size: 32px;
+    padding-bottom: 3px;
 
     > .level-badge {
       display: none;
@@ -54,5 +55,27 @@
       }
     }
   }
+}
 
+.level-badge {
+  width: 16px;
+  height: 16px;
+  animation: level-badge 2s steps(3) infinite;
+}
+
+.level-badge-no-damage {
+  background-image: url('../img/gem_blue.png');
+}
+
+.level-badge-no-survivors {
+  background-image: url('../img/gem_red.png');
+}
+
+.level-badge-perfect {
+  background-image: url('../img/gem_gold.png');
+}
+
+@keyframes level-badge {
+  0% { background-position-x: 0px; }
+  100% { background-position-x: 100%; }
 }

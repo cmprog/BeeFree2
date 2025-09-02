@@ -33,5 +33,11 @@ export function initSpriteAtlas() {
         },
 
         honeycomb: new TileInfo(vec2(0, 0), vec2(45, 39), 5),
+
+        gems: {
+            red: new TileInfo(vec2(0, 0), vec2(16), 6),
+            blue: new TileInfo(vec2(0, 0), vec2(16), 7),
+            gold: new TileInfo(vec2(0, 0), vec2(16), 8),
+        }
     }
 }
