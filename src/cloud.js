@@ -1,5 +1,6 @@
+import { currentLevel } from "./levels.js";
 import { spriteAtlas } from "./sprites.js";
-import { getWorldSize } from "./util.js";
+import { getWorldSize, isWellOutsideWorldBoundary } from "./util.js";
 
 export class CloudGenerator extends EngineObject {
 
@@ -59,7 +60,15 @@ export class Cloud extends EngineObject
     update() {
         super.update();
 
-        if (this.pos.x < -40) {
+        if (currentLevel && currentLevel.isSammyPartyTime()) {
+            this.color = hsl(wave(1 / 5, 1, time - this.spawnTime), 0.5, 0.5); 
+            this.drawSize = this.size.scale(0.8 + wave(1, 0.4, time - this.spawnTime));   
+        } else {
+            this.color = undefined;
+            this.drawSize = undefined;
+        }        
+
+        if (isWellOutsideWorldBoundary(this)) {
             this.destroy();
         }
     }

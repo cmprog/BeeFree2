@@ -26,33 +26,74 @@ export class Bee extends EngineObject {
         this.setCollision();
 
         // Copy the set of attributes so we can 'own' them
+        this.baseAttributes = attributes.copy();
         this.attributes = attributes.copy();
+        this.isSammyPartyTimeActive = false;
+
+        this.refreshShootingBehavior();
 
         this.health = attributes.maxHealth;
         this.previousPos = undefined;
+        
+        this.healthRegenTimer = new Timer(1);
+    } 
 
-        if (attributes.shotCount > 1) {
+    /**
+     * Refreshes the shooting behavior based on the current set of
+     * attributes. This must be done whenever the attributes have changed
+     * such as entering or existing Sammy party time.
+     */
+    refreshShootingBehavior() {
+
+        if (this.attributes.shotCount > 1) {
             this.shooting = new MultiBulletShooting({                
                 bulletFactory: new BeeBulletFactory(this.attributes),
-                count: attributes.shotCount,
+                count: this.attributes.shotCount,
                 spread: Math.PI / 6,
                 direction: vec2(1, 0),
-                rate: 1.0 / attributes.fireRate,
+                rate: 1.0 / this.attributes.fireRate,
             });
         } else {
             this.shooting = new SingleBulletShooting({
                 bulletFactory: new BeeBulletFactory(this.attributes),
                 direction: vec2(1, 0),
-                rate: 1.0 / attributes.fireRate,
+                rate: 1.0 / this.attributes.fireRate,
             });
         }
-        
-        this.healthRegenTimer = new Timer(1);
-    } 
+    }
+
+    onOnSammyPartyTimeStarted() {        
+
+        if (currentPlayer) {
+            this.attributes = this.baseAttributes.scale(currentPlayer.sammyAttributeMultipliers);
+        } else {
+            this.attributes = this.baseAttributes.copy();
+        }
+
+        this.refreshShootingBehavior();
+
+        this.isSammyPartyTimeActive = true;
+    }
+
+    onSammyPartyTimeEnded() {
+        this.attributes = this.baseAttributes.copy();
+        this.isSammyPartyTimeActive = false;
+    }
     
     update() {
 
         super.update();
+
+        if (currentLevel && currentLevel.isSammyPartyTime()) {
+            if (!this.isSammyPartyTimeActive) {
+                this.onOnSammyPartyTimeStarted();
+            }
+        } else {
+            if (this.isSammyPartyTimeActive) {
+                // No more party time ::sad-face::
+                this.onSammyPartyTimeEnded();
+            }
+        }
 
         if (this.healthRegenTimer.elapsed()) {
             this.health = min(this.attributes.maxHealth, this.health + this.attributes.healthRegen);

@@ -2,7 +2,6 @@ import { AttributeSet, LevelAttributeSet } from "./attributes.js";
 
 export const STANDARD_LEVEL_FAILURE_EARN_RATE = 0.5;
 export const BASE_SAMMY_CHANCE = 5000;
-// export const BASE_SAMMY_CHANCE = 100;
 
 export const NO_DAMAGE_TOKEN_LEVEL_BONUS = 0.1;
 export const NO_SURVIVORS_LEVEL_BONUS = 0.1;

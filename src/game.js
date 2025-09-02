@@ -1,8 +1,8 @@
 'use strict';
 
-import { CloudGenerator } from "./cloud.js";
 import { initSpriteAtlas } from "./sprites.js";
 import { initMenus, MENUS } from "./menus.js";
+import { CloudGenerator } from "./cloud.js";
 import { currentLevel, initLevels } from "./levels.js";
 import { logDebug, logError, logInfo } from "./logging.js";
 import { tryUnlockAllAchivements } from "./achivements.js";

@@ -55,7 +55,7 @@ export class MultiBulletShooting extends ShootingBehavior {
         super();
         
         /**
-         * The number of bullets to spawn.
+         * The number of bullets to spawn. This can be non-integer.
          * @type {number}
          * @public
          * @readonly
@@ -95,9 +95,14 @@ export class MultiBulletShooting extends ShootingBehavior {
          */
         this.spread = opts.spread;
 
-        this.startDirection = this.direction.rotate(-this.spread / 2);;
+        /**
+         * This holds any remaining count amount in the case that the shot count
+         * is not an integer value. This means we won't lose shots.
+         */
+        this.countOverflow = 0;
+
+        this.startDirection = this.direction.rotate(-this.spread / 2)
         this.endDirection = this.direction.rotate(this.spread / 2);
-        this.deltaAngle = this.spread / (this.count - 1);
 
         this.cooldownTimer = new Timer();
     }
@@ -106,18 +111,26 @@ export class MultiBulletShooting extends ShootingBehavior {
         
         if (!this.cooldownTimer.isSet() || this.cooldownTimer.elapsed()) {
 
-            let currentDirection = this.startDirection;
-            for (let iShot = 0; iShot < this.count; iShot += 1) {
+            const desiredCount = this.count + this.countOverflow;
+            const truncatedCount = Math.trunc(desiredCount);
+
+            // Save any overflow to use in a later shot.
+            this.countOverflow = desiredCount - truncatedCount;
+
+            const deltaAngle = this.spread / (truncatedCount + 1);
+
+            let currentDirection = this.startDirection.rotate(deltaAngle);
+            for (let iShot = 0; iShot < truncatedCount; iShot += 1) {
 
                 const bullet = this.bulletFactory.createBullet(shooter, currentDirection);
                 currentLevel.trackObj(bullet);  
 
-                currentDirection = currentDirection.rotate(this.deltaAngle);              
+                currentDirection = currentDirection.rotate(deltaAngle);
             }
 
             this.cooldownTimer.set(this.rate); 
 
-            return this.count;
+            return truncatedCount;
         }
 
         return 0;

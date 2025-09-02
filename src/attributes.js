@@ -28,6 +28,7 @@ export class AttributeSet {
 
     /**
      * Creates a copy of the attribute set.
+     * @returns {AttributeSet}
      */
     copy() {
 
@@ -36,6 +37,22 @@ export class AttributeSet {
             ret[propertyName] = this[propertyName];
         }
 
+        return ret;
+    }
+
+    /**
+     * Returns a new set of attributes based on this set scaled
+     * based on the given set of multipliers. Generally used for Sammy party time!
+     * @param {AttributeSet} other 
+     * @returns {AttributeSet}
+     */
+    scale(other) {
+        
+        const ret = new AttributeSet();        
+        for (const propertyName of Object.keys(this)) {
+            ret[propertyName] = this[propertyName] * other[propertyName];
+        }
+        
         return ret;
     }
 

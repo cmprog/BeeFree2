@@ -180,8 +180,7 @@ class Level extends EngineObject {
         this.honeycombCollected += amount;
     }
 
-    onSammyCollected() {
-        
+    onSammyCollected() {        
         this.sammyTimer.set(this.attributes.sammyDuration);
     }
 
