@@ -221,6 +221,9 @@ export class Player {
             value.onPrestige();
         }
 
+        // Reset all shop purchases
+        this.shopPurchases = { };
+
         // Be sure to unlock the first level
         this.markLevelAvailable(0);
 
