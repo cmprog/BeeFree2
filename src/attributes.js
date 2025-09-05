@@ -41,6 +41,22 @@ export class AttributeSet {
     }
 
     /**
+     * Returns a new set of attributes representing the maximum attribute
+     * between this set and the other set.
+     * @param {AttributeSet} other 
+     * @returns {AttributeSet}
+     */
+    max(other) {
+
+        const ret = new AttributeSet();        
+        for (const propertyName of Object.keys(this)) {
+            ret[propertyName] = Math.max(this[propertyName], other[propertyName]);
+        }
+
+        return ret;
+    }
+
+    /**
      * Returns a new set of attributes based on this set scaled
      * based on the given set of multipliers. Generally used for Sammy party time!
      * @param {AttributeSet} other 
@@ -123,6 +139,22 @@ export class LevelAttributeSet {
          * This represents the duration of the bonus effects granted by Sammy.
          */
         this.sammyDuration = 3;
+    }
+
+    /**
+     * Returns a new set of attributes representing the maximum attribute
+     * between this set and the other set.
+     * @param {LevelAttributeSet} other 
+     * @returns {LevelAttributeSet}
+     */
+    max(other) {
+
+        const ret = new LevelAttributeSet();        
+        for (const propertyName of Object.keys(this)) {
+            ret[propertyName] = Math.max(this[propertyName], other[propertyName]);
+        }
+
+        return ret;
     }
 
     /**

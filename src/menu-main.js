@@ -14,7 +14,8 @@ export class MainMenu extends Menu {
         registerClick('#main-menu-level-select', this.openMenu.bind(this, () => MENUS.LEVEL_SELECTION));
         registerClick('#main-menu-shop', this.openMenu.bind(this, () => MENUS.SHOP));
         registerClick('#main-menu-statistics', this.openMenu.bind(this, () => MENUS.STATISTICS));
-        registerClick('#main-menu-achivements', this.openMenu.bind(this, () =>MENUS.ACHIVEMENTS));
+        registerClick('#main-menu-achivements', this.openMenu.bind(this, () => MENUS.ACHIVEMENTS));
+        registerClick('#main-menu-prestige', this.openMenu.bind(this, () => MENUS.PRESTIGE));
         registerClick('#main-menu-reset-save', this.resetSave.bind(this));
         registerClick('#main-menu-time-trial', this.startTimeTrial.bind(this));
     }

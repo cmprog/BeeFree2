@@ -2,7 +2,7 @@ import { AttributeSet, LevelAttributeSet } from "./attributes.js";
 import { Bee } from "./bee.js";
 import { logDebug, logError } from "./logging.js";
 import { PlayerLevel } from "./player-level.js";
-import { DEFAULT_BEE_ATTRIBUTES, DEFAULT_LEVEL_ATTRIBUTES, DEFAULT_SAMMY_ATTRIBUTE_MULTIPLIERS } from "./settings.js";
+import { DEFAULT_BEE_ATTRIBUTES, DEFAULT_LEVEL_ATTRIBUTES, DEFAULT_SAMMY_ATTRIBUTE_MULTIPLIERS, PRESTIGE_BONUS_RATE } from "./settings.js";
 import { SingleBulletShooting } from "./shooting.js";
 import { StatisticsSet, TimeTrialStatistics } from "./statistics.js";
 import { today } from "./util.js";
@@ -189,6 +189,42 @@ export class Player {
         
         this.dailyTimeTrialStatistics.tryUpdate(todayDate, duration);
         this.overallTimeTrailStatistics.tryUpdate(todayDate, duration);
+    }
+
+    /**
+     * Calculates the additional prestige which would be earned if a prestige was performed now.
+     * @returns {number}
+     */
+    calculatePotentialPrestigeEarnings() {
+        return PRESTIGE_BONUS_RATE * this.prestigeStatistics.totalHoneycombCollected;
+    }
+
+    prestige() {
+
+        this.prestigeCount += 1;
+        this.lastPrestigedOn = new Date();        
+        this.prestigeHoneycombMultiplier += this.calculatePotentialPrestigeEarnings();
+        this.availableHoneycomb = 0;
+
+        this.highestLevelAttributes = this.highestBeeAttributes.max(this.beeAttributes);
+        this.beeAttributes = DEFAULT_BEE_ATTRIBUTES.copy();
+
+        this.highestSammyAttributeMultipliers = this.highestSammyAttributeMultipliers.max(this.sammyAttributeMultipliers);
+        this.sammyAttributeMultipliers = DEFAULT_SAMMY_ATTRIBUTE_MULTIPLIERS.copy();
+
+        this.highestLevelAttributes = this.highestLevelAttributes.max(this.highestLevelAttributes);
+        this.levelAttributes = DEFAULT_LEVEL_ATTRIBUTES.copy();
+
+        this.prestigeStatistics = new StatisticsSet();
+
+        for (const [key, value] of this.levels) {
+            value.onPrestige();
+        }
+
+        // Be sure to unlock the first level
+        this.markLevelAvailable(0);
+
+        this.save();
     }
 
     /**

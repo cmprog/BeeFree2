@@ -2,6 +2,7 @@ import { AchivementsMenu } from "./menu-achivements.js";
 import { LevelSelectionMenu } from "./menu-level-selection.js";
 import { LevelSummaryMenu } from "./menu-level-summary.js";
 import { MainMenu } from "./menu-main.js";
+import { PrestigeMenu } from "./menu-prestige.js";
 import { ShopMenu } from "./menu-shop.js";
 import { StatisticsMenu } from "./menu-statistics.js";
 
@@ -15,5 +16,6 @@ export function initMenus() {
         STATISTICS: new StatisticsMenu(),
         ACHIVEMENTS: new AchivementsMenu(),
         LEVEL_SUMMARY: new LevelSummaryMenu(),
+        PRESTIGE: new PrestigeMenu(),
     }
 }

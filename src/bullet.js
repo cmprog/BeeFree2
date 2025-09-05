@@ -33,7 +33,7 @@ export class BirdBulletFactory extends BulletFactory {
 
         opts = opts || {};
 
-        this.speed = opts.speed || DEFAULT_BIRD_ATTRIBUTES.BULLET_SPEED;
+        this.speed = opts.speed || DEFAULT_BIRD_ATTRIBUTES.bulletSpeed;
         this.movement = opts.movement;
     }
 

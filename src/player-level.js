@@ -37,6 +37,14 @@ export class PlayerLevel {
         
     }
 
+    /**
+     * Resets the prestige statistics for the level and locks it.
+     */
+    onPrestige() {
+        this.isUnlocked = false;
+        this.prestigeStatistics = new StandardLevelStatistics();        
+    }
+
     markAvailable() {
         this.isUnlocked = true;
     }

@@ -309,7 +309,7 @@ export function initBirdTemplates() {
             .withShooting(attr => {
                 return new SingleBulletShooting({
                     bulletFactory: new BirdBulletFactory({                        
-                        movement: new BeeAttractiveMovementBehavior(vec2(-1, 0), 5, attr.bulletSpeed * 1.5)
+                        movement: new BeeAttractiveMovementBehavior(vec2(-1, 0).normalize(attr.bulletSpeed), 5, attr.bulletSpeed * 1.5)
                     }),
                     direction: vec2(-1, 0),
                     rate: attr.fireRate,
@@ -333,7 +333,7 @@ export function initBirdTemplates() {
             .withShooting(attr => {
                 return new SingleBulletShooting({
                     bulletFactory: new BirdBulletFactory({                        
-                        movement: new BeeAttractiveMovementBehavior(vec2(-1, 0), 5, attr.bulletSpeed * 1.5)
+                        movement: new BeeAttractiveMovementBehavior(vec2(-1, 0).normalize(attr.bulletSpeed), 5, attr.bulletSpeed * 1.5)
                     }),
                     direction: vec2(-1, 0),
                     rate: attr.fireRate,
@@ -357,7 +357,7 @@ export function initBirdTemplates() {
             .withShooting(attr => {
                 return new SingleBulletShooting({
                     bulletFactory: new BirdBulletFactory({                        
-                        movement: new BeeAttractiveMovementBehavior(vec2(-1, 0), 5, attr.bulletSpeed * 1.5)
+                        movement: new BeeAttractiveMovementBehavior(vec2(-1, 0).normalize(attr.bulletSpeed), 5, attr.bulletSpeed * 1.5)
                     }),
                     direction: vec2(-1, 0),
                     rate: attr.fireRate,

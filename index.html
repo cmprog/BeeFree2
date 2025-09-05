@@ -20,9 +20,10 @@
       <div class="button-group vertical">
         <button id="main-menu-level-select" type="button">Level Selection</button>
         <button id="main-menu-time-trial" type="button">Time Trial</button>
-        <button id="main-menu-shop" type="button">Spend Honeycomb</button>
+        <button id="main-menu-shop" type="button">Spend Honeycomb</button>        
         <button id="main-menu-statistics" type="button">Statistics</button>
         <button id="main-menu-achivements" type="button">Achivements</button>
+        <button id="main-menu-prestige" type="button">Bee Awesome(r)</button>
       </div>    
 
       <div>
@@ -84,6 +85,79 @@
         <button type="button" class="return">
           Return to Level Selection
         </button>
+      </div>
+    </div>
+
+    <div id="menu-prestige" class="menu menu-closed">
+      <div class="header">
+        <div class="title">Level Up</div>
+        <div class="subtitle">Reset your progress but gain additional bonuses</div>
+      </div>
+      <div class="content">
+
+        <div class="bonus-block-container">
+          
+          <div class="bonus-block">
+            <div class="title">Current Honeycomb Bonus</div>
+            <div class="description">
+              Currently, each honeycomb collected gives you an additional
+              <span class="prestige-multiplier prestige-multiplier-current">4,000%</span>
+              honeycomb to spend in the shop.
+            </div>
+          </div>
+
+          <div class="bonus-block">
+            <div class="title">New Honeycomb Bonus</div>
+            <div class="description">
+              After leveling up, each honeycomb collected gives you an additional
+              <span class="prestige-multiplier prestige-multiplier-new">4,000%</span>
+              honeycomb to spend in the shop.
+            </div>
+          </div>
+        </div>
+
+        <div class="bonus-block-container">
+          
+          <div class="bonus-block">
+            <div class="title">Reset Level Progress</div>
+            <div class="description">
+              All levels except the starting level will become locked once again and must be unlocked.
+            </div>
+          </div>
+
+          <div class="bonus-block">
+            <div class="title">Reset General Shop Purchases</div>
+            <div class="description">
+              General purchases in the shop will be reset, cosmetic purchases are kept. Do not worry, the bonus honeycomb earnings will
+              allow you to gain those purchases much faster and push yourself further than before.
+            </div>
+          </div>
+        </div>
+
+        <div class="bonus-block-container">
+          
+          <div class="bonus-block">
+            <div class="title">Keep Overall Statistics</div>
+            <div class="description">
+              Most statistics are tracked for your current level and across all your levels. Additionally, the highest stats per level are also tracked
+              so you can see how your current level compares to your best levels.
+            </div>
+          </div>
+
+          <div class="bonus-block">
+            <div class="title">Keep Achivements</div>
+            <div class="description">
+              All achivements are kept. In fact, some achivements can only be achived by leveling up.
+            </div>
+          </div>
+        </div>
+
+        <button class="confirm" type="button">LETS DO IT!</button>
+
+      </div>
+
+      <div class="footer">
+        <button type="button" class="main-menu-return">Back to Menu</button>
       </div>
     </div>
 

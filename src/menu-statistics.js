@@ -289,7 +289,7 @@ export class StatisticsMenu extends Menu {
 
                 // We must try resetting here
                 currentPlayer.tryResetDailyTimeTrialStatistics(today());
-                if (!currentPlayer.overallTimeTrailStatistics.longestDuration) {                    
+                if (!currentPlayer.dailyTimeTrialStatistics.longestDuration) {                    
                     return 'N/A';
                 }
 

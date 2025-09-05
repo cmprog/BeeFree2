@@ -7,7 +7,7 @@ import { LevelSummaryMenu } from "./menu-level-summary.js";
 import { MENUS } from "./menus.js";
 import { Owl } from "./owl.js";
 import { currentPlayer } from "./player.js";
-import { BASE_SAMMY_CHANCE, DEFAULT_LEVEL_ATTRIBUTES, STANDARD_LEVEL_FAILURE_EARN_RATE } from "./settings.js";
+import { BASE_SAMMY_CHANCE, DEFAULT_LEVEL_ATTRIBUTES, LEVEL_EARNING_DECAY_BASE, NO_DAMAGE_TOKEN_LEVEL_BONUS, NO_SURVIVORS_LEVEL_BONUS, PERFECT_LEVEL_BONUS, STANDARD_LEVEL_FAILURE_EARN_RATE } from "./settings.js";
 import { FormationDefinition, SpawnDefinition, SpawnerCollection, FormationCreationOptions, SPAWN_REGIONS } from "./spawning.js";
 import { spriteAtlas } from "./sprites.js";
 import { FONTS, getWorldSize } from "./util.js";
@@ -105,19 +105,15 @@ class Level extends EngineObject {
     update() {
 
         if (!this.isBeeAlive || this.isLevelComplete()) {
-            this.destroy();
 
             /**
              * @type {LevelSummaryMenu}
              */
             const levelSummaryMenu = MENUS.LEVEL_SUMMARY;
-            levelSummaryMenu.honeycombEarned = this.honeycombCollected;
-            levelSummaryMenu.levelFailed = this.levelFailed;
-            levelSummaryMenu.noDamageTaken = this.noDamage;
-            levelSummaryMenu.noSurvivors = (this.birdSpawnCount == this.birdKillCount);
-            levelSummaryMenu.returnMenu = this.getExitMenu();
-            levelSummaryMenu.returnMenuText = this.getExitMenuText();
-            levelSummaryMenu.open();         
+            this.onLevelCompleted(levelSummaryMenu);
+            levelSummaryMenu.open();
+
+            this.destroy();      
         }
 
         if (randInt(0, BASE_SAMMY_CHANCE * (1 / this.attributes.sammyChance)) == 0) {
@@ -142,6 +138,13 @@ class Level extends EngineObject {
 
             logInfo(`Sammy spawn at ${sammy.pos}!`);
         }
+    }
+
+    /**
+     * A hook for levels to perform whatever close-out logic needed to end the level.
+     * @param {LevelSummaryMenu} levelSummaryMenu 
+     */
+    onLevelCompleted(levelSummaryMenu) { 
     }
 
     getExitMenu() {
@@ -250,12 +253,100 @@ class StandardLevel extends Level {
         return this.levelTimer.elapsed();
     }
 
-    getExitMenu() {
-        return MENUS.LEVEL_SELECTION;
-    }
+    /**
+     * 
+     * @param {LevelSummaryMenu} levelSummaryMenu 
+     */
+    onLevelCompleted(levelSummaryMenu) {
 
-    getExitMenuText() {
-        return 'Return to level selection';
+        const noSurvivors = this.birdSpawnCount == this.birdKillCount;
+        currentPlayer.onStandardLevelCompleted(this.id, this.levelFailed, this.noDamage, noSurvivors);
+
+        if (this.id + 1 < LEVELS.length) {
+            currentPlayer.markLevelAvailable(this.id + 1);
+        }
+
+        let honeycombEarned = this.honeycombCollected;
+
+        levelSummaryMenu.addItem(
+            'honeycomb collected', '', 
+            honeycombEarned.toFixed(1));
+
+        if (this.levelFailed) {
+
+            levelSummaryMenu.addItem(
+                'failure', 
+                `${((1 - STANDARD_LEVEL_FAILURE_EARN_RATE) * 100).toFixed(0)}% penalty`, 
+                `- ${(honeycombEarned * (1 - STANDARD_LEVEL_FAILURE_EARN_RATE)).toFixed(1)}`);
+
+            honeycombEarned = honeycombEarned * STANDARD_LEVEL_FAILURE_EARN_RATE;
+
+        } else {
+
+            let bonusAmount = 0;
+
+            if (this.noDamage) {
+                levelSummaryMenu.addItem(
+                    'no damage taken',
+                    `${(NO_DAMAGE_TOKEN_LEVEL_BONUS * 100).toFixed(0)}% bonus`,
+                    `+ ${(honeycombEarned * NO_DAMAGE_TOKEN_LEVEL_BONUS).toFixed(1)}`,
+                    '<div class="level-badge level-badge-no-damage"></div>'
+                )
+            }
+
+            if (noSurvivors) {
+                levelSummaryMenu.addItem(
+                    'no survivors',
+                    `${(NO_SURVIVORS_LEVEL_BONUS * 100).toFixed(0)}% bonus`,
+                    `+ ${(honeycombEarned * NO_SURVIVORS_LEVEL_BONUS).toFixed(1)}`,
+                    '<div class="level-badge level-badge-no-survivors"></div>'
+                )
+            }
+
+            if (this.noDamage && noSurvivors) {                                
+                levelSummaryMenu.addItem(
+                    'perfect',
+                    `${(PERFECT_LEVEL_BONUS * 100).toFixed(0)}% bonus`,
+                    `+ ${(honeycombEarned * PERFECT_LEVEL_BONUS).toFixed(1)}`,
+                    '<div class="level-badge level-badge-perfect"></div>'
+                )
+            }
+
+            honeycombEarned += bonusAmount;
+        }
+
+        if (currentPlayer.prestigeHoneycombMultiplier > 1) {
+            
+            levelSummaryMenu.addItem(
+                'leveled-up earnings', 
+                `${((currentPlayer.prestigeHoneycombMultiplier - 1) * 100).toFixed(0)}% bonus`, 
+                `+ ${(honeycombEarned * (currentPlayer.prestigeHoneycombMultiplier - 1)).toFixed(1)}`);
+
+            honeycombEarned = honeycombEarned * currentPlayer.prestigeHoneycombMultiplier;
+        }
+
+        const playerLevel = currentPlayer.getLevel(this.id);
+        // Subtract so the first time played causes a decay of 0
+        const decayLevel = playerLevel.prestigeStatistics.startCount - 1;    
+        
+        if (decayLevel) {
+
+            const replayDecayAmount = Math.pow(LEVEL_EARNING_DECAY_BASE, decayLevel);
+
+            levelSummaryMenu.addItem(
+                'diminishing returns', 
+                `${((1 - replayDecayAmount) * 100).toFixed(0)}% penalty`, 
+                `- ${(honeycombEarned * (1 - replayDecayAmount)).toFixed(1)}`);
+
+            honeycombEarned = honeycombEarned * replayDecayAmount;
+        }
+
+        levelSummaryMenu.totalHoneycombEarned = honeycombEarned;
+        
+        currentPlayer.onHoneycombCollected(honeycombEarned);
+
+        levelSummaryMenu.returnMenu = MENUS.LEVEL_SELECTION;
+        levelSummaryMenu.returnMenuText = 'Return to level selection';
     }
 
     onBeeDeath() {
@@ -277,23 +368,6 @@ class StandardLevel extends Level {
 
     isComplete() {
         return this.levelTimer.elapsed();
-    }
-
-    destroy() {
-        super.destroy();
-
-        if (currentPlayer) {
-            const noSurvivors = this.birdSpawnCount == this.birdKillCount;
-            currentPlayer.onStandardLevelCompleted(this.id, this.levelFailed, this.noDamage, noSurvivors);
-        }
-
-        if (this.id + 1 < LEVELS.length) {
-            currentPlayer.markLevelAvailable(this.id + 1);
-        }
-
-        const honeycombEarnRate = this.levelFailed ? STANDARD_LEVEL_FAILURE_EARN_RATE : 1.0;
-        const honeycombEarned = this.honeycombCollected * honeycombEarnRate;
-        currentPlayer.onHoneycombCollected(honeycombEarned);
     }
 
     render() {

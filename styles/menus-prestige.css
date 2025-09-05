@@ -1,0 +1,60 @@
+@import url('./variables.css');
+@import url('./menus-common.css');
+  
+#menu-prestige {
+
+  .header {
+    align-items: center;
+    flex-direction: column;
+
+    .title {
+      font-size: 64px;
+      border-bottom: 1px solid black;
+      padding: 0 100px;
+    }
+
+    .subtitle {
+      font-size: 24px;
+    }
+  }
+
+  .footer {
+    flex: 0 0 auto;
+  }
+
+  .content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+
+    .prestige-multiplier {
+      font-weight: bold;
+    }
+    
+    .bonus-block-container {
+      display: flex;
+      flex: 0 0 auto;
+      flex-direction: row;
+      align-items: center;
+      margin: 0 100px;    
+      gap: 20px;
+
+      .bonus-block {
+        width: 50%;
+        border: 1px solid black;
+        padding: 10px;
+        height: 100%;
+
+        .title {
+          font-size: 32px;
+        }
+      }
+    }
+
+    button.confirm {
+      align-self: center;
+      font-size: 24px;
+      padding: 10px 50px; 
+    }
+  }
+}

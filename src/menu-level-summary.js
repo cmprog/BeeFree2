@@ -1,8 +1,38 @@
 import { appendChildHtml } from "./html.js";
+import { logDebug } from "./logging.js";
 import { Menu } from "./menu.js";
 import { MENUS } from "./menus.js";
-import { NO_DAMAGE_TOKEN_LEVEL_BONUS, NO_SURVIVORS_LEVEL_BONUS, PERFECT_LEVEL_BONUS, STANDARD_LEVEL_FAILURE_EARN_RATE } from "./settings.js";
 import { registerClick } from "./util.js";
+
+/**
+ * Represents a line item shown on the summary screen.
+ */
+class LevelSummaryItem {
+    /**
+     * @param {string} description 
+     * @param {string} bonus 
+     * @param {string} amount 
+     * @param {string} icon 
+     */
+    constructor(description, bonus, amount, icon) {
+        /**
+         * @type {string}
+         */
+        this.description = description || '';
+        /**
+         * @type {string}
+         */
+        this.bonus = bonus || '';
+        /**
+         * @type {string}
+         */
+        this.amount = amount || '';
+        /**
+         * @type {string}
+         */
+        this.icon = icon || '';
+    }
+}
 
 export class LevelSummaryMenu extends Menu {
     constructor() {
@@ -13,10 +43,12 @@ export class LevelSummaryMenu extends Menu {
         this.returnButtonEl = this.element.querySelector('button.return');
         registerClick(this.returnButtonEl, this.onReturnButtonClick.bind(this));
 
-        this.honeycombEarned = 0;
-        this.levelFailed = false;
-        this.noDamageTaken = true;
-        this.noSurvivors = true;
+        this.totalHoneycombEarned = 0;
+
+        /**
+         * @type {LevelSummaryItem[]}
+         */
+        this.items = [];
 
         /**
          * @type {string}
@@ -47,43 +79,54 @@ export class LevelSummaryMenu extends Menu {
     }
 
     onOpened() {
-        this.scheduleHoneycombRow();
-    }   
-
-    scheduleHoneycombRow() {
-        window.setTimeout(this.appendHoneycombRow.bind(this), 500);
+        this.scheduleItem();
     }
+    
+    scheduleItem() {
 
-    scheduleFailureRow() {
-        if (this.levelFailed) {
-            window.setTimeout(this.appendFailureRow.bind(this), 500);
-        } else {
-            this.scheduleNoDamageRow();
-        }
-    }
+        logDebug(`Scheduling item (length: ${this.items.length})`);
 
-    scheduleNoDamageRow() {
-        if (this.noDamageTaken) {
-            window.setTimeout(this.appendNoDamageRow.bind(this), 500);
+        if (this.items.length) {            
+            logDebug(`  Setting timeout`);
+            window.setTimeout(this.appendItem.bind(this), 500);
         } else {
-            this.scheduleNoSurvivorsRow();
-        }
-    }
-
-    scheduleNoSurvivorsRow() {
-        if (this.noSurvivors) {
-            window.setTimeout(this.appendNoSurvivorsRow.bind(this), 500);
-        } else {
-            this.schedulePerfectRow();
-        }
-    }
-
-    schedulePerfectRow() {
-        if (this.noDamageTaken && this.noSurvivors) {
-            window.setTimeout(this.appendPerfectRow.bind(this), 500);
-        } else {
+            logDebug(`  Scheduling total row`);
             this.scheduleTotalRow();
-        }
+        }        
+    }
+
+    appendItem() {
+
+        logDebug(`Appending item (length: ${this.items.length})`);
+
+        if (this.items.length) {
+
+            const item = this.items.shift();
+
+            const templateHtml = `
+                <tr>
+                    <td>${item.description}</td>
+                    <td>${item.bonus}</td>
+                    <td>${item.amount}</td>
+                    <td>${item.icon}</td>
+                </tr>
+            `;
+
+            appendChildHtml(this.tableEl.tBodies[0], templateHtml);            
+        }       
+
+        this.scheduleItem();
+    }
+
+    /**
+     * Schedules a new item to be added in the level summary table.
+     * @param {string} description 
+     * @param {string} bonus 
+     * @param {string} amount 
+     * @param {string} icon 
+     */
+    addItem(description, bonus, amount, icon) {
+        this.items.push(new LevelSummaryItem(description, bonus, amount, icon));
     }
 
     scheduleTotalRow() {
@@ -93,112 +136,14 @@ export class LevelSummaryMenu extends Menu {
     scheduleReturnButton() {
         window.setTimeout(this.toggleReturnButton.bind(this, true), 500);
     }    
-    
-    appendHoneycombRow() {
-
-        const templateHtml = `
-            <tr>
-                <td>honeycomb collected</td>
-                <td></td>
-                <td>${this.honeycombEarned.toFixed(1)}</td>
-                <td></td>
-            </tr>
-        `;
-
-        appendChildHtml(this.tableEl.tBodies[0], templateHtml);
-
-        this.scheduleFailureRow();
-    } 
-
-    appendFailureRow() {
-        
-        const templateHtml = `
-            <tr>
-                <td>failure</td>
-                <td>${((1 - STANDARD_LEVEL_FAILURE_EARN_RATE) * 100).toFixed(0)}% penalty</td>
-                <td>- ${(this.honeycombEarned * (1 - STANDARD_LEVEL_FAILURE_EARN_RATE)).toFixed(1)}</td>
-                <td></td>
-            </tr>
-        `;
-
-        appendChildHtml(this.tableEl.tBodies[0], templateHtml);
-
-        this.scheduleNoDamageRow();
-    }
-    
-    appendNoDamageRow() {
-
-        const templateHtml = `
-            <tr>
-                <td>no damage taken</td>
-                <td>${(NO_DAMAGE_TOKEN_LEVEL_BONUS * 100).toFixed(0)}% bonus</td>
-                <td>+ ${(this.honeycombEarned * NO_DAMAGE_TOKEN_LEVEL_BONUS).toFixed(1)}</td>                
-                <td><div class="level-badge level-badge-no-damage"></div></td>
-            </tr>
-        `;
-
-        appendChildHtml(this.tableEl.tBodies[0], templateHtml);
-
-        this.scheduleNoSurvivorsRow();
-    }
-
-    appendNoSurvivorsRow() {
-
-        const templateHtml = `
-            <tr>
-                <td>no survivors</td>
-                <td>${(NO_SURVIVORS_LEVEL_BONUS * 100).toFixed(0)}% bonus</td>
-                <td>+ ${(this.honeycombEarned * NO_SURVIVORS_LEVEL_BONUS).toFixed(1)}</td>
-                <td><div class="level-badge level-badge-no-survivors"></div></td>
-            </tr>
-        `;
-
-        appendChildHtml(this.tableEl.tBodies[0], templateHtml);
-
-        this.schedulePerfectRow();
-    }
-
-    appendPerfectRow() {
-
-        const templateHtml = `
-            <tr>
-                <td>perfection!</td>
-                <td>${(PERFECT_LEVEL_BONUS * 100).toFixed(0)}% bonus</td>
-                <td>+ ${(this.honeycombEarned * PERFECT_LEVEL_BONUS).toFixed(1)}</td>
-                <td><div class="level-badge level-badge-perfect"></div></td>
-            </tr>
-        `;
-
-        appendChildHtml(this.tableEl.tBodies[0], templateHtml);
-
-        this.scheduleTotalRow();
-    }
 
     appendTotalRow() {        
-
-        let total = this.honeycombEarned;
-
-        if (this.levelFailed) {
-            total *= STANDARD_LEVEL_FAILURE_EARN_RATE;
-        }
-
-        if (this.noDamageTaken) {
-            total += this.honeycombEarned * NO_DAMAGE_TOKEN_LEVEL_BONUS;
-        }
-
-        if (this.noSurvivors) {
-            total += this.honeycombEarned * NO_SURVIVORS_LEVEL_BONUS;
-        }
-
-        if (this.noDamageTaken && this.noSurvivors) {
-            total += this.honeycombEarned * PERFECT_LEVEL_BONUS;
-        }
 
         const templateHtml = `
             <tr>
                 <td>total</td>
                 <td></td>
-                <td>${(total).toFixed(1)}</td>
+                <td>${(this.totalHoneycombEarned).toFixed(1)}</td>
                 <td></td>
             </tr>
         `;

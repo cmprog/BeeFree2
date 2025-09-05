@@ -7,6 +7,13 @@ export const NO_DAMAGE_TOKEN_LEVEL_BONUS = 0.1;
 export const NO_SURVIVORS_LEVEL_BONUS = 0.1;
 export const PERFECT_LEVEL_BONUS = 0.3;
 
+export const PRESTIGE_BONUS_RATE = 1 / 200;
+
+/**
+ * The base value of the exponental decay used to calculate level earnings.
+ */
+export const LEVEL_EARNING_DECAY_BASE = (2 / 3);
+
 export const DEFAULT_BEE_ATTRIBUTES = new AttributeSet();
 DEFAULT_BEE_ATTRIBUTES.speed = 0.1;
 DEFAULT_BEE_ATTRIBUTES.maxHealth = 5;
@@ -29,7 +36,7 @@ DEFAULT_SAMMY_ATTRIBUTE_MULTIPLIERS.damage = 1.1;
 DEFAULT_SAMMY_ATTRIBUTE_MULTIPLIERS.shotCount = 1.1;
 DEFAULT_SAMMY_ATTRIBUTE_MULTIPLIERS.honeycombAttraction = 1.1;
 DEFAULT_SAMMY_ATTRIBUTE_MULTIPLIERS.honeycombAttractionDistance = 1.1;
-DEFAULT_SAMMY_ATTRIBUTE_MULTIPLIERS.bulletSpeed = 1.1;
+DEFAULT_SAMMY_ATTRIBUTE_MULTIPLIERS.bulletSpeed = 0.4;
 DEFAULT_SAMMY_ATTRIBUTE_MULTIPLIERS.critChance = 1.1;
 DEFAULT_SAMMY_ATTRIBUTE_MULTIPLIERS.critMultiplier = 1.1;
 
@@ -42,7 +49,7 @@ DEFAULT_BIRD_ATTRIBUTES.damage = 1;
 DEFAULT_BIRD_ATTRIBUTES.shotCount = 1;
 DEFAULT_BIRD_ATTRIBUTES.honeycombAttraction = 0;
 DEFAULT_BIRD_ATTRIBUTES.honeycombAttractionDistance = 1;
-DEFAULT_BIRD_ATTRIBUTES.bulletSpeed = 0.35;
+DEFAULT_BIRD_ATTRIBUTES.bulletSpeed = 0.30;
 DEFAULT_BIRD_ATTRIBUTES.critChance = 0;
 DEFAULT_BIRD_ATTRIBUTES.critMultiplier = 1.1;
 
