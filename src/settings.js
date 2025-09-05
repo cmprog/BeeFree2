@@ -10,9 +10,14 @@ export const PERFECT_LEVEL_BONUS = 0.3;
 export const PRESTIGE_BONUS_RATE = 1 / 200;
 
 /**
- * The base value of the exponental decay used to calculate level earnings.
+ * The base value of the exponental decay used to calculate level earnings for standard levels.
  */
-export const LEVEL_EARNING_DECAY_BASE = (2 / 3);
+export const STANDARD_LEVEL_EARNING_DECAY_BASE = (2 / 3);
+
+/**
+ * The base value of the exponential decay used to calculate level earnings for time trial levels.
+ */
+export const TIME_TRIAL_LEVEL_EARNING_DECAY_BASE = (2 / 3);
 
 export const DEFAULT_BEE_ATTRIBUTES = new AttributeSet();
 DEFAULT_BEE_ATTRIBUTES.speed = 0.1;

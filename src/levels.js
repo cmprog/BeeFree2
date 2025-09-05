@@ -7,7 +7,7 @@ import { LevelSummaryMenu } from "./menu-level-summary.js";
 import { MENUS } from "./menus.js";
 import { Owl } from "./owl.js";
 import { currentPlayer } from "./player.js";
-import { BASE_SAMMY_CHANCE, DEFAULT_LEVEL_ATTRIBUTES, LEVEL_EARNING_DECAY_BASE, NO_DAMAGE_TOKEN_LEVEL_BONUS, NO_SURVIVORS_LEVEL_BONUS, PERFECT_LEVEL_BONUS, STANDARD_LEVEL_FAILURE_EARN_RATE } from "./settings.js";
+import { BASE_SAMMY_CHANCE, DEFAULT_LEVEL_ATTRIBUTES, STANDARD_LEVEL_EARNING_DECAY_BASE, NO_DAMAGE_TOKEN_LEVEL_BONUS, NO_SURVIVORS_LEVEL_BONUS, PERFECT_LEVEL_BONUS, STANDARD_LEVEL_FAILURE_EARN_RATE, TIME_TRIAL_LEVEL_EARNING_DECAY_BASE } from "./settings.js";
 import { FormationDefinition, SpawnDefinition, SpawnerCollection, FormationCreationOptions, SPAWN_REGIONS } from "./spawning.js";
 import { spriteAtlas } from "./sprites.js";
 import { FONTS, getWorldSize } from "./util.js";
@@ -331,7 +331,7 @@ class StandardLevel extends Level {
         
         if (decayLevel) {
 
-            const replayDecayAmount = Math.pow(LEVEL_EARNING_DECAY_BASE, decayLevel);
+            const replayDecayAmount = Math.pow(STANDARD_LEVEL_EARNING_DECAY_BASE, decayLevel);
 
             levelSummaryMenu.addItem(
                 'diminishing returns', 
@@ -415,6 +415,54 @@ class StandardLevel extends Level {
         this.spawnTimer.set(2 * Math.pow(spawnBaseValue, this.levelDuration));
     }
 
+    /**
+     * 
+     * @param {LevelSummaryMenu} levelSummaryMenu 
+     */
+    onLevelCompleted(levelSummaryMenu) {
+
+        const duration = time - this.spawnTime;
+        currentPlayer.onTimeTrialCompleted(duration);
+    
+        let honeycombEarned = this.honeycombCollected;
+        
+        levelSummaryMenu.addItem(
+            'honeycomb collected', '', 
+            honeycombEarned.toFixed(1));
+
+        if (currentPlayer.prestigeHoneycombMultiplier > 1) {
+            
+            levelSummaryMenu.addItem(
+                'leveled-up earnings', 
+                `${((currentPlayer.prestigeHoneycombMultiplier - 1) * 100).toFixed(0)}% bonus`, 
+                `+ ${(honeycombEarned * (currentPlayer.prestigeHoneycombMultiplier - 1)).toFixed(1)}`);
+
+            honeycombEarned = honeycombEarned * currentPlayer.prestigeHoneycombMultiplier;
+        }
+
+        // Subtract so the first time played causes a decay of 0
+        const decayLevel = currentPlayer.prestigeStatistics.timeTrialLevelsStarted - 1;
+        
+        if (decayLevel) {
+
+            const replayDecayAmount = Math.pow(TIME_TRIAL_LEVEL_EARNING_DECAY_BASE, decayLevel);
+
+            levelSummaryMenu.addItem(
+                'diminishing returns', 
+                `${((1 - replayDecayAmount) * 100).toFixed(0)}% penalty`, 
+                `- ${(honeycombEarned * (1 - replayDecayAmount)).toFixed(1)}`);
+
+            honeycombEarned = honeycombEarned * replayDecayAmount;
+        }
+
+        levelSummaryMenu.totalHoneycombEarned = honeycombEarned;
+        
+        currentPlayer.onHoneycombCollected(honeycombEarned);
+
+        levelSummaryMenu.returnMenu = MENUS.MAIN;
+        levelSummaryMenu.returnMenuText = 'Return to main menu';
+    }
+
     spawn() {
 
         const birdTemplateKey = this.availableBirdKeys[this.rand.int(0, this.availableBirdKeys.length)];
@@ -454,18 +502,6 @@ class StandardLevel extends Level {
         if (this.spawnTimer.elapsed()) {
             this.spawn();
             this.resetSpawnTimer();
-        }
-    }
-
-    destroy() {
-        super.destroy();
-        
-        if (currentPlayer) {
-            const duration = time - this.spawnTime;
-            currentPlayer.onTimeTrialCompleted(duration);
-        
-            const honeycombEarned = this.honeycombCollected;
-            currentPlayer.onHoneycombCollected(honeycombEarned);
         }
     }
 
