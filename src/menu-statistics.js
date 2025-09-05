@@ -66,7 +66,7 @@ export class StatisticsMenu extends Menu {
 
         this.appendSeperator();
 
-        this.appendSectionHeading('Attributes')
+        this.appendSectionHeading('Current Bee Attributes')
 
         this.appendField()
             .withLabel('bee speed')
@@ -142,126 +142,126 @@ export class StatisticsMenu extends Menu {
 
         this.appendSeperator();
 
-        this.appendSectionHeading('General')
+        this.appendSectionHeading('Current Bee Level')
 
         this.appendField()
             .withLabel('honeycomb collected')
             .withValue(() => {
-                return currentPlayer.prestigeStatistics.totalHoneycombCollected.toString();
+                return currentPlayer.prestigeStatistics.totalHoneycombCollected.toFixed(1);
             });
 
         this.appendField()
             .withLabel('birds blasted')
             .withValue(() => {
-                return currentPlayer.prestigeStatistics.killCount.toString();
+                return currentPlayer.prestigeStatistics.killCount.toFixed(0);
             });
 
         this.appendField()
             .withLabel('levels started')
             .withValue(() => {
-                return this.sumLevelStats(x => x.prestigeStatistics.startCount).toString();
+                return this.sumLevelStats(x => x.prestigeStatistics.startCount).toFixed(0);
             });
 
         this.appendField()
             .withLabel('levels completed')
             .withValue(() => {
-                return this.sumLevelStats(x => x.prestigeStatistics.completedCount).toString();
+                return this.sumLevelStats(x => x.prestigeStatistics.completedCount).toFixed(0);
             });
 
         this.appendField()
             .withLabel('levels completed (no damage taken)')
             .withValue(() => {
-                return this.sumLevelStats(x => x.prestigeStatistics.noDamangeCount).toString();
+                return this.sumLevelStats(x => x.prestigeStatistics.noDamangeCount).toFixed(0);
             });
 
         this.appendField()
             .withLabel('levels completed (no survivors)')
             .withValue(() => {
-                return this.sumLevelStats(x => x.prestigeStatistics.noSurvivorsCount).toString();
+                return this.sumLevelStats(x => x.prestigeStatistics.noSurvivorsCount).toFixed(0);
             });
 
         this.appendField()
             .withLabel('levels completed (perfect)')
             .withValue(() => {
-                return this.sumLevelStats(x => x.prestigeStatistics.perfectCount).toString();
+                return this.sumLevelStats(x => x.prestigeStatistics.perfectCount).toFixed(0);
             });
 
         this.appendField()
             .withLabel('levels failed')
             .withValue(() => {
-                return this.sumLevelStats(x => x.prestigeStatistics.failureCount).toString();
+                return this.sumLevelStats(x => x.prestigeStatistics.failureCount).toFixed(0);
             });
 
         this.appendField()
             .withLabel('deaths')
             .withValue(() => {
-                return currentPlayer.prestigeStatistics.deathCount.toString();
+                return currentPlayer.prestigeStatistics.deathCount.toFixed(0);
             });
 
         this.appendField()
             .withLabel('shots fired')
             .withValue(() => {
-                return currentPlayer.prestigeStatistics.shotCount.toString();
+                return currentPlayer.prestigeStatistics.shotCount.toFixed(0);
             });
 
         this.appendField()
             .withLabel('stingers fired')
             .withValue(() => {
-                return currentPlayer.prestigeStatistics.bulletCount.toString();
+                return currentPlayer.prestigeStatistics.bulletCount.toFixed(0);
             });
 
         this.appendField()
             .withLabel('Sammys spawned')
             .withValue(() => {
-                return currentPlayer.prestigeStatistics.sammySpawnCount.toString();
+                return currentPlayer.prestigeStatistics.sammySpawnCount.toFixed(0);
             });
 
         this.appendField()
             .withLabel('Sammys collected')
             .withValue(() => {
-                return currentPlayer.prestigeStatistics.sammyCollectionCount.toString();
+                return currentPlayer.prestigeStatistics.sammyCollectionCount.toFixed(0);
             });
 
         this.appendField()
             .withLabel('distance traveled')
             .withValue(() => {
-                return currentPlayer.prestigeStatistics.distanceTraveled.toString();
+                return currentPlayer.prestigeStatistics.distanceTraveled.toFixed(0);
             });
 
         this.appendField()
             .withLabel('upgrades purchased')
             .withValue(() => {
-                return currentPlayer.prestigeStatistics.shopUpgradesPurchased.toString();
+                return currentPlayer.prestigeStatistics.shopUpgradesPurchased.toFixed(0);
             });
 
         this.appendField()
             .withLabel('critical hits')
             .withValue(() => {
-                return currentPlayer.prestigeStatistics.criticalHitCount.toString();
+                return currentPlayer.prestigeStatistics.criticalHitCount.toFixed(0);
             });
             
         this.appendField()
             .withLabel('time trials started')
             .withValue(() => {
-                return currentPlayer.prestigeStatistics.timeTrialLevelsStarted.toString();
+                return currentPlayer.prestigeStatistics.timeTrialLevelsStarted.toFixed(0);
             });
             
         this.appendField()
             .withLabel('damage taken')
             .withValue(() => {
-                return currentPlayer.prestigeStatistics.damageTaken.toString();
+                return currentPlayer.prestigeStatistics.damageTaken.toFixed(0);
             });
             
         this.appendField()
             .withLabel('damage dealt')
             .withValue(() => {
-                return currentPlayer.prestigeStatistics.damageDealt.toString();
+                return currentPlayer.prestigeStatistics.damageDealt.toFixed(0);
             });
             
         this.appendField()
             .withLabel('hits')
             .withValue(() => {
-                return currentPlayer.prestigeStatistics.hitCount.toString();
+                return currentPlayer.prestigeStatistics.hitCount.toFixed(0);
             });            
             
         this.appendField()

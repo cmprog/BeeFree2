@@ -105,7 +105,7 @@ export class Bee extends EngineObject {
             currentPlayer.onDistanceTraveled(distance);
         }
 
-        this.previousPos = this.pos;
+        this.previousPos = this.pos.copy();
 
         this.healthBar.value = this.health / this.attributes.maxHealth;
         
