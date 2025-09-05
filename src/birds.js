@@ -1,7 +1,7 @@
 import { logDebug } from "./logging.js";
 import { EntityType, ProgressBar } from './entities.js';
 import { BeeAttractiveMovementBehavior, FixedVelocityMovement, MovementBehavior, StaticMovement, WaveyMovement } from "./movement.js";
-import { MultiBulletShooting, PassiveShooting, ShootingBehavior, SingleBulletShooting } from "./shooting.js";
+import { PassiveShooting, ShootingBehavior, SingleBulletShooting } from "./shooting.js";
 import { spriteAtlas } from "./sprites.js";
 import { Honeycomb } from "./honeycomb.js";
 import { currentLevel } from "./levels.js";
@@ -31,6 +31,14 @@ export class BirdTemplate {
         this.description = description;
 
         this.attributes = DEFAULT_BIRD_ATTRIBUTES.copy();
+
+        /**
+         * A numeric value representing the phase during which
+         * this bird type is allowed to spawn during a time trial.
+         * This allows tuning for progressive difficulty in the time trial.
+         * @type {number}
+         */
+        this.timeTrialPhase = 0;
 
         /**
          * Creates an instance of the shooting behavior associated with the bird.
@@ -75,6 +83,16 @@ export class BirdTemplate {
      */
     withMovement(factory) {
         this.createMovementBehavior = factory;
+        return this;
+    }
+
+    /**
+     * Sets the time trial phase for the bird.
+     * @param {number} value 
+     * @returns {BirdTemplate}
+     */
+    withTimeTrialPhase(value) {
+        this.timeTrialPhase = value;
         return this;
     }
 
@@ -170,7 +188,8 @@ export function initBirdTemplates() {
                     direction: vec2(-1, 0),
                     rate: attr.fireRate,
                 });
-            })     
+            })
+            .withTimeTrialPhase(1)     
             .withSpawnRegion(SPAWN_REGIONS.RIGHT_LOWER)
             .withSpawnRegion(SPAWN_REGIONS.BOTTOM_RIGHT)
             .withColors(BLUE, RED),
@@ -193,6 +212,7 @@ export function initBirdTemplates() {
                     rate: attr.fireRate,
                 });
             })     
+            .withTimeTrialPhase(1)
             .withSpawnRegion(SPAWN_REGIONS.RIGHT_UPPER)
             .withSpawnRegion(SPAWN_REGIONS.TOP_RIGHT)           
             .withColors(BLUE, RED),
@@ -207,6 +227,7 @@ export function initBirdTemplates() {
             .withMovement(attr => {
                 return new FixedVelocityMovement(vec2(1, 1).normalize(attr.speed));
             })
+            .withTimeTrialPhase(1)
             .withShooting(attr => {
                 return new SingleBulletShooting({
                     bulletFactory: new BirdBulletFactory(),
@@ -228,6 +249,7 @@ export function initBirdTemplates() {
             .withMovement(attr => {
                 return new FixedVelocityMovement(vec2(1, -1).normalize(attr.speed));
             })
+            .withTimeTrialPhase(1)
             .withShooting(attr => {
                 return new SingleBulletShooting({
                     bulletFactory: new BirdBulletFactory(),
@@ -251,6 +273,7 @@ export function initBirdTemplates() {
             .withMovement(attr => {
                 return new WaveyMovement(vec2(-1, 0).normalize(attr.speed), vec2(1, 1), 1);
             })            
+            .withTimeTrialPhase(2)
             .withSpawnRegion(SPAWN_REGIONS.RIGHT_UPPER)
             .withSpawnRegion(SPAWN_REGIONS.RIGHT_LOWER)        
             .withColors(GREEN, GREEN),
@@ -265,6 +288,7 @@ export function initBirdTemplates() {
             .withMovement(attr => {
                 return new WaveyMovement(vec2(-1, 0).normalize(attr.speed), vec2(1, 1), 1);
             })
+            .withTimeTrialPhase(3)
             .withShooting(attr => {
                 return new SingleBulletShooting({
                     bulletFactory: new BirdBulletFactory(),
@@ -292,6 +316,7 @@ export function initBirdTemplates() {
                     rate: attr.fireRate,
                 });
             }) 
+            .withTimeTrialPhase(4)
             .withSpawnRegion(SPAWN_REGIONS.RIGHT_UPPER)
             .withSpawnRegion(SPAWN_REGIONS.RIGHT_LOWER)
             .withColors(GRAY, BLACK),
@@ -315,6 +340,7 @@ export function initBirdTemplates() {
                     rate: attr.fireRate,
                 });
             }) 
+            .withTimeTrialPhase(5)
             .withSpawnRegion(SPAWN_REGIONS.RIGHT_UPPER)
             .withSpawnRegion(SPAWN_REGIONS.RIGHT_LOWER)
             // Very lime green
@@ -339,6 +365,7 @@ export function initBirdTemplates() {
                     rate: attr.fireRate,
                 });
             }) 
+            .withTimeTrialPhase(5)
             .withSpawnRegion(SPAWN_REGIONS.BOTTOM_RIGHT)
             .withSpawnRegion(SPAWN_REGIONS.RIGHT_LOWER)
             // Very lime green
@@ -363,6 +390,7 @@ export function initBirdTemplates() {
                     rate: attr.fireRate,
                 });
             }) 
+            .withTimeTrialPhase(5)
             .withSpawnRegion(SPAWN_REGIONS.RIGHT_UPPER)
             .withSpawnRegion(SPAWN_REGIONS.TOP_RIGHT)
             // Very lime green
@@ -377,6 +405,7 @@ export function initBirdTemplates() {
             .withMovement(attr => {
                 return new FixedVelocityMovement(vec2(-1, 0).normalize(attr.speed));
             })
+            .withTimeTrialPhase(6)
             .withSpawnRegion(SPAWN_REGIONS.RIGHT_UPPER)
             .withSpawnRegion(SPAWN_REGIONS.RIGHT_LOWER)
             // Darker red than fred

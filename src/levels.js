@@ -7,7 +7,7 @@ import { LevelSummaryMenu } from "./menu-level-summary.js";
 import { MENUS } from "./menus.js";
 import { Owl } from "./owl.js";
 import { currentPlayer } from "./player.js";
-import { BASE_SAMMY_CHANCE, DEFAULT_LEVEL_ATTRIBUTES, STANDARD_LEVEL_EARNING_DECAY_BASE, NO_DAMAGE_TOKEN_LEVEL_BONUS, NO_SURVIVORS_LEVEL_BONUS, PERFECT_LEVEL_BONUS, STANDARD_LEVEL_FAILURE_EARN_RATE, TIME_TRIAL_LEVEL_EARNING_DECAY_BASE } from "./settings.js";
+import { BASE_SAMMY_CHANCE, DEFAULT_LEVEL_ATTRIBUTES, STANDARD_LEVEL_EARNING_DECAY_BASE, NO_DAMAGE_TOKEN_LEVEL_BONUS, NO_SURVIVORS_LEVEL_BONUS, PERFECT_LEVEL_BONUS, STANDARD_LEVEL_FAILURE_EARN_RATE, TIME_TRIAL_LEVEL_EARNING_DECAY_BASE, TIME_TRIAL_PHASE_DURATION } from "./settings.js";
 import { FormationDefinition, SpawnDefinition, SpawnerCollection, FormationCreationOptions, SPAWN_REGIONS } from "./spawning.js";
 import { spriteAtlas } from "./sprites.js";
 import { FONTS, getWorldSize } from "./util.js";
@@ -398,7 +398,36 @@ class StandardLevel extends Level {
         this.rand = new RandomGenerator(currentDateValue);
         this.spawnTimer = new Timer();
 
-        this.availableBirdKeys = Object.keys(BIRD_TEMPLATES);
+        this.availableBirdKeys = Object.keys(BIRD_TEMPLATES);        
+        this.availableBirdKeysByPhase = { };
+
+        const maxPhase = Math.max(... Object.keys(BIRD_TEMPLATES)
+            .map(key => BIRD_TEMPLATES[key].timeTrialPhase || 0));
+
+        // Places a copy of each key in all defined phase buckets greater than
+        // or equal to the phase in which it exists
+        for (let targetPhase = 0; targetPhase <= maxPhase; targetPhase += 1) {
+
+            // This should only happen if there are 'gaps' in the declared
+            // phases of the bird templates
+            if (!(targetPhase in this.availableBirdKeysByPhase)) {
+                this.availableBirdKeysByPhase[targetPhase] = [];
+            }
+
+            const targetPhaseKeySet = this.availableBirdKeysByPhase[targetPhase];
+
+            for (const key of this.availableBirdKeys) {
+                
+                /**
+                 * @type {BirdTemplate}
+                 */
+                const birdTemplate = BIRD_TEMPLATES[key];
+
+                if (birdTemplate.timeTrialPhase <= targetPhase) {
+                    targetPhaseKeySet.push(key);
+                }
+            }
+        }
 
         this.levelDuration = 0;
 
@@ -420,9 +449,6 @@ class StandardLevel extends Level {
      * @param {LevelSummaryMenu} levelSummaryMenu 
      */
     onLevelCompleted(levelSummaryMenu) {
-
-        const duration = time - this.spawnTime;
-        currentPlayer.onTimeTrialCompleted(duration);
     
         let honeycombEarned = this.honeycombCollected;
         
@@ -455,9 +481,32 @@ class StandardLevel extends Level {
             honeycombEarned = honeycombEarned * replayDecayAmount;
         }
 
+        if (currentPlayer.isDailyTimeTrialRecord(this.levelDuration)) {
+
+            let bonusText = `${this.levelDuration.toFixed(0)}s`;
+
+            if (currentPlayer.dailyTimeTrialStatistics.longestDuration) {
+                bonusText = `${currentPlayer.dailyTimeTrialStatistics.longestDuration.toFixed(0)}s -> ${bonusText}`;                
+            }  
+
+            levelSummaryMenu.addItem('new daily record!', bonusText, '');
+        }
+        
+        if (currentPlayer.isOverallTimeTrialRecord(this.levelDuration)) {
+
+            let bonusText = `${this.levelDuration.toFixed(0)}s`;
+
+            if (currentPlayer.overallTimeTrailStatistics.longestDuration) {
+                bonusText = `${currentPlayer.overallTimeTrailStatistics.longestDuration.toFixed(0)}s -> ${bonusText}`;
+            }  
+
+            levelSummaryMenu.addItem('new overall record!', bonusText, '');
+        }
+
         levelSummaryMenu.totalHoneycombEarned = honeycombEarned;
         
         currentPlayer.onHoneycombCollected(honeycombEarned);
+        currentPlayer.onTimeTrialCompleted(this.levelDuration);
 
         levelSummaryMenu.returnMenu = MENUS.MAIN;
         levelSummaryMenu.returnMenuText = 'Return to main menu';
@@ -465,7 +514,14 @@ class StandardLevel extends Level {
 
     spawn() {
 
-        const birdTemplateKey = this.availableBirdKeys[this.rand.int(0, this.availableBirdKeys.length)];
+        const currentPhase = Math.trunc(this.levelDuration / TIME_TRIAL_PHASE_DURATION);
+
+        // Select the set of available keys based on the current phase
+        const birdTemplateKeySet = (currentPhase in this.availableBirdKeysByPhase)
+            ? this.availableBirdKeysByPhase[currentPhase]
+            : this.availableBirdKeys;
+
+        const birdTemplateKey = birdTemplateKeySet[this.rand.int(0, birdTemplateKeySet.length)];
         const birdTemplate = BIRD_TEMPLATES[birdTemplateKey];
 
         // This gets the bottom right - but to get a positive size

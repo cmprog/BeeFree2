@@ -231,10 +231,33 @@ export class Player {
     }
 
     /**
+     * Checks if the given duration is a candidate for a daily time trial record.
+     * @param {number} duration 
+     * @returns {boolean}
+     */
+    isDailyTimeTrialRecord(duration) {
+        this.tryResetDailyTimeTrialStatistics();
+        if (!this.dailyTimeTrialStatistics.longestDuration) return true;
+        return duration > this.dailyTimeTrialStatistics.longestDuration;
+    }
+
+    /**
+     * Checks if the given duration is a candidate for an overall time trial record.
+     * @param {number} duration 
+     * @returns {boolean}
+     */
+    isOverallTimeTrialRecord(duration) {
+        if (!this.overallTimeTrailStatistics.longestDuration) return true;
+        return duration > this.overallTimeTrailStatistics.longestDuration;
+    }
+
+    /**
      * If the daily time trial stats are not for 'today' then it resets them.
      * @param {Date} todayDate
      */
     tryResetDailyTimeTrialStatistics(todayDate) {
+
+        todayDate = todayDate || today();
 
         // Nothing to do if the daily stats are not defined
         if (!this.dailyTimeTrialStatistics.longestDate) {

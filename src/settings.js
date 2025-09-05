@@ -10,6 +10,11 @@ export const PERFECT_LEVEL_BONUS = 0.3;
 export const PRESTIGE_BONUS_RATE = 1 / 200;
 
 /**
+ * The duration, in seconds, for each phase of the time trial.
+ */
+export const TIME_TRIAL_PHASE_DURATION = 10;
+
+/**
  * The base value of the exponental decay used to calculate level earnings for standard levels.
  */
 export const STANDARD_LEVEL_EARNING_DECAY_BASE = (2 / 3);
