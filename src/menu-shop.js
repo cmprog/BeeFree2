@@ -15,7 +15,7 @@ const SHOP_ITEMS = {
             return `${(value * 10).toFixed(1)} flaps per second`
         },
         costBase: 5,
-        costGrowth: 1.2,
+        costGrowth: 1.4,
         valueBase: DEFAULT_BEE_ATTRIBUTES.speed,
         valueGrowthMultiplier: 0.025,
     },
@@ -74,10 +74,10 @@ const SHOP_ITEMS = {
         formatDisplayValue: (value) => {            
             return `${value.toFixed(2)} ouchies per second`
         },
-        costBase: 5,
-        costGrowth: 1.20,
+        costBase: 10,
+        costGrowth: 1.6,
         valueBase: DEFAULT_BEE_ATTRIBUTES.bulletSpeed,
-        valueGrowthMultiplier: 0.06,
+        valueGrowthMultiplier: 0.025,
     },
 
     HONEYCOMB_MAGNET: {
@@ -89,10 +89,10 @@ const SHOP_ITEMS = {
         formatDisplayValue: (value) => {            
             return `${value.toFixed(2)} electro-sticky-magnitism`
         },
-        costBase: 5,
-        costGrowth: 1.30,
+        costBase: 10,
+        costGrowth: 1.70,
         valueBase: DEFAULT_BEE_ATTRIBUTES.honeycombAttraction,
-        valueGrowthMultiplier: 0.01,
+        valueGrowthMultiplier: 0.02,
     },
 
     HONEYCOMB_MAGNET_DISTANCE: {
@@ -105,9 +105,9 @@ const SHOP_ITEMS = {
             return `${value.toFixed(1)} reachability`
         },
         costBase: 10,
-        costGrowth: 1.6,
+        costGrowth: 1.95,
         valueBase: DEFAULT_BEE_ATTRIBUTES.honeycombAttractionDistance,
-        valueGrowthMultiplier: 0.3,
+        valueGrowthMultiplier: 0.8,
     },
 
     BEE_HEALTH: {

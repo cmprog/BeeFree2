@@ -544,7 +544,11 @@ export class Bird extends EngineObject
             currentPlayer.onHit(actualAmount);
         }
 
-        if (!this.health) {
+        // Due to multi-shot, it is pretty common for two bullets
+        // on the same frame to hit the bird, so we need to check to ensure
+        // the bird hasn't already been destroed this frame.
+        
+        if (!this.health && !this.destroyed) {
 
             this.destroy();
 

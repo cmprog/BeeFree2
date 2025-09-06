@@ -23,10 +23,10 @@ export class Honeycomb extends EngineObject{
         // Use time since spawn to ensure all the honeycomb aren't synced in their rotation
         this.angle = wave(0.2, 0.5 * PI, time - this.spawnTime);
 
-        if (currentPlayer.beeHoneycombAttration) {
+        if (currentPlayer.beeAttributes.honeycombAttraction) {
             const distanceToBee = currentLevel.bee.pos.subtract(this.pos);
-            if (distanceToBee.length() <= currentPlayer.beeHoneycombAttrationDistance) {
-                this.velocity = distanceToBee.normalize(currentPlayer.beeHoneycombAttration);
+            if (distanceToBee.length() <= currentPlayer.beeAttributes.honeycombAttractionDistance) {
+                this.velocity = distanceToBee.normalize(currentPlayer.beeAttributes.honeycombAttraction);
             }            
         }
 
