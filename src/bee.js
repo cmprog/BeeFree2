@@ -6,6 +6,7 @@ import { BeeBulletFactory } from './bullet.js';
 import { logDebug } from './logging.js';
 import { AttributeSet } from './attributes.js';
 import { currentPlayer } from './player.js';
+import { GAME_SETTINGS } from './settings.js';
 
 export class Bee extends EngineObject {
 
@@ -156,6 +157,10 @@ export class Bee extends EngineObject {
     }
 
     applyDamage(amount) {
+
+        if (GAME_SETTINGS.BEE_DAMAGE_DISABLED) {
+            return;
+        }
 
         if ((amount > 0) && currentLevel) {
             currentLevel.onBeeDamageTaken();

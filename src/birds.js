@@ -1,7 +1,7 @@
 import { logDebug } from "./logging.js";
 import { EntityType, ProgressBar } from './entities.js';
 import { BeeAttractiveMovementBehavior, FixedVelocityMovement, MovementBehavior, StaticMovement, WaveyMovement } from "./movement.js";
-import { PassiveShooting, ShootingBehavior, SingleBulletShooting } from "./shooting.js";
+import { MultiBulletShooting, PassiveShooting, ShootingBehavior, SingleBulletShooting } from "./shooting.js";
 import { spriteAtlas } from "./sprites.js";
 import { Honeycomb } from "./honeycomb.js";
 import { currentLevel } from "./levels.js";
@@ -134,14 +134,15 @@ export class BirdTemplate {
     }
 }
 
-export let BIRD_TEMPLATES;
+class BirdTemplateSet {
 
-export function initBirdTemplates() {
-    
-    BIRD_TEMPLATES = {
+    constructor() {        
 
-        /** A simple bird, simple movement and no shooting. */
-        fred: new BirdTemplate('Fred', 'A simple bird, simple movement and no shooting.', 1, 1)
+        /** 
+         * A simple bird, simple movement and no shooting.
+         * @type {BirdTemplate}
+         */
+        this.fred = new BirdTemplate('Fred', 'A simple bird, simple movement and no shooting.', 1, 1)
             .configureAttributes(attr => {
                 attr.maxHealth = 1;
                 attr.touchDamage = 1;
@@ -151,10 +152,13 @@ export function initBirdTemplates() {
             })
             .withSpawnRegion(SPAWN_REGIONS.RIGHT_UPPER)
             .withSpawnRegion(SPAWN_REGIONS.RIGHT_LOWER)
-            .withColors(RED, RED),
+            .withColors(RED, RED);
 
-        /** The most basic aggressive bird. Simple movement and shots forward. */
-        bill: new BirdTemplate('Bill', 'The most basic aggressive bird. Simple movement and shots forward.')
+        /** 
+         * The most basic aggressive bird. Simple movement and shots forward.
+         * @type {BirdTemplate}
+         * */
+        this.bill = new BirdTemplate('Bill', 'The most basic aggressive bird. Simple movement and shots forward.')
             .configureAttributes(attr => {
                 attr.maxHealth = 2;
                 attr.touchDamage = 2;
@@ -171,10 +175,13 @@ export function initBirdTemplates() {
             })            
             .withSpawnRegion(SPAWN_REGIONS.RIGHT_UPPER)
             .withSpawnRegion(SPAWN_REGIONS.RIGHT_LOWER)
-            .withColors(BLUE, BLUE),
+            .withColors(BLUE, BLUE);
 
-        /** Twin to Thing 2 - this bird moves up and to the left while shooting. */
-        thing1: new BirdTemplate('Thing 1', 'Twin to Thing 2 - this bird moves up and to the left while shooting.')
+        /** 
+         * Twin to Thing 2 - this bird moves up and to the left while shooting.
+         * @type {BirdTemplate}
+         */
+        this.thing1 = new BirdTemplate('Thing 1', 'Twin to Thing 2 - this bird moves up and to the left while shooting.')
             .configureAttributes(attr => {
                 attr.maxHealth = 3;
                 attr.touchDamage = 4;
@@ -192,10 +199,13 @@ export function initBirdTemplates() {
             .withTimeTrialPhase(1)     
             .withSpawnRegion(SPAWN_REGIONS.RIGHT_LOWER)
             .withSpawnRegion(SPAWN_REGIONS.BOTTOM_RIGHT)
-            .withColors(BLUE, RED),
+            .withColors(BLUE, RED);
 
-        /** The twin to Thing 1 - this bird moves down and to the left while shooting. */
-        thing2: new BirdTemplate('Thing 2', 'The twin to Thing 1 - this bird moves down and to the left while shooting.')
+        /** 
+         * The twin to Thing 1 - this bird moves down and to the left while shooting.
+         * @type {BirdTemplate}
+         */
+        this.thing2 = new BirdTemplate('Thing 2', 'The twin to Thing 1 - this bird moves down and to the left while shooting.')
             .configureAttributes(attr => {
                 attr.maxHealth = 3;
                 attr.touchDamage = 4;
@@ -215,9 +225,13 @@ export function initBirdTemplates() {
             .withTimeTrialPhase(1)
             .withSpawnRegion(SPAWN_REGIONS.RIGHT_UPPER)
             .withSpawnRegion(SPAWN_REGIONS.TOP_RIGHT)           
-            .withColors(BLUE, RED),
+            .withColors(BLUE, RED);
 
-        thing3: new BirdTemplate('Thing 3', 'The twin to Thing 4, this bird moves up and to the right while shooting.')
+        /**
+         * The twin to Thing 4, this bird moves up and to the right while shooting.
+         * @type {BirdTemplate}
+         */
+        this.thing3 = new BirdTemplate('Thing 3', 'The twin to Thing 4, this bird moves up and to the right while shooting.')
             .configureAttributes(attr => {
                 attr.maxHealth = 3;
                 attr.touchDamage = 4;
@@ -237,9 +251,12 @@ export function initBirdTemplates() {
             })         
             .withSpawnRegion(SPAWN_REGIONS.BOTTOM_LEFT)
             .withSpawnRegion(SPAWN_REGIONS.LEFT_LOWER)      
-            .withColors(BLUE, RED),
+            .withColors(BLUE, RED);
 
-        thing4: new BirdTemplate('Thing 4', 'The twin to Thing 3, this bird moves down and to the right while shooting.')
+        /**
+         * @type {BirdTemplate}
+         */
+        this.thing4 = new BirdTemplate('Thing 4', 'The twin to Thing 3, this bird moves down and to the right while shooting.')
             .configureAttributes(attr => {
                 attr.maxHealth = 3;
                 attr.touchDamage = 4;
@@ -263,9 +280,13 @@ export function initBirdTemplates() {
             })
             .withSpawnRegion(SPAWN_REGIONS.TOP_LEFT)
             .withSpawnRegion(SPAWN_REGIONS.LEFT_UPPER)          
-            .withColors(BLUE, RED),
+            .withColors(BLUE, RED);
 
-        greg: new BirdTemplate('Greg', 'Greg is a simple bird who is a little drunk.')
+        /**
+         * (GREEN) Greg is a simple bird who is a little drunk.
+         * @type {BirdTemplate}
+         */
+        this.greg = new BirdTemplate('Greg', 'Greg is a simple bird who is a little drunk.')
             .configureAttributes(attr => {
                 attr.maxHealth = 3;
                 attr.touchDamage = 6;
@@ -276,9 +297,13 @@ export function initBirdTemplates() {
             .withTimeTrialPhase(2)
             .withSpawnRegion(SPAWN_REGIONS.RIGHT_UPPER)
             .withSpawnRegion(SPAWN_REGIONS.RIGHT_LOWER)        
-            .withColors(GREEN, GREEN),
+            .withColors(GREEN, GREEN);
 
-        frank: new BirdTemplate('Frank', 'Frank is Greg\'s friend but he flings poo.')
+        /**
+         * (YELLOW) Frank is Greg's friend but he flings poo.
+         * @type {BirdTemplate}
+         */
+        this.frank = new BirdTemplate('Frank', 'Frank is Greg\'s friend but he flings poo.')
             .configureAttributes(attr => {
                 attr.maxHealth = 4;
                 attr.touchDamage = 7;
@@ -298,9 +323,41 @@ export function initBirdTemplates() {
             }) 
             .withSpawnRegion(SPAWN_REGIONS.RIGHT_UPPER)
             .withSpawnRegion(SPAWN_REGIONS.RIGHT_LOWER)
-            .withColors(YELLOW, YELLOW),
+            .withColors(YELLOW, YELLOW);
 
-        kathy: new BirdTemplate('Kathy', 'Kathy is a little extreme when it comes to stalking bee\'s.')
+        /**
+         * (PURPLE) Harry has mastered the ability to throw two pieces of poop at once.
+         * @type {BirdTemplate}
+         */
+        this.harry = new BirdTemplate('Harry', 'Harry has mastered the ability to throw two pieces of poop at once.')
+            .configureAttributes(attr => {
+                attr.maxHealth = 8;
+                attr.touchDamage = 10;
+                attr.damage = 7;
+                attr.fireRate = (1.0 / 1.0);
+            })
+            .withMovement(attr => {
+                return new FixedVelocityMovement(vec2(-1, 0).normalize(attr.speed));
+            })
+            .withShooting(attr => {
+                return new MultiBulletShooting({
+                    bulletFactory: new BirdBulletFactory(),
+                    direction: vec2(-1, 0),
+                    rate: attr.fireRate,
+                    count: 2,
+                    spread: PI / 4
+                });
+            }) 
+            .withTimeTrialPhase(4)
+            .withSpawnRegion(SPAWN_REGIONS.RIGHT_UPPER)
+            .withSpawnRegion(SPAWN_REGIONS.RIGHT_LOWER)
+            .withColors(rgb255(85, 26, 139), rgb255(125, 38, 205));
+
+        /**
+         * (GRAY / BLACK) Kathy is a little extreme when it comes to stalking bees
+         * @type {BirdTemplate}
+         */
+        this.kathy = new BirdTemplate('Kathy', 'Kathy is a little extreme when it comes to stalking bees.')
             .configureAttributes(attr => {
                 attr.maxHealth = 6;
                 attr.touchDamage = 8;
@@ -319,9 +376,13 @@ export function initBirdTemplates() {
             .withTimeTrialPhase(4)
             .withSpawnRegion(SPAWN_REGIONS.RIGHT_UPPER)
             .withSpawnRegion(SPAWN_REGIONS.RIGHT_LOWER)
-            .withColors(GRAY, BLACK),
+            .withColors(GRAY, BLACK);
 
-        whitney_left: new BirdTemplate('Whitney', 'Whitney has managed to throw poo in such a way as to track bees!')  
+        /**
+         * (LIME GREEN) Whitney has managed to throw poo in such a way as to track bees!
+         * @type {BirdTemplate}
+         */
+        this.whitney_left = new BirdTemplate('Whitney', 'Whitney has managed to throw poo in such a way as to track bees!')  
             .configureAttributes(attr => {
                 attr.maxHealth = 7;
                 attr.touchDamage = 13;
@@ -344,9 +405,13 @@ export function initBirdTemplates() {
             .withSpawnRegion(SPAWN_REGIONS.RIGHT_UPPER)
             .withSpawnRegion(SPAWN_REGIONS.RIGHT_LOWER)
             // Very lime green
-            .withColors(rgb255(0, 255, 0), rgb255(152, 251, 152)),
+            .withColors(rgb255(0, 255, 0), rgb255(152, 251, 152));
 
-        whitney_left_up: new BirdTemplate('Whitney', 'Whitney has managed to throw poo in such a way as to track bees!')    
+        /**
+         * (LIME GREEN) Whitney has managed to throw poo in such a way as to track bees!
+         * @type {BirdTemplate}
+         */
+        this.whitney_left_up = new BirdTemplate('Whitney', 'Whitney has managed to throw poo in such a way as to track bees!')    
             .configureAttributes(attr => {
                 attr.maxHealth = 7;
                 attr.touchDamage = 13;
@@ -369,9 +434,13 @@ export function initBirdTemplates() {
             .withSpawnRegion(SPAWN_REGIONS.BOTTOM_RIGHT)
             .withSpawnRegion(SPAWN_REGIONS.RIGHT_LOWER)
             // Very lime green
-            .withColors(rgb255(0, 255, 0), rgb255(152, 251, 152)),
+            .withColors(rgb255(0, 255, 0), rgb255(152, 251, 152));
 
-        whitney_down_up: new BirdTemplate('Whitney', 'Whitney has managed to throw poo in such a way as to track bees!')   
+        /**
+         * (LIME GREEN) Whitney has managed to throw poo in such a way as to track bees!
+         * @type {BirdTemplate}
+         */
+        this.whitney_left_down = new BirdTemplate('Whitney', 'Whitney has managed to throw poo in such a way as to track bees!')   
             .configureAttributes(attr => {
                 attr.maxHealth = 7;
                 attr.touchDamage = 13;
@@ -394,9 +463,13 @@ export function initBirdTemplates() {
             .withSpawnRegion(SPAWN_REGIONS.RIGHT_UPPER)
             .withSpawnRegion(SPAWN_REGIONS.TOP_RIGHT)
             // Very lime green
-            .withColors(rgb255(0, 255, 0), rgb255(152, 251, 152)),
+            .withColors(rgb255(0, 255, 0), rgb255(152, 251, 152));
 
-        tom: new BirdTemplate('Tom', 'A more resiliant basic passive bird.')         
+        /**
+         * (DARK RED) A more resiliant basic passive bird.
+         * @type {BirdTemplate}
+         */
+        this.tom = new BirdTemplate('Tom', 'A more resiliant basic passive bird.')         
             .configureAttributes(attr => {
                 attr.maxHealth = 25;
                 attr.touchDamage = 15;
@@ -409,8 +482,18 @@ export function initBirdTemplates() {
             .withSpawnRegion(SPAWN_REGIONS.RIGHT_UPPER)
             .withSpawnRegion(SPAWN_REGIONS.RIGHT_LOWER)
             // Darker red than fred
-            .withColors(rgb255(139, 26, 26), rgb255(238, 44, 44)),
+            .withColors(rgb255(139, 26, 26), rgb255(238, 44, 44));
     }
+
+}
+
+/**
+ * @type {BirdTemplateSet}
+ */
+export let BIRD_TEMPLATES;
+
+export function initBirdTemplates() {    
+    BIRD_TEMPLATES = new BirdTemplateSet();
 }
 
 const BASE_BIRD_SIZE = 1.5

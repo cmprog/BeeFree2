@@ -1,5 +1,24 @@
 import { AttributeSet, LevelAttributeSet } from "./attributes.js";
 
+class GeneralGameSettings {
+    constructor() {
+
+        /**
+         * @type {boolean}
+         */
+        this.IS_LOCAL_DEV_ENVIRONMENT = document.location.href.indexOf('localhost') >= 0;
+        
+        /**
+         * Whether or not bee damange is disabled. This is purely a dev
+         * environment setting used for testing.
+         * @type {boolean}
+         */
+        this.BEE_DAMAGE_DISABLED = false && this.IS_LOCAL_DEV_ENVIRONMENT;
+    }
+}
+
+export const GAME_SETTINGS = new GeneralGameSettings();
+
 export const STANDARD_LEVEL_FAILURE_EARN_RATE = 0.5;
 export const BASE_SAMMY_CHANCE = 5000;
 

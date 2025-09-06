@@ -1,3 +1,4 @@
+import { BirdTemplate } from "./birds.js";
 import { currentLevel } from "./levels.js";
 
 export const SPAWN_REGIONS = {
@@ -116,17 +117,63 @@ export const SPAWN_REGIONS = {
 export class FormationCreationOptions {
 
     constructor() {
+
         /** @property{Vector2} */
         this.positionOffset = vec2(0);
+
+        /**
+         * Component-wise multiplier for the positioning.
+         * @type {number}
+         */
+        this.positionScale = vec2(1);
+
+        /**
+         * A multiplier to the time scaling.
+         */
+        this.timeScale = 1;
         
         /** @property A dictionary mapping used to replace templates from the
          * formation with different templates
          */
         this.templateMapping = { };
+
+        /**
+         * Positional bird template replacements.
+         * @type {Object.<number, BirdTemplate>}
+         */
+        this.replacements = {};
+    }
+
+    /**
+     * Replaces the template at the given index with a new bird.
+     * @param {number} index 
+     * @param {BirdTemplate} targetTemplate 
+     */
+    withReplacement(index, targetTemplate) {
+        this.replacements[index] = targetTemplate;
+        return this;
     }
     
     withPositionOffset(offset) {
         this.positionOffset = offset;
+        return this;
+    }
+
+    /**
+     * Scales the position components by the given amounts.
+     * @param {Vector2} scale 
+     */
+    withPositionScaling(scale) {
+        this.positionScale = scale;
+        return this;
+    }
+
+    /**
+     * Scales the release timing by the given amount.
+     * @param {number} scale 
+     */
+    withTimeScaling(scale) {
+        this.timeScale = scale;
         return this;
     }
 
@@ -144,10 +191,19 @@ export class FormationDefinition {
     constructor(name) {
         this.name = name;
 
-        /** @property{Array.<SpawnDefinition>} */
+        /** 
+         * @type {Array.<SpawnDefinition>}
+         * */
         this.spawns = [];
 
+        /**
+         * @type {number}
+         */
         this.totalDuration = 0;
+
+        /**
+         * @type {number}
+         */
         this.verticalOffset = 0;
     }
 
@@ -171,22 +227,33 @@ export class FormationDefinition {
     createSpawns(options) {
         const resultSpawns = [];
 
-        for (const sourceSpawn of this.spawns) {
+        for (let iSpawn = 0; iSpawn < this.spawns.length; iSpawn += 1) {
+
+            const sourceSpawn = this.spawns[iSpawn];
 
             let template = sourceSpawn.template;
-            let time = sourceSpawn.time;
+            let time = sourceSpawn.time;            
             let pos = sourceSpawn.pos;
 
             if (options) {
+                
+                pos = pos.multiply(options.positionScale);
                 pos = pos.add(options.positionOffset);
+
+                time = time * options.timeScale;
 
                 if (template in options.templateMapping) {
                     template = options.templateMapping[template];
+                }
+
+                if (iSpawn in options.replacements) {
+                    template = options.replacements[iSpawn];
                 }
             }
 
             const transformSpawn = new SpawnDefinition(template, time, pos);
             resultSpawns.push(transformSpawn);
+
         }
 
         return resultSpawns;
@@ -195,8 +262,20 @@ export class FormationDefinition {
 
 export class SpawnDefinition {
     constructor(template, time, pos) {
+
+        /**
+         * @type {BirdTemplate}
+         */
         this.template = template;
+
+        /**
+         * @type {number}
+         */
         this.time = time;
+
+        /**
+         * @type {Vector2}
+         */
         this.pos = pos;
     }
 

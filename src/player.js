@@ -1,8 +1,9 @@
 import { AttributeSet, LevelAttributeSet } from "./attributes.js";
 import { Bee } from "./bee.js";
+import { LEVELS } from "./levels.js";
 import { logDebug, logError } from "./logging.js";
 import { PlayerLevel } from "./player-level.js";
-import { DEFAULT_BEE_ATTRIBUTES, DEFAULT_LEVEL_ATTRIBUTES, DEFAULT_SAMMY_ATTRIBUTE_MULTIPLIERS, PRESTIGE_BONUS_RATE } from "./settings.js";
+import { DEFAULT_BEE_ATTRIBUTES, DEFAULT_LEVEL_ATTRIBUTES, DEFAULT_SAMMY_ATTRIBUTE_MULTIPLIERS, GAME_SETTINGS, PRESTIGE_BONUS_RATE } from "./settings.js";
 import { SingleBulletShooting } from "./shooting.js";
 import { StatisticsSet, TimeTrialStatistics } from "./statistics.js";
 import { today } from "./util.js";
@@ -92,7 +93,7 @@ export class Player {
         this.dailyTimeTrialStatistics = new TimeTrialStatistics();
         this.overallTimeTrailStatistics = new TimeTrialStatistics();
 
-        this.markLevelAvailable(0);
+        this.markLevelAvailable(0);    
     }
 
     /**

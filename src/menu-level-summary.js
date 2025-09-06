@@ -84,20 +84,14 @@ export class LevelSummaryMenu extends Menu {
     
     scheduleItem() {
 
-        logDebug(`Scheduling item (length: ${this.items.length})`);
-
         if (this.items.length) {            
-            logDebug(`  Setting timeout`);
             window.setTimeout(this.appendItem.bind(this), 500);
         } else {
-            logDebug(`  Scheduling total row`);
             this.scheduleTotalRow();
         }        
     }
 
     appendItem() {
-
-        logDebug(`Appending item (length: ${this.items.length})`);
 
         if (this.items.length) {
 

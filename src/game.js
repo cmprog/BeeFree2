@@ -7,6 +7,7 @@ import { currentLevel, initLevels } from "./levels.js";
 import { logDebug, logError, logInfo } from "./logging.js";
 import { tryUnlockAllAchivements } from "./achivements.js";
 import { initBirdTemplates } from "./birds.js";
+import { GAME_SETTINGS } from "./settings.js";
 
 if (isTouchDevice) {
     logDebug("Touch device detected, initializing touch gamepad.");
@@ -20,7 +21,7 @@ window.addEventListener('error', (errorMsg, url, lineNumber) => {
 });
 
 // Only show the watermark when we are running in dev.
-showWatermark = (document.location.href.indexOf('localhost') >= 0);
+showWatermark = GAME_SETTINGS.IS_LOCAL_DEV_ENVIRONMENT;
 
 ///////////////////////////////////////////////////////////////////////////////
 function gameInit() {

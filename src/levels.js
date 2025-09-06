@@ -344,6 +344,7 @@ class StandardLevel extends Level {
         levelSummaryMenu.totalHoneycombEarned = honeycombEarned;
         
         currentPlayer.onHoneycombCollected(honeycombEarned);
+        currentPlayer.save();
 
         levelSummaryMenu.returnMenu = MENUS.LEVEL_SELECTION;
         levelSummaryMenu.returnMenuText = 'Return to level selection';
@@ -507,6 +508,7 @@ class StandardLevel extends Level {
         
         currentPlayer.onHoneycombCollected(honeycombEarned);
         currentPlayer.onTimeTrialCompleted(this.levelDuration);
+        currentPlayer.save();
 
         levelSummaryMenu.returnMenu = MENUS.MAIN;
         levelSummaryMenu.returnMenuText = 'Return to main menu';
@@ -576,68 +578,144 @@ export function startTimeTrial() {
     currentLevel = new TimeTrialLevel();
 }
 
-let FORMATIONS;
-export let LEVELS;
+/**
+ * Just a class to support better JS doc support for the properties
+ * of the FORMATIONS which we will be defining.
+ */
+class FormationSet {
+    constructor() {       
 
-function initFormations() {
-    FORMATIONS = {
-
-        /** A set of 6 birds in the shape of a backward slash (\). */
-        backSlash: new FormationDefinition('Back Slash (\\)')    
-            .withSpawn(BIRD_TEMPLATES.fred, 0, vec2(20, 9))
+        /** 
+         * A set of 6 birds in the shape of a backward slash (\).
+         * @type {FormationDefinition}
+         */
+        this.backSlash = new FormationDefinition('Back Slash (\\)')    
+            .withSpawn(BIRD_TEMPLATES.fred, 0, vec2(20, 10))
             .withSpawn(BIRD_TEMPLATES.fred, 1, vec2(20, 6))
-            .withSpawn(BIRD_TEMPLATES.fred, 1, vec2(20, 3))
-            .withSpawn(BIRD_TEMPLATES.fred, 1, vec2(20, -3))
+            .withSpawn(BIRD_TEMPLATES.fred, 1, vec2(20, 2))
+            .withSpawn(BIRD_TEMPLATES.fred, 1, vec2(20, -2))
             .withSpawn(BIRD_TEMPLATES.fred, 1, vec2(20, -6))
-            .withSpawn(BIRD_TEMPLATES.fred, 1, vec2(20, -9)),
+            .withSpawn(BIRD_TEMPLATES.fred, 1, vec2(20, -10));
 
-        /** A set of 6 birds in the shape of a forward slash (/). */
-        forwardSlash: new FormationDefinition('Forward Slash (/)') 
-            .withSpawn(BIRD_TEMPLATES.fred, 0, vec2(20, -9))
+        /**
+         * A set of 6 birds in the shape of a forward slash (/).
+         * @type {FormationDefinition}
+         */
+        this.forwardSlash = new FormationDefinition('Forward Slash (/)') 
+            .withSpawn(BIRD_TEMPLATES.fred, 0, vec2(20, -10))
             .withSpawn(BIRD_TEMPLATES.fred, 1, vec2(20, -6))
-            .withSpawn(BIRD_TEMPLATES.fred, 1, vec2(20, -3))
-            .withSpawn(BIRD_TEMPLATES.fred, 1, vec2(20, 3))
+            .withSpawn(BIRD_TEMPLATES.fred, 1, vec2(20, -2))
+            .withSpawn(BIRD_TEMPLATES.fred, 1, vec2(20, 2))
             .withSpawn(BIRD_TEMPLATES.fred, 1, vec2(20, 6))
-            .withSpawn(BIRD_TEMPLATES.fred, 1, vec2(20, 7)),
+            .withSpawn(BIRD_TEMPLATES.fred, 1, vec2(20, 10));
 
-        /** A set of 4 birds aranged in a diamond pattern. */
-        diamond: new FormationDefinition('Diamond')
+        /**
+         * A set of 4 birds aranged in a diamond pattern.
+         * @type {FormationDefinition}
+        */
+        this.diamond = new FormationDefinition('Diamond')
             .withSpawn(BIRD_TEMPLATES.fred, 0.0, vec2(20, 0))
             .withSpawn(BIRD_TEMPLATES.fred, 0.3, vec2(20, 5))
             .withSpawn(BIRD_TEMPLATES.fred, 0.0, vec2(20, -5))
-            .withSpawn(BIRD_TEMPLATES.fred, 0.3, vec2(20, 0)),
+            .withSpawn(BIRD_TEMPLATES.fred, 0.3, vec2(20, 0));
 
-        /** A vertical stack of 2 birds. */
-        vert2: new FormationDefinition('Vertical (2)')
+        /**
+         * A vertical stack of 2 birds.
+         * @type {FormationDefinition}
+         */
+        this.vert2 = new FormationDefinition('Vertical (2)')
             .withSpawn(BIRD_TEMPLATES.fred, 0.0, vec2(20, 5))
-            .withSpawn(BIRD_TEMPLATES.fred, 0.0, vec2(20, -5)),
+            .withSpawn(BIRD_TEMPLATES.fred, 0.0, vec2(20, -5));
 
-        /** A vertical stack of 3 birds. */
-        vert3: new FormationDefinition('Vertical (3)')
+        /**
+         * A vertical stack of 3 birds.
+         * @type {FormationDefinition}
+         */
+        this.vert3 = new FormationDefinition('Vertical (3)')
             .withSpawn(BIRD_TEMPLATES.fred, 0.0, vec2(20, 0))
             .withSpawn(BIRD_TEMPLATES.fred, 0.0, vec2(20, 7))
-            .withSpawn(BIRD_TEMPLATES.fred, 0.0, vec2(20, -7)),
+            .withSpawn(BIRD_TEMPLATES.fred, 0.0, vec2(20, -7));
 
-        /** The thing 1 & 2 twin birds which always come from the right
-         * side of the screen and move diagonally.
+        /**
+         * A vertical stack of 4 birds.
+         * @type {FormationDefinition}
          */
-        twinsRight: new FormationDefinition("Twins (Right - 1 & 2)")
+        this.vert4 = new FormationDefinition('Vertical (4)')
+            .withSpawn(BIRD_TEMPLATES.fred, 0.0, vec2(20, 9))    
+            .withSpawn(BIRD_TEMPLATES.fred, 0.0, vec2(20, 3))            
+            .withSpawn(BIRD_TEMPLATES.fred, 0.0, vec2(20, -3))
+            .withSpawn(BIRD_TEMPLATES.fred, 0.0, vec2(20, -9));
+
+        /**
+         * A vertical stack of 5 birds.
+         * @type {FormationDefinition}
+         */
+        this.vert5 = new FormationDefinition('Vertical (5)')
+            .withSpawn(BIRD_TEMPLATES.fred, 0.0, vec2(20, 10))    
+            .withSpawn(BIRD_TEMPLATES.fred, 0.0, vec2(20, 5))
+            .withSpawn(BIRD_TEMPLATES.fred, 0.0, vec2(20, 0))            
+            .withSpawn(BIRD_TEMPLATES.fred, 0.0, vec2(20, -5))
+            .withSpawn(BIRD_TEMPLATES.fred, 0.0, vec2(20, -10));
+
+        /**
+         * A vertical stack of 6 birds.
+         * @type {FormationDefinition}
+         */
+        this.vert6 = new FormationDefinition('Vertical (6)')
+            .withSpawn(BIRD_TEMPLATES.fred, 0.0, vec2(20, 10))    
+            .withSpawn(BIRD_TEMPLATES.fred, 0.0, vec2(20, 6))
+            .withSpawn(BIRD_TEMPLATES.fred, 0.0, vec2(20, 2))            
+            .withSpawn(BIRD_TEMPLATES.fred, 0.0, vec2(20, -2))
+            .withSpawn(BIRD_TEMPLATES.fred, 0.0, vec2(20, -6))
+            .withSpawn(BIRD_TEMPLATES.fred, 0.0, vec2(20, -10));
+
+        /**
+         * A vertical stack of 7 birds.
+         * @type {FormationDefinition}
+         */
+        this.vert7 = new FormationDefinition('Vertical (7)')
+            .withSpawn(BIRD_TEMPLATES.fred, 0.0, vec2(20, 9))
+            .withSpawn(BIRD_TEMPLATES.fred, 0.0, vec2(20, 6))
+            .withSpawn(BIRD_TEMPLATES.fred, 0.0, vec2(20, 3))
+            .withSpawn(BIRD_TEMPLATES.fred, 0.0, vec2(20, 0))
+            .withSpawn(BIRD_TEMPLATES.fred, 0.0, vec2(20, -3))
+            .withSpawn(BIRD_TEMPLATES.fred, 0.0, vec2(20, -6))
+            .withSpawn(BIRD_TEMPLATES.fred, 0.0, vec2(20, -9));
+
+        /**
+         * The thing 1 & 2 twin birds which always come from the right
+         * side of the screen and move diagonally.
+         * @type {FormationDefinition}
+         */
+        this.twinsRight = new FormationDefinition("Twins (Right - 1 & 2)")
             .withSpawn(BIRD_TEMPLATES.thing1, 0.0, vec2(20, -12))
-            .withSpawn(BIRD_TEMPLATES.thing2, 0.0, vec2(20, 12)),
+            .withSpawn(BIRD_TEMPLATES.thing2, 0.0, vec2(20, 12));
 
-        /** The thing 1 & 2 twin birds which always come from the right
+        /**
+         * The thing 1 & 2 twin birds which always come from the right
          * side of the screen and move diagonally.
+         * @type {FormationDefinition}
          */
-        twinsLeft: new FormationDefinition("Twins (Left - 3 & 4)")
+        this.twinsLeft = new FormationDefinition("Twins (Left - 3 & 4)")
             .withSpawn(BIRD_TEMPLATES.thing1, 0.0, vec2(-20, -12))
-            .withSpawn(BIRD_TEMPLATES.thing2, 0.0, vec2(-20, 12)),
+            .withSpawn(BIRD_TEMPLATES.thing2, 0.0, vec2(-20, 12));
 
-        /** Releases a set of birds in the shape of a greater than (>) sign.
+        /**
+         * The Whitney templaets which come from the right and move at a sharp angle.
+         * @type {FormationDefinition}
+         */
+        this.whitneyRight = new FormationDefinition('Whitney (Right)')
+            .withSpawn(BIRD_TEMPLATES.whitney_left_up, 0.0, vec2(20, -12))
+            .withSpawn(BIRD_TEMPLATES.whitney_left_down, 0.0, vec2(20, 12));
+
+        /**
+         * Releases a set of birds in the shape of a greater than (>) sign.
          * This spawns 5 'columns' of birds where the third and fifth column
          * are a different type of bird. The final column is the 'point' and
          * only has one bird.
+         * @type {FormationDefinition}
          */
-        greaterThan: new FormationDefinition('Greater Than (>)')
+        this.greaterThan = new FormationDefinition('Greater Than (>)')
             .withSpawn(BIRD_TEMPLATES.fred, 0.0, vec2(20, 9))
             .withSpawn(BIRD_TEMPLATES.fred, 0.0, vec2(20, -9))
             .withDelay(0.3)
@@ -650,9 +728,43 @@ function initFormations() {
             .withSpawn(BIRD_TEMPLATES.fred, 0.0, vec2(20, 3))
             .withSpawn(BIRD_TEMPLATES.fred, 0.0, vec2(20, -3))
             .withDelay(0.3)
-            .withSpawn(BIRD_TEMPLATES.bill, 0.0, vec2(20, 0)),
+            .withSpawn(BIRD_TEMPLATES.bill, 0.0, vec2(20, 0));
 
-    };
+            
+        /**
+         * Releases a set of birds in the shape of a less than (<) sign.
+         * This spawns 5 'columns' of birds where the third and fifth column
+         * are a different type of bird. The final column is the 'point' and
+         * only has one bird.
+         * @type {FormationDefinition}
+         */
+        this.lessThan = new FormationDefinition('Greater Than (<)')            
+            .withSpawn(BIRD_TEMPLATES.fred, 0.0, vec2(20, 0))
+            .withDelay(0.3)
+            .withSpawn(BIRD_TEMPLATES.fred, 0.0, vec2(20, 3))
+            .withSpawn(BIRD_TEMPLATES.fred, 0.0, vec2(20, -3))
+            .withDelay(0.3)
+            .withSpawn(BIRD_TEMPLATES.fred, 0.0, vec2(20, 5))
+            .withSpawn(BIRD_TEMPLATES.fred, 0.0, vec2(20, -5))
+            .withDelay(0.3)
+            .withSpawn(BIRD_TEMPLATES.fred, 0.0, vec2(20, 7))
+            .withSpawn(BIRD_TEMPLATES.fred, 0.0, vec2(20, -7))
+            .withDelay(0.3)
+            .withSpawn(BIRD_TEMPLATES.fred, 0.0, vec2(20, 9))
+            .withSpawn(BIRD_TEMPLATES.fred, 0.0, vec2(20, -9));
+    }
+
+}
+
+/**
+ * @type {FormationSet}
+ */
+let FORMATIONS;
+
+export let LEVELS;
+
+function initFormations() {
+    FORMATIONS = new FormationSet();
 };
 
 export function initLevels() {
@@ -696,9 +808,17 @@ export function initLevels() {
 
         new LevelDefinition(4, 'Level 5')
             .withDelay(2)
-            .withFormation(FORMATIONS.greaterThan)
+            .withFormation(FORMATIONS.greaterThan, new FormationCreationOptions()
+                .withReplacement(0, BIRD_TEMPLATES.bill)
+                .withReplacement(1, BIRD_TEMPLATES.bill)
+                .withReplacement(9, BIRD_TEMPLATES.bill)
+            )
             .withDelay(2)
-            .withFormation(FORMATIONS.greaterThan)
+            .withFormation(FORMATIONS.greaterThan, new FormationCreationOptions()
+                .withReplacement(0, BIRD_TEMPLATES.bill)
+                .withReplacement(1, BIRD_TEMPLATES.bill)
+                .withReplacement(9, BIRD_TEMPLATES.bill)
+            )
             .withDelay(5),
 
         new LevelDefinition(5, 'Level 6')
@@ -734,30 +854,441 @@ export function initLevels() {
             .withFormation(FORMATIONS.twinsRight)
             .withDelay(1)
             .withFormation(FORMATIONS.twinsLeft)
+            .withDelay(1)
+            .withFormation(FORMATIONS.twinsRight)
+            .withDelay(1)
+            .withFormation(FORMATIONS.twinsLeft)
             .withDelay(2)            
-            .withFormation(FORMATIONS.backSlash)
+            .withFormation(FORMATIONS.vert2, new FormationCreationOptions()
+                .withTemplateMapping(BIRD_TEMPLATES.fred, BIRD_TEMPLATES.greg)
+                .withPositionScaling(vec2(1, 1.5))
+            )
             .withDelay(2)
-            .withFormation(FORMATIONS.vert3, new FormationCreationOptions()
-                .withTemplateMapping(BIRD_TEMPLATES.fred, BIRD_TEMPLATES.bill)
+            .withFormation(FORMATIONS.vert2, new FormationCreationOptions()
+                .withTemplateMapping(BIRD_TEMPLATES.fred, BIRD_TEMPLATES.frank)
+                .withPositionScaling(vec2(1, 0.8))
             )
             .withDelay(5),
             
-        // new LevelDefinition(8, 'Level 9'),
-        // new LevelDefinition(9, 'Level 10'),
-        // new LevelDefinition(10, 'Level 11'),
-        // new LevelDefinition(11, 'Level 12'),
-        // new LevelDefinition(12, 'Level 13'),
-        // new LevelDefinition(13, 'Level 14'),
-        // new LevelDefinition(14, 'Level 15'),
-        // new LevelDefinition(15, 'Level 16'),
-        // new LevelDefinition(16, 'Level 17'),
-        // new LevelDefinition(17, 'Level 18'),
-        // new LevelDefinition(18, 'Level 19'),
-        // new LevelDefinition(19, 'Level 20'),
-        // new LevelDefinition(20, 'Level 21'),
-        // new LevelDefinition(21, 'Level 22'),
-        // new LevelDefinition(22, 'Level 23'),
-        // new LevelDefinition(23, 'Level 24'),
-        // new LevelDefinition(24, 'Level 25'),
+        new LevelDefinition(8, 'Level 9')                 
+            .withDelay(2)
+            .withFormation(FORMATIONS.vert2, new FormationCreationOptions()
+                .withTemplateMapping(BIRD_TEMPLATES.fred, BIRD_TEMPLATES.bill)
+                .withPositionScaling(vec2(1, 1.5))
+            )
+            .withDelay(1)
+            .withFormation(FORMATIONS.vert2, new FormationCreationOptions()
+                .withTemplateMapping(BIRD_TEMPLATES.fred, BIRD_TEMPLATES.greg)
+                .withPositionScaling(vec2(1, 1.5))
+            )
+            .withDelay(1)
+            .withFormation(FORMATIONS.vert2, new FormationCreationOptions()
+                .withTemplateMapping(BIRD_TEMPLATES.fred, BIRD_TEMPLATES.frank)
+                .withPositionScaling(vec2(1, 1.5))
+            )
+            .withDelay(1)
+            .withFormation(FORMATIONS.twinsLeft)
+            .withDelay(1)
+            .withFormation(FORMATIONS.lessThan, new FormationCreationOptions()
+                .withTemplateMapping(BIRD_TEMPLATES.fred, BIRD_TEMPLATES.bill)
+                .withPositionScaling(vec2(1, 0.75))
+                .withTimeScaling(2)
+            )
+            .withDelay(-1)
+            .withFormation(FORMATIONS.lessThan, new FormationCreationOptions()
+                .withTemplateMapping(BIRD_TEMPLATES.fred, BIRD_TEMPLATES.frank)
+                .withPositionScaling(vec2(1, 0.75))
+                .withTimeScaling(2)
+            )
+            .withDelay(5),
+
+        new LevelDefinition(9, 'Level 10')
+            .withDelay(2)    
+            .withSpawn(BIRD_TEMPLATES.kathy, 0, vec2(20, 10))
+            .withDelay(3)
+            .withSpawn(BIRD_TEMPLATES.kathy, 0, vec2(20, -10))
+            .withDelay(3)
+            .withFormation(FORMATIONS.vert2, new FormationCreationOptions()
+                .withTemplateMapping(BIRD_TEMPLATES.fred, BIRD_TEMPLATES.frank)
+                .withPositionScaling(vec2(1, 1.5))
+            )
+            .withDelay(0.5)
+            .withSpawn(BIRD_TEMPLATES.greg, 0, vec2(20, 0))
+            .withDelay(1)
+            .withFormation(FORMATIONS.vert2, new FormationCreationOptions()
+                .withTemplateMapping(BIRD_TEMPLATES.fred, BIRD_TEMPLATES.kathy)
+                .withPositionScaling(vec2(1, 1.5))
+            )
+            .withDelay(1)
+            .withFormation(FORMATIONS.vert5, new FormationCreationOptions()
+                .withTemplateMapping(BIRD_TEMPLATES.fred, BIRD_TEMPLATES.bill)                
+                .withPositionScaling(vec2(1, 0.8))
+            )
+            .withDelay(1)
+            .withFormation(FORMATIONS.vert4, new FormationCreationOptions()
+                .withTemplateMapping(BIRD_TEMPLATES.fred, BIRD_TEMPLATES.bill)                
+                .withPositionScaling(vec2(1, 0.7))
+            )
+            .withDelay(5),
+
+        new LevelDefinition(10, 'Level 11')
+            .withDelay(2)
+            .withFormation(FORMATIONS.vert5, new FormationCreationOptions()
+                .withPositionScaling(vec2(1, 0.8))
+            )
+            .withDelay(1)
+            .withFormation(FORMATIONS.vert4, new FormationCreationOptions()
+                .withPositionScaling(vec2(1, 0.7))
+            )
+            .withDelay(1)
+            .withFormation(FORMATIONS.vert5, new FormationCreationOptions()
+                .withTemplateMapping(BIRD_TEMPLATES.fred, BIRD_TEMPLATES.bill)
+            )
+            .withDelay(1)
+            .withFormation(FORMATIONS.vert4, new FormationCreationOptions()
+                .withPositionScaling(vec2(1, 0.7))
+            )
+            .withDelay(1)
+            .withFormation(FORMATIONS.vert5, new FormationCreationOptions()
+                .withTemplateMapping(BIRD_TEMPLATES.fred, BIRD_TEMPLATES.bill)
+            )
+            .withDelay(1)
+            .withFormation(FORMATIONS.vert4, new FormationCreationOptions()
+                .withTemplateMapping(BIRD_TEMPLATES.fred, BIRD_TEMPLATES.bill)
+                .withPositionScaling(vec2(1, 0.7))
+            )
+            .withSpawn(BIRD_TEMPLATES.kathy, 0, vec2(20, 10))
+            .withSpawn(BIRD_TEMPLATES.kathy, 0, vec2(20, -10))
+            .withDelay(5),
+
+        new LevelDefinition(11, 'Level 12')
+            .withDelay(2)
+            .withFormation(FORMATIONS.vert3, new FormationCreationOptions()
+                .withTemplateMapping(BIRD_TEMPLATES.fred, BIRD_TEMPLATES.harry)
+            )
+            .withDelay(1)
+            .withFormation(FORMATIONS.vert4, new FormationCreationOptions()
+                .withTemplateMapping(BIRD_TEMPLATES.fred, BIRD_TEMPLATES.frank)
+            )
+            .withDelay(1.5)
+            .withFormation(FORMATIONS.vert2, new FormationCreationOptions()
+                .withTemplateMapping(BIRD_TEMPLATES.fred, BIRD_TEMPLATES.harry)
+                .withPositionScaling(vec2(1, 1.5))
+            )
+            .withDelay(1.0)
+            .withFormation(FORMATIONS.vert2, new FormationCreationOptions()
+                .withTemplateMapping(BIRD_TEMPLATES.fred, BIRD_TEMPLATES.harry)
+                .withPositionScaling(vec2(1, 1.5))
+            )
+            .withDelay(0.75)
+            .withFormation(FORMATIONS.vert2, new FormationCreationOptions()
+                .withTemplateMapping(BIRD_TEMPLATES.fred, BIRD_TEMPLATES.harry)
+                .withPositionScaling(vec2(1, 1.5))
+            )
+            .withDelay(0.50)
+            .withFormation(FORMATIONS.vert2, new FormationCreationOptions()
+                .withTemplateMapping(BIRD_TEMPLATES.fred, BIRD_TEMPLATES.harry)
+                .withPositionScaling(vec2(1, 1.5))
+            )
+            .withDelay(0.30)
+            .withFormation(FORMATIONS.vert2, new FormationCreationOptions()
+                .withTemplateMapping(BIRD_TEMPLATES.fred, BIRD_TEMPLATES.harry)
+                .withPositionScaling(vec2(1, 1.5))
+            )
+            .withDelay(0.20)
+            .withFormation(FORMATIONS.vert2, new FormationCreationOptions()
+                .withTemplateMapping(BIRD_TEMPLATES.fred, BIRD_TEMPLATES.harry)
+                .withPositionScaling(vec2(1, 1.5))
+            )
+            .withDelay(5),
+
+        new LevelDefinition(12, 'Level 13')
+            .withDelay(2)    
+            .withSpawn(BIRD_TEMPLATES.kathy, 0, vec2(20, 10))
+            .withDelay(2)
+            .withSpawn(BIRD_TEMPLATES.kathy, 0, vec2(20, -10))
+            .withDelay(1.8)
+            .withSpawn(BIRD_TEMPLATES.kathy, 0, vec2(20, 10))
+            .withDelay(1.6)
+            .withSpawn(BIRD_TEMPLATES.kathy, 0, vec2(20, -10))
+            .withDelay(1.4)
+            .withSpawn(BIRD_TEMPLATES.kathy, 0, vec2(20, 10))
+            .withDelay(1.2)
+            .withSpawn(BIRD_TEMPLATES.kathy, 0, vec2(20, -10))
+            .withDelay(1.0)
+            .withSpawn(BIRD_TEMPLATES.kathy, 0, vec2(20, 10))
+            .withDelay(0.8)
+            .withSpawn(BIRD_TEMPLATES.kathy, 0, vec2(20, -10))
+            .withDelay(0.6)
+            .withSpawn(BIRD_TEMPLATES.kathy, 0, vec2(20, 10))
+            .withDelay(0.4)
+            .withSpawn(BIRD_TEMPLATES.kathy, 0, vec2(20, -10))
+            .withDelay(0.2)
+            .withSpawn(BIRD_TEMPLATES.kathy, 0, vec2(20, 10))
+            .withDelay(2.0)
+            .withFormation(FORMATIONS.vert5, new FormationCreationOptions()
+                .withTemplateMapping(BIRD_TEMPLATES.fred, BIRD_TEMPLATES.kathy)                
+            )
+            .withDelay(5),
+
+        new LevelDefinition(13, 'Level 14')
+            .withDelay(2)    
+            .withSpawn(BIRD_TEMPLATES.kathy, 0, vec2(20, 10))
+            .withSpawn(BIRD_TEMPLATES.harry, 0, vec2(20, 7))
+            .withDelay(2)
+            .withSpawn(BIRD_TEMPLATES.harry, 0, vec2(20, -5))
+            .withSpawn(BIRD_TEMPLATES.kathy, 0, vec2(20, -10))
+            .withDelay(1.8)
+            .withSpawn(BIRD_TEMPLATES.harry, 0, vec2(20, 0))
+            .withSpawn(BIRD_TEMPLATES.harry, 0, vec2(20, -8))
+            .withSpawn(BIRD_TEMPLATES.kathy, 0, vec2(20, 10))
+            .withDelay(1.6)
+            .withSpawn(BIRD_TEMPLATES.harry, 0, vec2(20, -3))
+            .withSpawn(BIRD_TEMPLATES.kathy, 0, vec2(20, -10))
+            .withDelay(1.4)
+            .withSpawn(BIRD_TEMPLATES.harry, 0, vec2(20, -7))
+            .withSpawn(BIRD_TEMPLATES.kathy, 0, vec2(20, 10))
+            .withDelay(1.2)
+            .withSpawn(BIRD_TEMPLATES.harry, 0, vec2(20, 7))
+            .withSpawn(BIRD_TEMPLATES.kathy, 0, vec2(20, -10))
+            .withDelay(1.0)
+            .withSpawn(BIRD_TEMPLATES.harry, 0, vec2(20, 9))
+            .withSpawn(BIRD_TEMPLATES.kathy, 0, vec2(20, 10))
+            .withDelay(0.8)
+            .withSpawn(BIRD_TEMPLATES.harry, 0, vec2(20, -9))
+            .withSpawn(BIRD_TEMPLATES.kathy, 0, vec2(20, -10))
+            .withDelay(0.6)
+            .withSpawn(BIRD_TEMPLATES.harry, 0, vec2(20, -7))
+            .withSpawn(BIRD_TEMPLATES.kathy, 0, vec2(20, 10))
+            .withDelay(0.4)
+            .withSpawn(BIRD_TEMPLATES.harry, 0, vec2(20, -3))
+            .withSpawn(BIRD_TEMPLATES.kathy, 0, vec2(20, -10))
+            .withDelay(0.2)
+            .withSpawn(BIRD_TEMPLATES.harry, 0, vec2(20, 0))
+            .withSpawn(BIRD_TEMPLATES.kathy, 0, vec2(20, 10))
+            .withDelay(2.0)
+            .withFormation(FORMATIONS.vert5, new FormationCreationOptions()
+                .withTemplateMapping(BIRD_TEMPLATES.fred, BIRD_TEMPLATES.kathy)                
+            )
+            .withDelay(5),
+            
+        new LevelDefinition(14, 'Level 15')
+            .withDelay(2)
+            .withFormation(FORMATIONS.diamond, new FormationCreationOptions()
+                .withTemplateMapping(BIRD_TEMPLATES.fred, BIRD_TEMPLATES.bill)
+                .withPositionScaling(vec2(1, 0.6))
+                .withTimeScaling(1.5)
+            )
+            .withDelay(1)
+            .withFormation(FORMATIONS.diamond, new FormationCreationOptions()
+                .withTemplateMapping(BIRD_TEMPLATES.fred, BIRD_TEMPLATES.bill)
+                .withPositionScaling(vec2(1, 0.6))
+                .withPositionOffset(vec2(1, 2))
+                .withTimeScaling(1.5)
+            )
+            .withDelay(1)
+            .withSpawn(BIRD_TEMPLATES.kathy, 0, vec2(20, 10))
+            .withSpawn(BIRD_TEMPLATES.kathy, 0, vec2(20, -10))
+            .withFormation(FORMATIONS.diamond, new FormationCreationOptions()
+                .withTemplateMapping(BIRD_TEMPLATES.fred, BIRD_TEMPLATES.harry)
+                .withPositionOffset(vec2(0, -6))
+                .withPositionScaling(vec2(1, 0.6))
+                .withTimeScaling(1.5)
+            )
+            .withDelay(1)
+            .withSpawn(BIRD_TEMPLATES.kathy, 0, vec2(20, 10))
+            .withSpawn(BIRD_TEMPLATES.kathy, 0, vec2(20, -10))
+            .withFormation(FORMATIONS.diamond, new FormationCreationOptions()
+                .withTemplateMapping(BIRD_TEMPLATES.fred, BIRD_TEMPLATES.harry)
+                .withPositionOffset(vec2(0, 8))
+                .withPositionScaling(vec2(1, 0.6))
+                .withTimeScaling(1.5)
+            )
+            .withDelay(1)
+            .withSpawn(BIRD_TEMPLATES.kathy, 0, vec2(20, 10))
+            .withSpawn(BIRD_TEMPLATES.kathy, 0, vec2(20, -10))
+            .withFormation(FORMATIONS.diamond, new FormationCreationOptions()
+                .withTemplateMapping(BIRD_TEMPLATES.fred, BIRD_TEMPLATES.harry)
+                .withPositionScaling(vec2(1, 0.6))
+                .withTimeScaling(1.5)
+            )
+            .withDelay(5),
+
+        new LevelDefinition(15, 'Level 16')
+            .withDelay(2)            
+            .withSpawn(BIRD_TEMPLATES.whitney_left, 0, vec2(20, 0))
+            .withDelay(1)
+            .withSpawn(BIRD_TEMPLATES.whitney_left_down, 0, vec2(20, 10))
+            .withSpawn(BIRD_TEMPLATES.whitney_left_up, 0, vec2(20, -10))
+            .withFormation(FORMATIONS.vert2, new FormationCreationOptions()
+                .withTemplateMapping(BIRD_TEMPLATES.fred, BIRD_TEMPLATES.tom)
+                .withPositionScaling(vec2(1, 1.2))
+            )
+            .withDelay(2)
+            .withFormation(FORMATIONS.vert2, new FormationCreationOptions()
+                .withTemplateMapping(BIRD_TEMPLATES.fred, BIRD_TEMPLATES.tom)
+                .withPositionOffset(vec2(0, 1))
+            )
+            .withFormation(FORMATIONS.vert2, new FormationCreationOptions()
+                .withTemplateMapping(BIRD_TEMPLATES.fred, BIRD_TEMPLATES.harry)
+                .withPositionOffset(vec2(0, -3))
+            )
+            .withDelay(0.5)            
+            .withFormation(FORMATIONS.vert2, new FormationCreationOptions()
+                .withTemplateMapping(BIRD_TEMPLATES.fred, BIRD_TEMPLATES.harry)
+                .withPositionScaling(vec2(1, 0.5))
+                .withPositionOffset(vec2(0, -1))
+            )
+            .withDelay(0.5)
+            .withSpawn(BIRD_TEMPLATES.tom, 0, vec2(20, 0))
+            .withDelay(5),
+
+        new LevelDefinition(16, 'Level 17')
+            .withDelay(2)            
+            .withSpawn(BIRD_TEMPLATES.whitney_left_up, 0, vec2(20, -10))
+            .withDelay(0.5)
+            .withSpawn(BIRD_TEMPLATES.tom, 0, vec2(20, -6))
+            .withDelay(0.5)
+            .withSpawn(BIRD_TEMPLATES.harry, 0, vec2(20, 5))
+            .withDelay(0.5)            
+            .withSpawn(BIRD_TEMPLATES.whitney_left_down, 0, vec2(20, 10))
+            .withDelay(0.5)
+            .withSpawn(BIRD_TEMPLATES.tom, 0, vec2(20, 0))
+            .withDelay(0.5)
+            .withSpawn(BIRD_TEMPLATES.harry, 0, vec2(20, 9))
+            .withDelay(0.5)            
+            .withSpawn(BIRD_TEMPLATES.whitney_left_up, 0, vec2(20, -10))
+            .withDelay(0.5)
+            .withSpawn(BIRD_TEMPLATES.tom, 0, vec2(20, -1))
+            .withDelay(0.5)
+            .withSpawn(BIRD_TEMPLATES.harry, 0, vec2(20, -5))
+            .withDelay(0.5)            
+            .withSpawn(BIRD_TEMPLATES.whitney_left_down, 0, vec2(20, 10))
+            .withDelay(0.5)
+            .withSpawn(BIRD_TEMPLATES.tom, 0, vec2(20, 9))
+            .withDelay(0.5)
+            .withSpawn(BIRD_TEMPLATES.harry, 0, vec2(20, 0))
+            .withDelay(0.5)            
+            .withSpawn(BIRD_TEMPLATES.whitney_left_up, 0, vec2(20, -10))
+            .withDelay(0.5)
+            .withSpawn(BIRD_TEMPLATES.tom, 0, vec2(20, 10))
+            .withDelay(0.5)
+            .withSpawn(BIRD_TEMPLATES.harry, 0, vec2(20, -1))
+            .withDelay(0.5)            
+            .withSpawn(BIRD_TEMPLATES.whitney_left_down, 0, vec2(20, 10))
+            .withDelay(0.5)
+            .withSpawn(BIRD_TEMPLATES.tom, 0, vec2(20, 0))
+            .withDelay(0.5)
+            .withSpawn(BIRD_TEMPLATES.harry, 0, vec2(20, 5))
+            .withDelay(0.5)            
+            .withSpawn(BIRD_TEMPLATES.whitney_left_up, 0, vec2(20, -10))
+            .withDelay(0.5)
+            .withSpawn(BIRD_TEMPLATES.tom, 0, vec2(20, -5))
+            .withDelay(0.5)
+            .withSpawn(BIRD_TEMPLATES.harry, 0, vec2(20, 0))
+            .withDelay(0.5)            
+            .withSpawn(BIRD_TEMPLATES.whitney_left_down, 0, vec2(20, 10))
+            .withDelay(0.5)
+            .withSpawn(BIRD_TEMPLATES.tom, 0, vec2(20, -8))
+            .withDelay(0.5)
+            .withSpawn(BIRD_TEMPLATES.harry, 0, vec2(20, 1))
+            .withDelay(0.5)
+            .withSpawn(BIRD_TEMPLATES.whitney_left_up, 0, vec2(20, -10))
+            .withDelay(5),
+
+        new LevelDefinition(17, 'Level 18')
+            .withDelay(2)      
+            .withFormation(FORMATIONS.lessThan, new FormationCreationOptions()
+                .withTemplateMapping(BIRD_TEMPLATES.fred, BIRD_TEMPLATES.tom)
+            )
+            .withDelay(2)
+            .withFormation(FORMATIONS.greaterThan, new FormationCreationOptions()
+                .withTemplateMapping(BIRD_TEMPLATES.fred, BIRD_TEMPLATES.whitney_left)                
+            )
+            .withDelay(2)
+            .withFormation(FORMATIONS.vert7, new FormationCreationOptions()
+                .withTemplateMapping(BIRD_TEMPLATES.fred, BIRD_TEMPLATES.tom)
+                .withPositionOffset(vec2(0, -1))
+            )
+            .withDelay(0.5)
+            .withFormation(FORMATIONS.vert7, new FormationCreationOptions()
+                .withTemplateMapping(BIRD_TEMPLATES.fred, BIRD_TEMPLATES.harry)   
+                .withPositionOffset(vec2(0, 1))
+            )
+            .withDelay(5),
+
+        new LevelDefinition(18, 'Level 19')
+            .withDelay(2)
+            .withFormation(FORMATIONS.whitneyRight)
+            .withSpawn(BIRD_TEMPLATES.harry, 0, vec2(20, 0))
+            .withDelay(0.5)
+            .withFormation(FORMATIONS.vert2, new FormationCreationOptions()
+                .withTemplateMapping(BIRD_TEMPLATES.fred, BIRD_TEMPLATES.whitney_left)
+                .withPositionScaling(vec2(1, 0.5))
+            )
+            .withDelay(0.5)
+            .withFormation(FORMATIONS.vert2, new FormationCreationOptions()
+                .withTemplateMapping(BIRD_TEMPLATES.fred, BIRD_TEMPLATES.whitney_left)
+                .withPositionScaling(vec2(1, 0.5))
+            )
+            .withDelay(2)
+            .withFormation(FORMATIONS.whitneyRight)
+            .withDelay(2)
+            .withFormation(FORMATIONS.whitneyRight)
+            .withDelay(2)
+            .withFormation(FORMATIONS.whitneyRight)
+            .withDelay(2)
+            // Time for chaos
+            // 25 random y values between -10 and 10
+            .withSpawn(BIRD_TEMPLATES.harry, 0, vec2(20, -1.47))
+            .withDelay(0.15)
+            .withSpawn(BIRD_TEMPLATES.harry, 0, vec2(20, 5.28))
+            .withDelay(0.15)
+            .withSpawn(BIRD_TEMPLATES.harry, 0, vec2(20, -1.08))
+            .withDelay(0.15)
+            .withSpawn(BIRD_TEMPLATES.harry, 0, vec2(20, 4.90))
+            .withDelay(0.15)
+            .withSpawn(BIRD_TEMPLATES.harry, 0, vec2(20, 1.05))
+            .withDelay(0.15)
+            .withSpawn(BIRD_TEMPLATES.harry, 0, vec2(20, -2.51))
+            .withDelay(0.15)
+            .withSpawn(BIRD_TEMPLATES.harry, 0, vec2(20, -9.07))
+            .withDelay(0.15)
+            .withSpawn(BIRD_TEMPLATES.harry, 0, vec2(20, 1.66))
+            .withDelay(0.15)
+            .withSpawn(BIRD_TEMPLATES.harry, 0, vec2(20, -6.89))
+            .withDelay(0.15)
+            .withSpawn(BIRD_TEMPLATES.harry, 0, vec2(20, -1.54))
+            .withDelay(0.15)
+            .withSpawn(BIRD_TEMPLATES.harry, 0, vec2(20, 6.18))
+            .withDelay(0.15)
+            .withSpawn(BIRD_TEMPLATES.harry, 0, vec2(20, 4.26))
+            .withDelay(0.15)
+            .withSpawn(BIRD_TEMPLATES.harry, 0, vec2(20, 6.30))
+            .withDelay(0.15)
+            .withSpawn(BIRD_TEMPLATES.harry, 0, vec2(20, 0.30))
+            .withDelay(0.15)
+            .withSpawn(BIRD_TEMPLATES.harry, 0, vec2(20, -6.67))
+            .withDelay(0.15)
+            .withSpawn(BIRD_TEMPLATES.harry, 0, vec2(20, 9.87))
+            .withDelay(0.15)
+            .withSpawn(BIRD_TEMPLATES.harry, 0, vec2(20, -8.99))
+            .withDelay(0.15)
+            .withSpawn(BIRD_TEMPLATES.harry, 0, vec2(20, -2.23))
+            .withDelay(0.15)
+            .withSpawn(BIRD_TEMPLATES.harry, 0, vec2(20, -6.09))
+            .withDelay(0.15)
+            .withSpawn(BIRD_TEMPLATES.harry, 0, vec2(20, 6.13))
+            .withDelay(0.15)
+            .withSpawn(BIRD_TEMPLATES.harry, 0, vec2(20, 4.19))
+            .withDelay(0.15)
+            .withSpawn(BIRD_TEMPLATES.harry, 0, vec2(20, 3.35))
+            .withDelay(0.15)
+            .withSpawn(BIRD_TEMPLATES.harry, 0, vec2(20, 9.91))
+            .withDelay(0.15)
+            .withSpawn(BIRD_TEMPLATES.harry, 0, vec2(20, -9.47))
+            .withDelay(0.15)
+            .withSpawn(BIRD_TEMPLATES.harry, 0, vec2(20, -3.80))
+            .withDelay(5),
     ]
 }
