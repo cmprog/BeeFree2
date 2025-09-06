@@ -22,7 +22,7 @@
     gap: var(--spacing-default);
     padding: var(--spacing-default);
     width: calc(50% - var(--spacing-default));
-    background-color: #FFFFFFAA;
+    background-color: var(--color-card-background);
 
     .icon {
       flex: 0 0 auto;

@@ -3,6 +3,8 @@
   --color-warning: darkgoldenrod;
   --color-critical: darkred;
   --color-muted: gray;
+
+  --color-card-background: #FFFFFFAA;
   
   --spacing-default: 5px;  
   --spacing-default-horizontal: 0 var(--spacing-default);

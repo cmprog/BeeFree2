@@ -9,12 +9,17 @@
     display: flex;
     gap: var(--spacing-default);
     flex-direction: row;
+    background-color: var(--color-card-background);
 
     > img {
       flex: 0 0 auto;
       width: 128px;
       height: 128px;
       border: 0px;
+
+      &:not([src]) {
+        visibility: hidden;
+      }
     }
 
     > .details {
