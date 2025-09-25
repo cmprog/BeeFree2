@@ -25,14 +25,28 @@ export class Bee extends EngineObject {
         this.renderOrder = 400;
 
         this.setCollision();
-
-        // Copy the set of attributes so we can 'own' them
+        
+        /**
+         * The base player attributes. We need to track the base attributes
+         * so we can revert the current attributes after sammy party time.
+         * @type {AttributeSet}
+         */
         this.baseAttributes = attributes.copy();
+
+        /**
+         * The current attributes of the bee. These attributes can change
+         * during sammy party time.
+         * @type {AttributeSet}
+         */
         this.attributes = attributes.copy();
         this.isSammyPartyTimeActive = false;
 
         this.refreshShootingBehavior();
 
+        /**
+         * The current health of the bee
+         * @type {number}
+         */
         this.health = attributes.maxHealth;
         this.previousPos = undefined;
         
@@ -63,21 +77,40 @@ export class Bee extends EngineObject {
         }
     }
 
+    /**
+     * Sets up the logic which applies during sammy paarty time.
+     */
     onOnSammyPartyTimeStarted() {        
 
         if (currentPlayer) {
+
+            const previousMaxHealth = this.attributes.maxHealth;
             this.attributes = this.baseAttributes.scale(currentPlayer.sammyAttributeMultipliers);
+            // Increase current health by the amount the max health increased
+            this.health += this.attributes.maxHealth - previousMaxHealth;
+
         } else {
             this.attributes = this.baseAttributes.copy();
         }
+
+        // Make sure the health isn't overflowing the max health
+        this.health = Math.min(this.health, this.attributes.maxHealth);
 
         this.refreshShootingBehavior();
 
         this.isSammyPartyTimeActive = true;
     }
 
+    /**
+     * Performs the logic which clears out bonuses from sammy party time.
+     */
     onSammyPartyTimeEnded() {
+
         this.attributes = this.baseAttributes.copy();
+
+        // Make sure the health isn't overflowing the max health
+        this.health = Math.min(this.health, this.attributes.maxHealth);
+
         this.isSammyPartyTimeActive = false;
     }
     

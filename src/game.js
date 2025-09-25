@@ -42,7 +42,8 @@ function gameInit() {
 
     new CloudGenerator()
 
-    MENUS.MAIN.open();     
+    // MENUS.MAIN.open();     
+    MENUS.SETTINGS.open();
 }
 
 ///////////////////////////////////////////////////////////////////////////////

@@ -15,8 +15,8 @@ export class MainMenu extends Menu {
         registerClick('#main-menu-shop', this.openMenu.bind(this, () => MENUS.SHOP));
         registerClick('#main-menu-statistics', this.openMenu.bind(this, () => MENUS.STATISTICS));
         registerClick('#main-menu-achivements', this.openMenu.bind(this, () => MENUS.ACHIVEMENTS));
-        registerClick('#main-menu-prestige', this.openMenu.bind(this, () => MENUS.PRESTIGE));
-        registerClick('#main-menu-reset-save', this.resetSave.bind(this));
+        registerClick('#main-menu-prestige', this.openMenu.bind(this, () => MENUS.PRESTIGE));        
+        registerClick('#main-menu-settings',this.openMenu.bind(this, () => MENUS.SETTINGS));
         registerClick('#main-menu-time-trial', this.startTimeTrial.bind(this));
     }
     
@@ -25,10 +25,6 @@ export class MainMenu extends Menu {
         const targetMenu = menuSelector();
         this.close();
         targetMenu.open();
-    }
-
-    resetSave() {
-        currentPlayer.reset();
     }
 
     startTimeTrial() {

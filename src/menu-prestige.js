@@ -3,7 +3,7 @@ import { MENUS } from "./menus.js";
 import { currentPlayer } from "./player.js";
 import { registerClick } from "./util.js";
 
-export class PrestigeMenu extends Menu{
+export class PrestigeMenu extends Menu {
 
     constructor() {
         super('#menu-prestige');

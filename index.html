@@ -27,7 +27,7 @@
       </div>    
 
       <div>
-        <button id="main-menu-reset-save" type="button">Reset Save</button>
+        <button id="main-menu-settings" type="button">Settings</button>
       </div>
     </div>
 
@@ -75,6 +75,39 @@
       <div class="content">
         <ul class="achivement-list">
         </ul>
+      </div>
+    </div>
+
+    <div id="menu-settings" class="menu menu-closed">
+      <div class="header">        
+        <div class="menu-title">Settings</div>
+        <button type="button" class="main-menu-return">Back to Menu</button>
+      </div>      
+      
+      <div class="content">
+        <div class="section section-debug">
+        <div class="section-header">
+          Debug
+        </div>
+        <button type="button" id="settings-debug-unlock-all-levels">Unlock All Levels</button>
+        <div>
+          <div class="label">Get Honeycomb</div>
+          <button type="button" data-honeycomb="100">100</button>
+          <button type="button" data-honeycomb="1000">1,000</button>
+          <button type="button" data-honeycomb="10000">10,000</button>
+          <button type="button" data-honeycomb="100000">100,000</button>
+        </div>
+        
+      </div>
+
+      <div class="section section-debug">
+        <div class="section-header">
+          Saves
+        </div>        
+        <div>This will completely wipe out your save file, starting from the beginning.</div>
+        <button type="button" id="settings-save-reset" data-confirmation-text="Are you sure?">Reset Save</button>
+      </div>
+        
       </div>
     </div>
 

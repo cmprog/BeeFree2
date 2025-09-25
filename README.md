@@ -11,8 +11,8 @@ Just a little game I made forever ago. I'm revamping it because my daughter enjo
 ### Planned Changes
 
 - Remove unused gamepd buttons
-- Prestige mechanics
-- Sammy powerups
+- ~~Prestige mechanics~~
+- ~~Sammy powerups~~
 - ~~Reduced honeycomb collection on death~~
 - Reflection chance attribute
 - ~~Bonus honeycomb on success criteria~~
@@ -24,4 +24,8 @@ Just a little game I made forever ago. I'm revamping it because my daughter enjo
 - Shielding attribute
     - Maximum damage reduction - Shield acts as damage reduction
     - Maximum shield amount - Shield has only so much life before it no longer works.
-- Distance calculation is not working.
+- ~~Distance calculation is not working.~~
+- Levels 7, 8, and 9 might have hidden birds
+- ~~Touching Sammy adds to max health making current health percentage drop~~
+- Enough stingers cause the stingers to go in a vertical line instead of an arc
+- Sammy time possibly slowing stingers?
