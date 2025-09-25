@@ -2,11 +2,18 @@ import { DoubleClickButton } from "./button.js";
 import { LEVELS } from "./levels.js";
 import { Menu } from "./menu.js";
 import { currentPlayer } from "./player.js";
+import { GAME_SETTINGS } from "./settings.js";
 import { registerClick } from "./util.js";
 
 export class SettingsMenu extends Menu {
     constructor() {
         super('#menu-settings');
+
+        if (!GAME_SETTINGS.IS_LOCAL_DEV_ENVIRONMENT) {
+            for (const el of this.element.querySelectorAll('.section-debug')) {
+                el.classList.add('hidden');
+            }        
+        }        
 
         for (const el of this.element.querySelectorAll('button[data-honeycomb]')) {            
             const honeycomb = Number(el.dataset['honeycomb'] || 0);
