@@ -71,3 +71,30 @@ export function registerClick(element, handler) {
         touchStartOn = undefined;
     });
 }
+
+export class Util {
+
+    /**
+     * Adds or removes a classname from an element.
+     * @param {HTMLElement} element 
+     * @param {string} classname 
+     * @param {boolean} flag 
+     */
+    static setClass(element, classname, flag) {
+        if (flag) {
+            element.classList.add(classname);
+        } else {
+            element.classList.remove(classname);
+        }
+    }
+
+    /**
+     * Removes all children from the given element.
+     * @param {HTMLElement} element
+     */
+    static removeAllChildren(element) {
+        while (element.firstChild) {
+            element.removeChild(element.lastChild);
+        }
+    }
+}

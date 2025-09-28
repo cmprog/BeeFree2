@@ -1,7 +1,6 @@
 import { currentPlayer } from './player.js'
 
 setMedalDisplaySize(vec2(300, 60));
-setMedalDisplayIconSize(55);
 
 class Achivement extends Medal {
     constructor(id, name, description, icon, src, data) {
@@ -55,40 +54,6 @@ class Achivement extends Medal {
         currentPlayer.save();
 
         medalsDisplayQueue.push(this);
-    }
-
-    render(hidePercent=0) {
-        
-        // Overriding the super logic because it doesn't scale properly when the `medalDisplaySize` and `medalDisplayIconSize`
-        // settings are changed from their default values.
-
-        const context = overlayContext;
-        const width = min(medalDisplaySize.x, mainCanvas.width);
-        const x = overlayCanvas.width - width;
-        const y = -medalDisplaySize.y*hidePercent;
-
-        // draw containing rect and clip to that region
-        context.save();
-        context.beginPath();
-        context.fillStyle = new Color(.9,.9,.9).toString();
-        context.strokeStyle = new Color(0,0,0).toString();
-        context.lineWidth = 3;
-        context.rect(x, y, width, medalDisplaySize.y);
-        context.fill();
-        context.stroke();
-        context.clip();
-
-        const defaultMedalDisplayX = 640;
-        const defaultMedalDisplayY = 80;
-        const defaultDisplayIconSize = 50;
-
-        // draw the icon and text
-        this.renderIcon(vec2(x+(15 / defaultDisplayIconSize)+medalDisplayIconSize/2, y+medalDisplaySize.y/2));
-        const pos = vec2(x+medalDisplayIconSize + (30 / defaultMedalDisplayX), y+medalDisplayIconSize * (28 / defaultMedalDisplayY));
-        drawTextScreen(this.name, pos, medalDisplayIconSize * (38 / defaultMedalDisplayY), new Color(0,0,0), 0, undefined, 'left');
-        pos.y += medalDisplayIconSize * (32 / defaultMedalDisplayY);
-        drawTextScreen(this.description, pos, medalDisplayIconSize * (24 / defaultMedalDisplayY), new Color(0,0,0), 0, undefined, 'left');
-        context.restore();
     }
 }
 

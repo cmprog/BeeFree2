@@ -76,7 +76,7 @@ function gameRenderPost()
 {
     // called after objects are rendered
     // draw effects or hud that appear above all objects
-    // drawTextScreen('Hello World!', mainCanvasSize.scale(.5), 80);
+    // drawTextScreen('Hello World!', mainCanvasSize.scale(.5), 80);    
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -91,6 +91,7 @@ const imagesSources = [
     'img/gem_red.png',
     'img/gem_blue.png',
     'img/gem_gold.png',
+    'img/borders/Ram Border All.png',
 ];
 
 engineInit(gameInit, gameUpdate, gameUpdatePost, gameRender, gameRenderPost, imagesSources);

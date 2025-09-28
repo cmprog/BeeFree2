@@ -1,10 +1,7 @@
 import { AttributeSet, LevelAttributeSet } from "./attributes.js";
-import { Bee } from "./bee.js";
-import { LEVELS } from "./levels.js";
 import { logDebug, logError } from "./logging.js";
 import { PlayerLevel } from "./player-level.js";
 import { DEFAULT_BEE_ATTRIBUTES, DEFAULT_LEVEL_ATTRIBUTES, DEFAULT_SAMMY_ATTRIBUTE_MULTIPLIERS, GAME_SETTINGS, PRESTIGE_BONUS_RATE } from "./settings.js";
-import { SingleBulletShooting } from "./shooting.js";
 import { StatisticsSet, TimeTrialStatistics } from "./statistics.js";
 import { today } from "./util.js";
 
@@ -85,13 +82,33 @@ export class Player {
          */
         this.levels = new Map();
         this.achivements = {};
+        
+        /**
+         * The standard shop purchases which have been purchased by the player.
+         * The value represents the current level of the purchase.
+         * @type {Object.<string, number>}
+         */
         this.shopPurchases = { };
+
+        /**
+         * The shop purchases which have been purchased which are
+         * forever purcahses - these don't reset on prestige.
+         * @type {Object.<string, number>}
+         */
+        this.foreverShopPurchases = {};
 
         this.overallStatistics = new StatisticsSet();
         this.prestigeStatistics = new StatisticsSet();
 
         this.dailyTimeTrialStatistics = new TimeTrialStatistics();
         this.overallTimeTrailStatistics = new TimeTrialStatistics();
+
+        /**
+         * Whether or not birds explode on kill. If undefined it means the feature
+         * has not been purchased yet in the shop.
+         * @type {boolean | undefined}
+         */
+        this.birdsExplodeOnKill = undefined;
 
         this.markLevelAvailable(0);    
     }
@@ -222,7 +239,7 @@ export class Player {
             value.onPrestige();
         }
 
-        // Reset all shop purchases
+        // Reset all standard shop purchases
         this.shopPurchases = { };
 
         // Be sure to unlock the first level
@@ -371,6 +388,9 @@ export class Player {
 
             achivements: this.achivements,            
             shopPurchases: this.shopPurchases,
+            foreverShopPurchases: this.foreverShopPurchases,
+
+            birdsExplodeOnKill: this.birdsExplodeOnKill,
 
             overallStatistics: this.overallStatistics.toSaveObj(),
             prestigeStatistics: this.prestigeStatistics.toSaveObj(),
@@ -449,12 +469,21 @@ export class Player {
             }
         }
 
+        this.foreverShopPurchases = { };
+        if (saveObj.foreverShopPurchases) {
+            for (const key of Object.keys(saveObj.foreverShopPurchases)) {
+                this.foreverShopPurchases[key] = saveObj.foreverShopPurchases[key];
+            }
+        }
+
         this.achivements = { };
         if (saveObj.achivements) {            
             for (const key of Object.keys(saveObj.achivements)) {
                 this.achivements[key] = saveObj.achivements[key];
             }
         }
+
+        this.birdsExplodeOnKill = saveObj.birdsExplodeOnKill;
 
         this.overallStatistics.loadSaveObj(saveObj.overallStatistics);
         this.prestigeStatistics.loadSaveObj(saveObj.prestigeStatistics);

@@ -2,27 +2,38 @@
 @import url('./menus-common.css');
 
 #menu-shop {
+
+  .section-header {
+    width: 50%;
+    border: 1px solid black;
+    background-color: white;
+    text-align: center;
+    border-radius: var(--spacing-default);
+    margin: 5px auto;
+    font-size: 26px;
+  }
+
+  .shop-item-list {    
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: var(--spacing-default);
+  }
+
   .shop-item {
     border: 1px solid black;
-    border-radius: var(--spacing-default);
-    margin: var(--spacing-default);
     display: flex;
-    gap: var(--spacing-default);
     flex-direction: row;
+    gap: var(--spacing-default);
+    padding: var(--spacing-default);
+    width: calc(50% - var(--spacing-default));
     background-color: var(--color-card-background);
 
-    > img {
-      flex: 0 0 auto;
-      width: 128px;
-      height: 128px;
-      border: 0px;
-
-      &:not([src]) {
-        visibility: hidden;
-      }
+    > div {
+      width: 100%;
     }
 
-    > .details {
+    .details {
       flex: 1 1 auto;
       display: flex;
       flex-direction: column;
@@ -38,12 +49,22 @@
     .description {
       font-size: 22px;
     }
+  }
 
-    > .purchase {
-      flex: 0 0 auto;
-      font-size: 20px;
-      width: 128px;  
-      margin: 20px;    
-    }
+  .shop-item-footer {
+    display: flex;
+    flex-direction: row;
+    gap: var(--spacing-default);
+  }
+  
+  .attribute-container {
+    flex: 1 1 auto;
+    align-self: center;
+  }
+
+  .purchase {
+    flex: 0 0 auto;
+    font-size: 20px;
+    width: 128px;  
   }
 }

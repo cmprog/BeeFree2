@@ -2,7 +2,54 @@ import { appendChildHtml } from './html.js';
 import { Menu } from './menu.js'
 import { currentPlayer } from './player.js';
 import { DEFAULT_BEE_ATTRIBUTES, DEFAULT_LEVEL_ATTRIBUTES, DEFAULT_SAMMY_ATTRIBUTE_MULTIPLIERS } from './settings.js';
-import { registerClick } from './util.js';
+import { registerClick, Util } from './util.js';
+
+/**
+ * @typedef {object} ShopItemCanPurchaseResult
+ * @property {boolean} canPurchase Whether or not the user can purchase the item.
+ * @property {string} reason A user facing justification for why they cannot purchase the item.
+ */
+
+/**
+ * @typedef {object} ShopItemCategory
+ * @property {string} name
+ * @property {string} title
+ */
+
+const ShopItemCategory = Object.freeze({
+    
+    /**
+     * @type {ShopItemCategory}
+     */
+    ATTRIBUTE: { 
+        name: 'Attribute',
+        title: `Get Swole`,
+    },
+
+    /**
+     * @type {ShopItemCategory}
+     */
+    SAMMY: { 
+        name: 'Sammy', 
+        title: `Sammy (the party animal)`,
+    },
+
+    /**
+     * @type {ShopItemCategory}
+     */
+    PARTY_SUPPLY: { 
+        name: 'Party Supply', 
+        title: `Party Supplies`,
+    },
+
+    /**
+     * @type {ShopItemCategory}
+     */
+    COSMETIC: { 
+        name: 'Cosmetic', 
+        title: `Cosmetics`,
+    },
+});
 
 class ShopItemDescriptor {
     constructor() {
@@ -14,6 +61,35 @@ class ShopItemDescriptor {
          * @type {string}
          */
         this.description = '';
+
+        /**
+         * @type {ShopItemCategory}
+         */
+        this.category = ShopItemCategory.ATTRIBUTE;
+
+        /**
+         * Whether or not purchasing the item is 'forever' - meaning
+         * it persists across prestiges.
+         */
+        this.isForever = false;
+
+        /**
+         * @callback ShopItemCanPurchaseCallback
+         * @param {string} itemKey
+         * @param {ShopItemDescriptor} descriptor
+         * @param {number} nextLevel
+         * @param {number} nextLevelValue
+         * @returns {ShopItemCanPurchaseResult}
+         */
+
+        /**
+         * Custom callback method for checking if a shop item can be purchased.
+         * This is not for things like if the player has enough money (though it can
+         * be used for that type of checking). Its generally intended for clamping
+         * the number of purchases for things like cosmetics.
+         * @type {ShopItemCanPurchaseCallback}
+         */
+        this.canPurchase = undefined;
 
         /**
          * @callback ShopItemPurchasedCallback
@@ -58,6 +134,17 @@ class ShopItemDescriptor {
     }
 
     /**
+     * Returns the set from the player based on whether the item
+     * is forever or not.
+     * @type {Object.<string, number>}
+     */
+    getShopPurchaseSet() {
+        return this.isForever 
+            ? currentPlayer.foreverShopPurchases 
+            : currentPlayer.shopPurchases;
+    }
+
+    /**
      * @callback ConfigureShopItemDescriptorCallback
      * @param {ShopItemDescriptor}
      */
@@ -89,6 +176,7 @@ class ShopItemDescriptorSet {
             desc.costGrowth = 1.4;
             desc.valueBase = DEFAULT_BEE_ATTRIBUTES.speed;
             desc.valueGrowthMultiplier = 0.025;
+            desc.category = ShopItemCategory.ATTRIBUTE;
         });         
 
         this.BULLET_RATE = ShopItemDescriptor.create(desc => {
@@ -104,6 +192,7 @@ class ShopItemDescriptorSet {
             desc.costGrowth = 1.80;
             desc.valueBase = DEFAULT_BEE_ATTRIBUTES.fireRate;
             desc.valueGrowthMultiplier = 0.1;
+            desc.category = ShopItemCategory.ATTRIBUTE;
         });
 
         this.BULLET_DAMAGE = ShopItemDescriptor.create(desc => {
@@ -119,6 +208,7 @@ class ShopItemDescriptorSet {
             desc.costGrowth = 1.5;
             desc.valueBase = DEFAULT_BEE_ATTRIBUTES.damage;
             desc.valueGrowthMultiplier = 0.5;
+            desc.category = ShopItemCategory.ATTRIBUTE;
         });
 
         this.BULLET_MULTISHOT = ShopItemDescriptor.create(desc => {
@@ -134,6 +224,7 @@ class ShopItemDescriptorSet {
             desc.costGrowth = 3;
             desc.valueBase = DEFAULT_BEE_ATTRIBUTES.shotCount;
             desc.valueGrowthMultiplier = 1;
+            desc.category = ShopItemCategory.ATTRIBUTE;
         });
 
         this.BULLET_SPEED = ShopItemDescriptor.create(desc => {
@@ -149,6 +240,7 @@ class ShopItemDescriptorSet {
             desc.costGrowth = 1.6;
             desc.valueBase = DEFAULT_BEE_ATTRIBUTES.bulletSpeed;
             desc.valueGrowthMultiplier = 0.025;
+            desc.category = ShopItemCategory.ATTRIBUTE;
         });
 
         this.HONEYCOMB_MAGNET = ShopItemDescriptor.create(desc => {
@@ -164,6 +256,7 @@ class ShopItemDescriptorSet {
             desc.costGrowth = 1.70;
             desc.valueBase = DEFAULT_BEE_ATTRIBUTES.honeycombAttraction;
             desc.valueGrowthMultiplier = 0.02;
+            desc.category = ShopItemCategory.ATTRIBUTE;
         });
 
         this.HONEYCOMB_MAGNET_DISTANCE = ShopItemDescriptor.create(desc => {
@@ -179,6 +272,7 @@ class ShopItemDescriptorSet {
             desc.costGrowth = 1.95;
             desc.valueBase = DEFAULT_BEE_ATTRIBUTES.honeycombAttractionDistance;
             desc.valueGrowthMultiplier = 0.8;
+            desc.category = ShopItemCategory.ATTRIBUTE;
         });
 
         this.BEE_HEALTH = ShopItemDescriptor.create(desc => {
@@ -194,6 +288,7 @@ class ShopItemDescriptorSet {
             desc.costGrowth = 1.1;
             desc.valueBase = DEFAULT_BEE_ATTRIBUTES.maxHealth;
             desc.valueGrowthMultiplier = 1;
+            desc.category = ShopItemCategory.ATTRIBUTE;
         });
 
         this.BEE_HEALTH_REGEN = ShopItemDescriptor.create(desc => {
@@ -209,6 +304,7 @@ class ShopItemDescriptorSet {
             desc.costGrowth = 1.2;
             desc.valueBase = DEFAULT_BEE_ATTRIBUTES.healthRegen;
             desc.valueGrowthMultiplier = 0.1;
+            desc.category = ShopItemCategory.ATTRIBUTE;
         });
 
         this.CRIT_CHANCE = ShopItemDescriptor.create(desc => {
@@ -224,6 +320,7 @@ class ShopItemDescriptorSet {
             desc.costGrowth = 1.2;
             desc.valueBase = DEFAULT_BEE_ATTRIBUTES.critChance;
             desc.valueGrowthMultiplier = 0.05;
+            desc.category = ShopItemCategory.ATTRIBUTE;
         });
 
         this.CRIT_MULTIPLIER = ShopItemDescriptor.create(desc => {
@@ -239,6 +336,7 @@ class ShopItemDescriptorSet {
             desc.costGrowth = 1.2;
             desc.valueBase = DEFAULT_BEE_ATTRIBUTES.critMultiplier;
             desc.valueGrowthMultiplier = 0.1;
+            desc.category = ShopItemCategory.ATTRIBUTE;
         });
 
         this.SAMMY_CHANCE = ShopItemDescriptor.create(desc => {
@@ -254,6 +352,7 @@ class ShopItemDescriptorSet {
             desc.costGrowth = 1.2;
             desc.valueBase = DEFAULT_LEVEL_ATTRIBUTES.sammyChance;
             desc.valueGrowthMultiplier = 0.1;
+            desc.category = ShopItemCategory.SAMMY;
         });
 
         this.SAMMY_DURATION = ShopItemDescriptor.create(desc => {
@@ -269,6 +368,7 @@ class ShopItemDescriptorSet {
             desc.costGrowth = 2;
             desc.valueBase = DEFAULT_LEVEL_ATTRIBUTES.sammyDuration;
             desc.valueGrowthMultiplier = 1;
+            desc.category = ShopItemCategory.SAMMY;
         });
 
         this.SAMMY_SPEED = ShopItemDescriptor.create(desc => {
@@ -284,6 +384,7 @@ class ShopItemDescriptorSet {
             desc.costGrowth = 1.9;
             desc.valueBase = DEFAULT_LEVEL_ATTRIBUTES.sammyDuration;
             desc.valueGrowthMultiplier = 0.01;
+            desc.category = ShopItemCategory.SAMMY;
         });
 
         this.SAMMY_BEE_SPEED_MULTI = ShopItemDescriptor.create(desc => {
@@ -299,6 +400,7 @@ class ShopItemDescriptorSet {
             desc.costGrowth = 1.4;
             desc.valueBase = DEFAULT_SAMMY_ATTRIBUTE_MULTIPLIERS.speed;
             desc.valueGrowthMultiplier = 0.1;
+            desc.category = ShopItemCategory.PARTY_SUPPLY;
         });         
 
         this.SAMMY_BULLET_RATE_MULTI = ShopItemDescriptor.create(desc => {
@@ -314,6 +416,7 @@ class ShopItemDescriptorSet {
             desc.costGrowth = 1.80;
             desc.valueBase = DEFAULT_SAMMY_ATTRIBUTE_MULTIPLIERS.fireRate;
             desc.valueGrowthMultiplier = 0.1;
+            desc.category = ShopItemCategory.PARTY_SUPPLY;
         });
 
         this.SAMMY_BULLET_DAMAGE_MULTI = ShopItemDescriptor.create(desc => {
@@ -329,6 +432,7 @@ class ShopItemDescriptorSet {
             desc.costGrowth = 1.5;
             desc.valueBase = DEFAULT_SAMMY_ATTRIBUTE_MULTIPLIERS.damage;
             desc.valueGrowthMultiplier = 0.1;
+            desc.category = ShopItemCategory.PARTY_SUPPLY;
         });
 
         this.SAMMY_BULLET_MULTISHOT_MULTI = ShopItemDescriptor.create(desc => {
@@ -344,6 +448,7 @@ class ShopItemDescriptorSet {
             desc.costGrowth = 3;
             desc.valueBase = DEFAULT_SAMMY_ATTRIBUTE_MULTIPLIERS.shotCount;
             desc.valueGrowthMultiplier = 0.1;
+            desc.category = ShopItemCategory.PARTY_SUPPLY;
         });
 
         this.SAMMY_BULLET_SPEED_MULTI = ShopItemDescriptor.create(desc => {
@@ -359,6 +464,7 @@ class ShopItemDescriptorSet {
             desc.costGrowth = 1.6;
             desc.valueBase = DEFAULT_SAMMY_ATTRIBUTE_MULTIPLIERS.bulletSpeed;
             desc.valueGrowthMultiplier = 0.1;
+            desc.category = ShopItemCategory.PARTY_SUPPLY;
         });
 
         this.SAMMY_HONEYCOMB_MAGNET_MULTI = ShopItemDescriptor.create(desc => {
@@ -374,6 +480,7 @@ class ShopItemDescriptorSet {
             desc.costGrowth = 1.42;
             desc.valueBase = DEFAULT_SAMMY_ATTRIBUTE_MULTIPLIERS.honeycombAttraction;
             desc.valueGrowthMultiplier = 0.1;
+            desc.category = ShopItemCategory.PARTY_SUPPLY;
         });
 
         this.SAMMY_HONEYCOMB_MAGNET_DISTANCE_MULTI = ShopItemDescriptor.create(desc => {
@@ -389,6 +496,7 @@ class ShopItemDescriptorSet {
             desc.costGrowth = 1.4;
             desc.valueBase = DEFAULT_SAMMY_ATTRIBUTE_MULTIPLIERS.honeycombAttractionDistance;
             desc.valueGrowthMultiplier = 0.1;
+            desc.category = ShopItemCategory.PARTY_SUPPLY;
         });
 
         this.SAMMY_BEE_HEALTH_MULTI = ShopItemDescriptor.create(desc => {
@@ -404,6 +512,7 @@ class ShopItemDescriptorSet {
             desc.costGrowth = 1.25;
             desc.valueBase = DEFAULT_SAMMY_ATTRIBUTE_MULTIPLIERS.maxHealth;
             desc.valueGrowthMultiplier = 0.1;
+            desc.category = ShopItemCategory.PARTY_SUPPLY;
         });
 
         this.SAMMY_BEE_HEALTH_REGEN_MULTI = ShopItemDescriptor.create(desc => {
@@ -419,6 +528,7 @@ class ShopItemDescriptorSet {
             desc.costGrowth = 1.3;
             desc.valueBase = DEFAULT_SAMMY_ATTRIBUTE_MULTIPLIERS.healthRegen;
             desc.valueGrowthMultiplier = 0.1;
+            desc.category = ShopItemCategory.PARTY_SUPPLY;
         });
 
         this.SAMMY_CRIT_CHANCE_MULTI = ShopItemDescriptor.create(desc => {
@@ -434,6 +544,7 @@ class ShopItemDescriptorSet {
             desc.costGrowth = 1.45;
             desc.valueBase = DEFAULT_SAMMY_ATTRIBUTE_MULTIPLIERS.critChance;
             desc.valueGrowthMultiplier = 0.05;
+            desc.category = ShopItemCategory.PARTY_SUPPLY;
         });
 
         this.SAMMY_CRIT_MULTIPLIER_MULTI = ShopItemDescriptor.create(desc => {
@@ -449,6 +560,34 @@ class ShopItemDescriptorSet {
             desc.costGrowth = 1.4;
             desc.valueBase = DEFAULT_SAMMY_ATTRIBUTE_MULTIPLIERS.critMultiplier;
             desc.valueGrowthMultiplier = 0.1;
+            desc.category = ShopItemCategory.PARTY_SUPPLY;
+        });
+
+        // ===============================================================
+        // COSMETICS
+        // ===============================================================
+
+        this.SOMETHING = ShopItemDescriptor.create(desc => {
+            desc.title = 'Exploding Birds';
+            desc.description = 'Causes the birds to explode when you shoot them. Very satisfying.';
+            desc.canPurchase = (key, descriptor, nextLevel, nextLevelValue) => {
+                return {
+                    canPurchase: nextLevel < 2,
+                    reason: 'Max Level',
+                }
+            },
+            desc.onPurchased = (itemKey, itemData, levelKey, levelData) => {
+                currentPlayer.birdsExplodeOnKill = true;
+            };
+            desc.formatDisplayValue = (value) => {            
+                return value == 0 ? "no explosion" : 'explosiion';
+            };
+            desc.costBase = 5000;
+            desc.costGrowth = 1.4;
+            desc.valueBase = 0;
+            desc.valueGrowthMultiplier = 1;
+            desc.category = ShopItemCategory.COSMETIC;
+            desc.isForever = true;
         });
     }
 }
@@ -459,28 +598,47 @@ class ShopItem {
 
         this.shopMenu = shopMenu;
 
+        /**
+         * @type {string}
+         */
         this.key = key;
+
+        /**
+         * @type {ShopItemDescriptor}
+         */
         this.data = data;
+        
+        /**
+         * @type {number}
+         */
         this.currentLevel = 0;
 
+        /**
+         * @type {boolean}
+         */
+        this.isDisabled = true;
+
         const templateHtml = `
-            <div class="shop-item">
-                <img />
+            <div>
                 <div class="details">
                     <div class="title">${this.data.title}</div>
                     <div class="description">${this.data.description}</div>
+                </div>
+                <div class="shop-item-footer">           
                     <div class="attribute-container">
                         <span>From</span>
                         <span class="attribute-value attribute-current"></span>
                         <span>to</span>
                         <span class="attribute-value attribute-next"></span>
                     </div>
+                    <button type="button" class="purchase"></button>
                 </div>
-                <button type="button" class="purchase"></button>
+                
             </div>
         `;
 
         this.listItemEl = document.createElement('li');
+        this.listItemEl.classList.add('shop-item');
         appendChildHtml(this.listItemEl, templateHtml);
 
         this.currentValueEl = this.listItemEl.querySelector('.attribute-value.attribute-current');
@@ -491,6 +649,8 @@ class ShopItem {
     }
 
     onPurchaseButtonClick() {
+
+        if (this.isDisabled) return;
 
         if (this.purchaseButtonTimeout) {
 
@@ -547,7 +707,10 @@ class ShopItem {
 
         this.currentLevel += 1;        
         const newValue = this.computeValue();
-        currentPlayer.shopPurchases[this.key] = this.currentLevel;
+
+        const shopPurchases = this.data.getShopPurchaseSet();
+        shopPurchases[this.key] = this.currentLevel;
+        
         this.data.onPurchased(this.key, this.data, this.currentLevel, newValue);
 
         currentPlayer.onShopUpgradePurchased();
@@ -558,25 +721,38 @@ class ShopItem {
     }
 
     refresh() {
+        
+        const shopPurchases = this.data.getShopPurchaseSet();
 
-        if (currentPlayer.shopPurchases && currentPlayer.shopPurchases.hasOwnProperty(this.key)) {            
-            this.currentLevel = currentPlayer.shopPurchases[this.key];
+        if (shopPurchases && shopPurchases.hasOwnProperty(this.key)) {            
+            this.currentLevel = shopPurchases[this.key];
         } else {
             this.currentLevel = 0;
         }
 
-        const formatValue = this.data.formatDisplayValue || ((value) => value.toString());        
-
-        this.currentValueEl.innerText = formatValue(this.computeValue(this.currentLevel));
-        this.nextValueEl.innerText = formatValue(this.computeValue(this.currentLevel + 1));
-            
-        while (this.purchaseButton.firstChild) {
-            this.purchaseButton.removeChild(this.purchaseButton.lastChild);
-        }
+        const formatValue = this.data.formatDisplayValue || ((value) => value.toString());    
         
-        this.purchaseButton.appendChild(document.createTextNode(this.computePrice()));
-        this.purchaseButton.appendChild(document.createElement('br'));
-        this.purchaseButton.appendChild(document.createTextNode('honeycomb'));
+        const currentLevelValue = this.computeValue(this.currentLevel);
+        const nextLevelValue = this.computeValue(this.currentLevel + 1);
+
+        this.currentValueEl.innerText = formatValue(currentLevelValue);
+        this.nextValueEl.innerText = formatValue(nextLevelValue);
+           
+        const canPurchase = this.data.canPurchase || (() => { return { canPurchase: true, reason: '' } });
+        const canPurchaseResult = canPurchase(this.key, this.data, this.currentLevel + 1, nextLevelValue);
+
+        this.isDisabled = !canPurchaseResult.canPurchase;
+        
+        Util.setClass(this.listItemEl, 'disabled', this.isDisabled);
+        Util.removeAllChildren(this.purchaseButton);
+
+        if (this.isDisabled) {
+            this.purchaseButton.appendChild(document.createTextNode(canPurchaseResult.reason));
+        } else {
+            this.purchaseButton.appendChild(document.createTextNode(this.computePrice()));
+            this.purchaseButton.appendChild(document.createElement('br'));
+            this.purchaseButton.appendChild(document.createTextNode('honeycomb'));
+        }
     }
 }
 
@@ -586,26 +762,50 @@ export class ShopMenu extends Menu {
     constructor() {
         super('#menu-shop')
 
-        const itemsListEl = this.element.querySelector('.items');
+        const menuContentEl = this.element.querySelector('.content');
 
         /**
          * @type {Array.<ShopItem>}
          */
-        this.shopItems = [];
+        this.allShopItems = [];        
 
-        for (const shopItemKey of Object.keys(SHOP_ITEMS)) {
+        for (const categoryKey of Object.keys(ShopItemCategory)) {
 
-            const shopItemData = SHOP_ITEMS[shopItemKey];
-            const shopItem = new ShopItem(this, shopItemKey, shopItemData);
+            /**
+             * @type {ShopItemCategory}
+             */
+            const category = ShopItemCategory[categoryKey];
+            
+            const templateHtml = `
+                <div class="section">
+                    <div class="section-header">${category.title}</div>
+                    <ol class="shop-item-list"></ol>
+                </div>
+            `;
 
-            itemsListEl.appendChild(shopItem.listItemEl);
+            const sectionEl = appendChildHtml(menuContentEl, templateHtml);
+            const listEl = sectionEl.querySelector('.shop-item-list');
 
-            this.shopItems.push(shopItem);
+            for (const shopDescriptorKey of Object.keys(SHOP_ITEMS)) {
+
+                /**
+                 * @type {ShopItemDescriptor}
+                 */
+                const descriptor = SHOP_ITEMS[shopDescriptorKey];
+
+                if (descriptor.category != category) continue;                
+
+                const shopItem = new ShopItem(this, shopDescriptorKey, descriptor);
+
+                listEl.appendChild(shopItem.listItemEl);
+
+                this.allShopItems.push(shopItem);
+            }
         }
     }
 
     onOpening() {
-        for (const shopItem of this.shopItems) {
+        for (const shopItem of this.allShopItems) {
             shopItem.refresh();
         }
 

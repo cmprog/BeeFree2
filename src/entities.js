@@ -38,7 +38,7 @@ export class ProgressBar extends EngineObject {
         this.backgroundColor = RED;
 
         this.currentHealthObj = new EngineObject();
-        this.currentHealthObj.size = vec2(this.size);
+        this.currentHealthObj.size = this.size.copy();
         this.addChild(this.currentHealthObj, vec2(0, 0));
 
         this.value = 0;

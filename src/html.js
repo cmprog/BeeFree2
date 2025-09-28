@@ -4,6 +4,7 @@
  * 
  * @param {HTMLElement} element The element to which the html should be appended.
  * @param {string} html The raw html text to be appended to the element.
+ * @return {HTMLElement} The appended child.
  */
 export function appendChildHtml(element, html) {
 
@@ -13,5 +14,5 @@ export function appendChildHtml(element, html) {
     // from new lines in multi-line string literals.
     templateEl.innerHTML = html.trim();
 
-    element.appendChild(templateEl.content.firstChild);
+    return element.appendChild(templateEl.content.firstChild);
 };
