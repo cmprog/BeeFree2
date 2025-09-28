@@ -1,5 +1,5 @@
 import { RENDER_LAYERS } from "./layers.js";
-import { spriteAtlas } from "./sprites.js";
+import { BorderInfo, spriteAtlas } from "./sprites.js";
 import { FONTS, rgb255 } from "./util.js";
 
 export const EntityType = Object.freeze({
@@ -34,38 +34,66 @@ export class ProgressBar extends EngineObject {
         
         this.size = vec2(3, 0.3);
 
+        /**
+         * @type {Color}
+         */
         this.foregroundColor = GREEN;
+
+        /**
+         * @type {Color}
+         */
         this.backgroundColor = RED;
 
-        this.currentHealthObj = new EngineObject();
-        this.currentHealthObj.size = this.size.copy();
-        this.addChild(this.currentHealthObj, vec2(0, 0));
+        /**
+         * @type {Color}
+         */
+        this.borderColor = BLACK;
 
         this.value = 0;
 
         this.shouldRender = true;
+
+        /**
+         * @type {BorderInfo}
+         */
+        this.borderStyle = undefined;
     }
 
     update() {
-
-        this.color = this.backgroundColor;
         this.renderOrder = RENDER_LAYERS.HUD;
+    }
 
-        this.currentHealthObj.renderOrder = this.renderOrder + 1;
-        this.currentHealthObj.color = this.foregroundColor;
-       
-        const clampedValue = clamp(this.value, 0, 1);
-        this.currentHealthObj.size = vec2(this.size.x * clampedValue, this.size.y);
-        this.currentHealthObj.localPos.x = (-this.size.x / 2) * (1 - clampedValue);
+    render() {
 
-        if (this.shouldRender) {
-            this.currentHealthObj.drawSize = undefined;
-            this.drawSize = undefined;
-        } else {
-            // Setting the draw size to 0 is simple approach
-            this.currentHealthObj.drawSize = vec2(0);
-            this.drawSize = vec2(0);
+        if (!this.shouldRender) {
+            return;
         }
+
+        let contentSize;
+
+        if (this.borderStyle) {
+
+            const borderStyle = this.borderStyle;
+            borderStyle.drawNineSlice(this.pos, this.size, this.borderColor);
+            borderStyle.fillNineSlice(this.pos, this.size, this.backgroundColor);
+
+            contentSize = this.size.subtract(vec2(borderStyle.getBorderPadding()));
+
+        } else {
+
+            drawRect(this.pos, this.size, this.borderColor);
+           
+            const borderSize = vec2(1 / cameraScale);
+            contentSize = this.size.subtract(borderSize.scale(2));
+
+            drawRect(this.pos, contentSize, this.backgroundColor);
+        }
+
+        const clampedValue = clamp(this.value, 0, 1);
+        const valueSize = vec2(contentSize.x * clampedValue, contentSize.y);
+        const valuePos = this.pos.add(vec2((-contentSize.x / 2) * (1 - clampedValue), 0));
+        
+        drawRect(valuePos, valueSize, this.foregroundColor);
     }
 }
 
@@ -95,10 +123,10 @@ export class LevelScoreTracker extends EngineObject {
         const topRight = vec2(this.pos.x + halfSize.x, this.pos.y + halfSize.y);
         const bottomLeft = vec2(this.pos.x - halfSize.x, this.pos.y - halfSize.y);
         const bottomRight = vec2(this.pos.x + halfSize.x, this.pos.y - halfSize.y);
-
+           
         drawRect(this.pos, this.size, rgb255(255, 255, 255, 128));
 
-        const lineThickness = 0.05;
+        const lineThickness = 3 / cameraScale;
 
         drawLine(topLeft, topRight, lineThickness, BLACK);
         drawLine(topLeft, bottomLeft, lineThickness, BLACK);

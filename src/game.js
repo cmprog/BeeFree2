@@ -1,6 +1,6 @@
 'use strict';
 
-import { initSpriteAtlas } from "./sprites.js";
+import { initSpriteAtlas, spriteAtlas } from "./sprites.js";
 import { initMenus, MENUS } from "./menus.js";
 import { CloudGenerator } from "./cloud.js";
 import { currentLevel, initLevels } from "./levels.js";

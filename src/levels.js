@@ -229,6 +229,8 @@ class StandardLevel extends Level {
 
         this.timeRemainingBar = this.trackObj(new ProgressBar());
         this.timeRemainingBar.size = vec2(10, 1.0);
+        this.timeRemainingBar.borderColor = YELLOW;
+        this.timeRemainingBar.borderStyle = spriteAtlas.borders.flat.style11;
         this.timeRemainingBar.renderOrder = RENDER_LAYERS.HUD;
 
         this.scoreTracker = this.trackObj(new LevelScoreTracker());

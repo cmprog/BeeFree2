@@ -19,7 +19,10 @@ export class Bee extends EngineObject {
         super(vec2(0, 0), vec2(2, 2)); 
         this.entityType = EntityType.BEE;
 
-        this.healthBar = new ProgressBar();
+        /**
+         * @type {ProgressBar}
+         */
+        this.healthBar = new ProgressBar();      
         this.addChild(this.healthBar, vec2(0, 1));
 
         this.renderOrder = 400;
