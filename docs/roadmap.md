@@ -40,8 +40,6 @@ What's next for BeeFree. Finished work is recorded in [changelog/](changelog/), 
 
 ## Code cleanup
 
-- **Split `src/birds.js`.** Move the bird templates (`BIRD_TEMPLATES`) into their own file, the way
-  `level-list.js` holds the levels.
 - **Startup-only variables.** `BIRD_TEMPLATES`, `FORMATIONS`, `LEVELS` and `spriteAtlas` are only
   filled in by `init*()` calls at startup. Now that LittleJS loads before any module, some could
   probably become plain constants built when their module loads. Check first whether they need

@@ -1,5 +1,6 @@
 import { Bee } from "./bee.js";
-import { BIRD_TEMPLATES, BirdTemplate } from "./birds.js";
+import { BIRD_TEMPLATES } from "./bird-templates.js";
+import { BirdTemplate } from "./birds.js";
 import { LevelScoreTracker, ProgressBar } from "./entities.js";
 import { RENDER_LAYERS } from "./layers.js";
 import { logDebug, logInfo } from "./logging.js";

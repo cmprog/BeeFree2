@@ -61,7 +61,7 @@ revamped because the author's daughter plays it. Deployed to GitHub Pages from t
 - `src/game.js` is the entry point (`engineInit`, image list, init order).
 - Gameplay entities are on the canvas (`bee.js`, `birds.js`, `owl.js` = Sammy, `bullet.js`,
   `honeycomb.js`, `entities.js` for HUD pieces). Bird behavior is split into templates
-  (`BirdTemplate` in `birds.js`) with movement behaviors (`movement.js`) and shooting behaviors (`shooting.js`).
+  (the `BirdTemplate` builder in `birds.js`; every bird type is defined in `bird-templates.js`) with movement behaviors (`movement.js`) and shooting behaviors (`shooting.js`).
 - Levels:
   - `level-list.js` holds `LEVELS`, the scripted levels, written with the fluent `LevelDefinition`
     builder (`level-definition.js`) and the reusable formations in `formations.js`. Spawn plumbing

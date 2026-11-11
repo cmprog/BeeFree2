@@ -1,4 +1,5 @@
-import { BIRD_TEMPLATES, Bird, BirdTemplate } from './birds.js';
+import { BIRD_TEMPLATES } from './bird-templates.js';
+import { Bird, BirdTemplate } from './birds.js';
 import { DoubleClickButton } from './button.js';
 import { attachHat } from './hat-attachment.js';
 import {

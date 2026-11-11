@@ -8,7 +8,7 @@ import { initLevels } from "./level-list.js";
 import { currentLevel } from "./levels.js";
 import { initLogging, logDebug, logError, logInfo } from "./logging.js";
 import { reloadAchivements, tryUnlockAllAchivements } from "./achivements.js";
-import { initBirdTemplates } from "./birds.js";
+import { initBirdTemplates } from "./bird-templates.js";
 import { GAME_SETTINGS } from "./settings.js";
 import { initPlayer } from "./player.js";
 

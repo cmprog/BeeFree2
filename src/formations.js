@@ -1,4 +1,4 @@
-import { BIRD_TEMPLATES } from "./birds.js";
+import { BIRD_TEMPLATES } from "./bird-templates.js";
 import { FormationDefinition } from "./spawning.js";
 
 /**

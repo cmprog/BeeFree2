@@ -27,6 +27,7 @@ lets every module load without a browser.
 - `checkJs` type checking is on, with zero errors in `src/`.
 - Unit tests use Node's built-in test runner. `check.bat` (or `node tools/check.mjs`) runs the type check
   and the tests, and a GitHub workflow runs the same script on every push.
+- The bird types (`BIRD_TEMPLATES`) moved from `birds.js` into `bird-templates.js`.
 - `levels.js` is split into the level runtime, `level-definition.js`, `formations.js` and
   `level-list.js`.
 - Modules no longer touch the page or load the save when they're imported. That work now happens
