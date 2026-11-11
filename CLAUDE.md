@@ -11,11 +11,29 @@ revamped because the author's daughter plays it. Deployed to GitHub Pages from t
 - Running on `localhost` enables dev-only behavior: the on-screen log panel, the LittleJS watermark,
   and the Debug section of the Settings menu (unlock all levels, grant honeycomb). See
   `GAME_SETTINGS.IS_LOCAL_DEV_ENVIRONMENT` in `src/settings.js`.
-- There are no automated tests. Verify changes by playing in the browser.
-- Type checking: `jsconfig.json` enables `checkJs`, so VS Code type-checks the JS using the JSDoc
-  annotations. From a terminal (needs Node.js): `npx -p typescript tsc -p jsconfig.json`.
-  Errors reported inside `dist/littlejs.js` are the engine's own JSDoc problems; ignore them.
-  Keep `src/` at zero errors.
+
+## Checks and tests
+
+- `check.bat` (or `node tools/check.mjs` on any OS) runs the type check, then the unit tests.
+  `node tools/check.mjs tests` or `node tools/check.mjs types` runs only one of them. It needs Node.js 22+,
+  and internet the first time, to download the pinned TypeScript through `npx`. There's no `package.json`;
+  keep it that way.
+- The GitHub workflow (`.github/workflows/check.yml`) runs the same `node tools/check.mjs` on every push and
+  pull request. It's report only and doesn't block GitHub Pages deploys.
+- Type check: `jsconfig.json` enables `checkJs`, so VS Code also type-checks the JS using the JSDoc.
+  Errors inside `dist/littlejs.js` are the engine's own JSDoc problems and are filtered out. Keep `src/`
+  at zero errors.
+- Unit tests use Node's built-in test runner (`node:test`, `node:assert/strict`) and live in
+  `tests/*.test.js`. Every test file must start with `import './setup.js';`. The setup file fakes
+  `document`, `localStorage` and audio, loads LittleJS so its globals exist, and loads modules in the
+  same order as `game.js`. Use `resetLocalStorage()` from `setup.js` to clear saves between tests.
+  Each test file runs in its own process.
+- Tests cover game logic, not visuals: shop math, attribute derivation, saves, prestige, hats,
+  statistics, spawning. Drawing, menus and game feel are still verified by playing in the browser.
+- **Agents:** when you change or add game logic, add or update tests for it, using the same
+  mechanisms as a human developer (`node:test`, `tests/setup.js`). Run `node tools/check.mjs` and
+  make sure it passes before committing. For a bug fix, prefer a test that fails without the fix.
+  Visual or UI changes still need a check in the browser.
 
 ## Architecture
 

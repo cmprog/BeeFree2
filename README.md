@@ -8,6 +8,11 @@
 
 Just a little game I made forever ago. I'm revamping it because my daughter enjoys playing it.
 
+### Development
+
+- `run_local.bat` serves the game at http://localhost:8080 (needs Python).
+- `check.bat` runs the type check and the unit tests (needs [Node.js](https://nodejs.org) 22+).
+
 ### Planned Changes
 
 - Remove unused gamepd buttons

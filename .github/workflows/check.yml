@@ -1,0 +1,17 @@
+# Runs the same checks as check.bat on every push and pull request. Report only: a failure
+# shows up on the commit, but it doesn't stop GitHub Pages from deploying.
+name: Check
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node tools/check.mjs
