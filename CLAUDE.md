@@ -12,6 +12,10 @@ revamped because the author's daughter plays it. Deployed to GitHub Pages from t
   and the Debug section of the Settings menu (unlock all levels, grant honeycomb). See
   `GAME_SETTINGS.IS_LOCAL_DEV_ENVIRONMENT` in `src/settings.js`.
 - There are no automated tests. Verify changes by playing in the browser.
+- Type checking: `jsconfig.json` enables `checkJs`, so VS Code type-checks the JS using the JSDoc
+  annotations. From a terminal (needs Node.js): `npx -p typescript tsc -p jsconfig.json`.
+  Errors reported inside `dist/littlejs.js` are the engine's own JSDoc problems; ignore them.
+  Keep `src/` at zero errors.
 
 ## Architecture
 
