@@ -49,10 +49,34 @@ export class HatAttachment extends EngineObject {
         this.mirror = placement.mirror;
     }
 
+    /**
+     * The top edge of the hat's rotated bounds, as a y offset relative to the wearer.
+     * @returns {number}
+     */
+    getLocalTop() {
+        const halfSize = this.size.y / 2;
+        return this.localPos.y + (halfSize * (Math.abs(Math.cos(this.localAngle)) + Math.abs(Math.sin(this.localAngle))));
+    }
+
     update() {
         // Purposefully not calling super, hats don't have physics.
         this.applyPlacement();
     }
+}
+
+// Space between the top of a hat and a health bar drawn above it.
+const HAT_HEALTH_BAR_GAP = 0.2;
+
+/**
+ * Where to put a wearer's health bar so it isn't drawn over their hat. Without a hat, or
+ * with one that doesn't reach the bar, the bar stays at its default offset.
+ * @param {HatAttachment | undefined} hat
+ * @param {number} defaultOffsetY
+ * @returns {Vector2} The bar's local position relative to the wearer.
+ */
+export function computeHealthBarOffset(hat, defaultOffsetY) {
+    if (!hat) return vec2(0, defaultOffsetY);
+    return vec2(0, Math.max(defaultOffsetY, hat.getLocalTop() + HAT_HEALTH_BAR_GAP));
 }
 
 /**

@@ -7,8 +7,11 @@ import { logDebug } from './logging.js';
 import { AttributeSet } from './attributes.js';
 import { currentPlayer } from './player.js';
 import { GAME_SETTINGS } from './settings.js';
-import { attachHat } from './hat-attachment.js';
+import { attachHat, computeHealthBarOffset } from './hat-attachment.js';
 import { HatWearer } from './hats.js';
+
+// Where the health bar sits above the bee, unless a hat pushes it higher.
+const HEALTH_BAR_OFFSET_Y = 1;
 
 export class Bee extends EngineObject {
 
@@ -25,7 +28,7 @@ export class Bee extends EngineObject {
          * @type {ProgressBar}
          */
         this.healthBar = new ProgressBar();      
-        this.addChild(this.healthBar, vec2(0, 1));
+        this.addChild(this.healthBar, vec2(0, HEALTH_BAR_OFFSET_Y));
 
         this.renderOrder = 400;
 
@@ -152,6 +155,7 @@ export class Bee extends EngineObject {
         this.previousPos = this.pos.copy();
 
         this.healthBar.value = this.health / this.attributes.maxHealth;
+        this.healthBar.localPos = computeHealthBarOffset(this.hat, HEALTH_BAR_OFFSET_Y);
         
         let direction;
         let holdingFire = false;

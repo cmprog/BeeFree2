@@ -6,7 +6,7 @@ import { spriteAtlas } from "./sprites.js";
 import { Honeycomb } from "./honeycomb.js";
 import { currentLevel } from "./levels.js";
 import { DEFAULT_BIRD_ATTRIBUTES, SAMMY_PARTY_BIRD_HAT_CHANCE } from "./settings.js";
-import { attachHat } from "./hat-attachment.js";
+import { attachHat, computeHealthBarOffset } from "./hat-attachment.js";
 import { HatWearer, pickRandomHat } from "./hats.js";
 import { BirdBulletFactory } from "./bullet.js";
 import { isWellOutsideWorldBoundary, rgb255 } from "./util.js";
@@ -498,6 +498,9 @@ export function initBirdTemplates() {
     BIRD_TEMPLATES = new BirdTemplateSet();
 }
 
+// Where the health bar sits above the bird, unless a hat pushes it higher.
+const HEALTH_BAR_OFFSET_Y = 1;
+
 const BASE_BIRD_SIZE = 1.5
 
 function normalizeBirdPartSize(sourceSprite) {
@@ -568,7 +571,7 @@ export class Bird extends EngineObject
         this.setCollision();
 
         this.healthBar = new ProgressBar();
-        this.addChild(this.healthBar, vec2(0, 1));
+        this.addChild(this.healthBar, vec2(0, HEALTH_BAR_OFFSET_Y));
 
         this.face = new BirdFace(pos, this);
         this.eyelids = new BirdEyelids(pos, this);
@@ -608,6 +611,7 @@ export class Bird extends EngineObject
         
         this.healthBar.value = this.health / this.attributes.maxHealth;
         this.healthBar.shouldRender = (this.health < this.attributes.maxHealth);
+        this.healthBar.localPos = computeHealthBarOffset(this.hat, HEALTH_BAR_OFFSET_Y);
 
         if (currentLevel && currentLevel.isSammyPartyTime()) {
             this.angle = (-PI / 4) + wave(1, PI / 2, time - this.spawnTime);
