@@ -4,7 +4,7 @@ import { LEVELS } from "./level-list.js";
 import { Menu } from "./menu.js";
 import { currentPlayer } from "./player.js";
 import { GAME_SETTINGS } from "./settings.js";
-import { MENUS } from "./menus.js";
+import { MENUS } from "./menu-registry.js";
 import { registerClick } from "./util.js";
 
 export class SettingsMenu extends Menu {

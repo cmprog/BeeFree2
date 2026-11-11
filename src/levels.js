@@ -6,7 +6,7 @@ import { logDebug, logInfo } from "./logging.js";
 import { LevelDefinition } from "./level-definition.js";
 import { LEVELS } from "./level-list.js";
 import { LevelSummaryMenu } from "./menu-level-summary.js";
-import { MENUS } from "./menus.js";
+import { MENUS } from "./menu-registry.js";
 import { Owl } from "./owl.js";
 import { currentPlayer } from "./player.js";
 import { pickRandomHat } from "./hats.js";

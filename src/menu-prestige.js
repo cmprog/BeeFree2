@@ -1,6 +1,6 @@
 import { queryElement } from "./html.js";
 import { Menu } from "./menu.js";
-import { MENUS } from "./menus.js";
+import { MENUS } from "./menu-registry.js";
 import { currentPlayer } from "./player.js";
 import { registerClick } from "./util.js";
 

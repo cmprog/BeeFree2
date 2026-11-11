@@ -8,7 +8,7 @@ import {
 import { appendChildHtml, queryElement } from './html.js';
 import { logInfo } from './logging.js';
 import { Menu } from './menu.js';
-import { MENUS } from './menus.js';
+import { MENUS } from './menu-registry.js';
 import { Owl } from './owl.js';
 import { spriteAtlas } from './sprites.js';
 import { registerClick } from './util.js';

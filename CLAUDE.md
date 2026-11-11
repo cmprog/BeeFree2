@@ -25,9 +25,11 @@ revamped because the author's daughter plays it. Deployed to GitHub Pages from t
   at zero errors.
 - Unit tests use Node's built-in test runner (`node:test`, `node:assert/strict`) and live in
   `tests/*.test.js`. Every test file must start with `import './setup.js';`. The setup file fakes
-  `document`, `localStorage` and audio, loads LittleJS so its globals exist, and loads modules in the
-  same order as `game.js`. Use `resetLocalStorage()` from `setup.js` to clear saves between tests.
+  `document`, `localStorage` and audio, and loads LittleJS so its globals exist. Use `resetLocalStorage()` from `setup.js` to clear saves between tests.
   Each test file runs in its own process.
+- `tests/module-loading.test.js` loads every `src/` module on its own in a fresh process. If it fails,
+  an import cycle is making a class load before the class it extends. Break the cycle (for example
+  with a small module that has no imports, like `menu-registry.js`) rather than relying on load order.
 - Tests cover game logic, not visuals: shop math, attribute derivation, saves, prestige, hats,
   statistics, spawning. Drawing, menus and game feel are still verified by playing in the browser.
 - **Agents:** when you change or add game logic, add or update tests for it, using the same
@@ -56,7 +58,9 @@ revamped because the author's daughter plays it. Deployed to GitHub Pages from t
     import cycle with their subclasses. ES modules evaluate cycles in load order, so a subclass can
     end up evaluated before its base class exists.
 - Menus are HTML/CSS overlays (`index.html` markup, `src/menu-*.js` behavior, `styles/menus-*.css`).
-  Each menu extends `Menu` in `menu.js` and is registered in `menus.js` (`MENUS`).
+  Each menu extends `Menu` in `menu.js` and is created in `menus.js` (`MenuSet`, `initMenus`).
+  To open another menu, import `MENUS` from `menu-registry.js`, never from `menus.js`: importing
+  `menus.js` from a menu creates an import cycle that can load a menu before `Menu` exists.
 - The shop is data-driven. `shop-items.js` defines `SHOP_ITEMS`: each `ShopItemDescriptor` has
   cost/value growth params and an `apply(player, value)` callback. `menu-shop.js` is only the UI.
   `isForever` items (cosmetics) survive prestige. `SHOP_ITEMS` keys are persisted in saves, so don't

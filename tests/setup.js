@@ -7,10 +7,9 @@
 
 import { fakeStorage, realConsole } from './support/browser-env.js';
 
-// Load modules in the same order game.js does. Several menus extend Menu while menu.js imports
-// the menus, so loading some other module first can evaluate a menu before Menu exists.
-import '../src/sprites.js';
-import '../src/menus.js';
+// The game's logger replaces the console methods when it loads. Load it now, then restore the
+// real console so console.log works in tests.
+import '../src/logging.js';
 
 Object.assign(console, realConsole);
 

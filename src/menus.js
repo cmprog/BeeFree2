@@ -8,8 +8,9 @@ import { ShopMenu } from "./menu-shop.js";
 import { StatisticsMenu } from "./menu-statistics.js";
 import { WardrobeMenu } from "./menu-wardrobe.js";
 import { HatTuningMenu } from "./menu-hat-tuning.js";
+import { MENUS } from "./menu-registry.js";
 
-class MenuSet {
+export class MenuSet {
     constructor() {
         /**
          * @type {MainMenu}
@@ -56,10 +57,8 @@ class MenuSet {
 }
 
 /**
- * @type {MenuSet}
+ * Creates every menu and makes them available through MENUS in menu-registry.js.
  */
-export let MENUS;
-
 export function initMenus() {
-    MENUS = new MenuSet();
+    Object.assign(MENUS, new MenuSet());
 }

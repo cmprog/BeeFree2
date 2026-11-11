@@ -1,7 +1,7 @@
 import { appendChildHtml, queryElement } from "./html.js";
 import { logDebug } from "./logging.js";
 import { Menu } from "./menu.js";
-import { MENUS } from "./menus.js";
+import { MENUS } from "./menu-registry.js";
 import { registerClick } from "./util.js";
 
 /**
