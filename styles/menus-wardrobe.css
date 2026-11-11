@@ -1,0 +1,174 @@
+@import url('./variables.css');
+@import url('./menus-common.css');
+
+#menu-wardrobe {
+
+  > .content {
+    display: flex;
+    flex-direction: row;
+    gap: calc(var(--spacing-default) * 2);
+    overflow: hidden;
+  }
+
+  .available-honeycomb {
+    font-size: 24px;
+    margin-left: calc(var(--spacing-default) * 2);
+  }
+
+  .wardrobe-preview {
+    flex: 0 0 auto;
+    width: 240px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-default);
+    padding: var(--spacing-default);
+    border: 1px solid black;
+    border-radius: var(--spacing-default);
+    background-color: var(--color-card-background);
+    overflow-y: auto;
+  }
+
+  .preview-canvas {
+    width: 220px;
+    height: 220px;
+    background-color: #CCF5FF;
+    border-radius: var(--spacing-default);
+  }
+
+  .preview-name {
+    font-size: 32px;
+    text-align: center;
+  }
+
+  .preview-detail {
+    font-size: 20px;
+    color: var(--color-muted);
+    text-align: center;
+  }
+
+  .preview-action {
+    font-size: 22px;
+    width: 100%;
+    padding: var(--spacing-default);
+
+    &:disabled {
+      background-color: lightgray;
+      color: var(--color-muted);
+    }
+
+    &.confirming {
+      background-color: orange;
+    }
+  }
+
+  .wardrobe-hats {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .section-header {
+    width: 60%;
+    border: 1px solid black;
+    background-color: white;
+    text-align: center;
+    border-radius: var(--spacing-default);
+    margin: 10px auto 5px auto;
+    font-size: 26px;
+  }
+
+  .hat-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    gap: var(--spacing-default);
+  }
+
+  .hat-tile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: var(--spacing-default);
+    border: 2px solid transparent;
+    border-radius: var(--spacing-default);
+    background-color: var(--color-card-background);
+    cursor: pointer;
+    user-select: none;
+
+    &:hover {
+      border-color: goldenrod;
+    }
+
+    &.selected {
+      border-color: black;
+      background-color: white;
+    }
+
+    &.worn .hat-status {
+      color: darkgreen;
+      font-weight: bold;
+    }
+
+    &.unaffordable .hat-status {
+      color: var(--color-critical);
+    }
+
+    &:not(.owned) .hat-thumbnail {
+      opacity: 0.6;
+    }
+  }
+
+  .hat-thumbnail {
+    width: 72px;
+    height: 72px;
+    background-image: url('../img/hats.png');
+    background-repeat: no-repeat;
+  }
+
+  .no-hat .hat-thumbnail {
+    background-image: none;
+    border: 3px dashed var(--color-muted);
+    border-radius: 50%;
+    box-sizing: border-box;
+  }
+
+  .hat-name {
+    font-size: 20px;
+    text-align: center;
+  }
+
+  .hat-status {
+    font-size: 16px;
+    text-align: center;
+  }
+}
+
+/* Short screens, such as phones in landscape. */
+@media (max-height: 500px) {
+  #menu-wardrobe {
+    .wardrobe-preview {
+      width: 170px;
+    }
+
+    .preview-canvas {
+      width: 150px;
+      height: 150px;
+    }
+
+    .preview-name {
+      font-size: 24px;
+    }
+
+    .preview-detail {
+      font-size: 16px;
+    }
+
+    .preview-action {
+      font-size: 18px;
+    }
+  }
+}

@@ -7,6 +7,8 @@ import { logDebug } from './logging.js';
 import { AttributeSet } from './attributes.js';
 import { currentPlayer } from './player.js';
 import { GAME_SETTINGS } from './settings.js';
+import { attachHat } from './hat-attachment.js';
+import { HatWearer } from './hats.js';
 
 export class Bee extends EngineObject {
 
@@ -54,6 +56,11 @@ export class Bee extends EngineObject {
         this.previousPos = undefined;
         
         this.healthRegenTimer = new Timer(1);
+
+        /**
+         * The hat the player has chosen in the wardrobe, if any.
+         */
+        this.hat = attachHat(this, HatWearer.BEE, currentPlayer?.equippedHat, this.renderOrder + 10);
     } 
 
     /**

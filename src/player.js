@@ -2,6 +2,7 @@ import { AttributeSet, LevelAttributeSet } from "./attributes.js";
 import { logDebug, logError } from "./logging.js";
 import { PlayerLevel } from "./player-level.js";
 import { SHOP_ITEMS } from "./shop-items.js";
+import { getHat } from "./hats.js";
 import { DEFAULT_BEE_ATTRIBUTES, DEFAULT_LEVEL_ATTRIBUTES, DEFAULT_SAMMY_ATTRIBUTE_MULTIPLIERS, GAME_SETTINGS, PRESTIGE_BONUS_RATE } from "./settings.js";
 import { StatisticsSet, TimeTrialStatistics } from "./statistics.js";
 import { today } from "./util.js";
@@ -122,8 +123,59 @@ export class Player {
          */
         this.birdsExplodeOnKill = false;
 
+        /**
+         * The ids of the hats the player has bought in the wardrobe. Hats are cosmetic
+         * and are kept through prestige.
+         * @type {Set<string>}
+         */
+        this.ownedHats = new Set();
+
+        /**
+         * The id of the hat the bee is wearing, or null for no hat. This is a player
+         * choice, not derived from purchases, so it is saved directly.
+         * @type {string | null}
+         */
+        this.equippedHat = null;
+
         this.markLevelAvailable(0);
         this.rebuildAttributes();
+    }
+
+    /**
+     * @param {string} hatId
+     * @returns {boolean}
+     */
+    ownsHat(hatId) {
+        return this.ownedHats.has(hatId);
+    }
+
+    /**
+     * Buys a hat and puts it on.
+     * @param {string} hatId
+     * @returns {boolean} Whether the purchase happened.
+     */
+    purchaseHat(hatId) {
+
+        const hat = getHat(hatId);
+        if (!hat || this.ownsHat(hatId) || (this.availableHoneycomb < hat.tier.price)) {
+            return false;
+        }
+
+        this.spendHoneycomb(hat.tier.price);
+        this.ownedHats.add(hatId);
+        this.equippedHat = hatId;
+        this.save();
+        return true;
+    }
+
+    /**
+     * Puts on an owned hat, or takes the hat off when given null.
+     * @param {string | null} hatId
+     */
+    equipHat(hatId) {
+        if (hatId && !this.ownsHat(hatId)) return;
+        this.equippedHat = hatId;
+        this.save();
     }
 
     /**
@@ -435,6 +487,9 @@ export class Player {
             shopPurchases: this.shopPurchases,
             foreverShopPurchases: this.foreverShopPurchases,
 
+            ownedHats: [...this.ownedHats],
+            equippedHat: this.equippedHat,
+
             overallStatistics: this.overallStatistics.toSaveObj(),
             prestigeStatistics: this.prestigeStatistics.toSaveObj(),
 
@@ -516,6 +571,10 @@ export class Player {
                 this.foreverShopPurchases[key] = saveObj.foreverShopPurchases[key];
             }
         }
+
+        // Ignore hats that no longer exist so a renamed or removed hat can't break the save.
+        this.ownedHats = new Set((saveObj.ownedHats ?? []).filter(id => getHat(id)));
+        this.equippedHat = this.ownsHat(saveObj.equippedHat) ? saveObj.equippedHat : null;
 
         this.achivements = { };
         if (saveObj.achivements) {            

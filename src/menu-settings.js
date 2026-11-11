@@ -3,6 +3,7 @@ import { LEVELS } from "./levels.js";
 import { Menu } from "./menu.js";
 import { currentPlayer } from "./player.js";
 import { GAME_SETTINGS } from "./settings.js";
+import { MENUS } from "./menus.js";
 import { registerClick } from "./util.js";
 
 export class SettingsMenu extends Menu {
@@ -29,6 +30,11 @@ export class SettingsMenu extends Menu {
             this.element.querySelector('#settings-debug-unlock-all-levels'),
             this.unlockAllLevels.bind(this)
         );
+
+        registerClick('#settings-debug-hat-tuning', () => {
+            this.close();
+            MENUS.HAT_TUNING.open();
+        });
     }
 
     resetSave() {

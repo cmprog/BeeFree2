@@ -1,6 +1,8 @@
 import { CompositeEntityPart, EntityType } from "./entities.js";
 import { logDebug, logWarning } from "./logging.js";
 import { spriteAtlas } from "./sprites.js";
+import { attachHat } from "./hat-attachment.js";
+import { HatWearer } from "./hats.js";
 
 const BASE_OWL_SIZE = 1.5
 
@@ -56,6 +58,19 @@ export class Owl extends EngineObject {
         this.body = new OwlBody(pos, this);
         this.frontWing = new OwlFrontWing(pos, this);
         this.backWing = new OwlBackWing(pos, this);
+    }
+
+    /**
+     * Puts a hat on Sammy, replacing any current hat.
+     * @param {string} hatId
+     */
+    wearHat(hatId) {
+        if (this.hat) {
+            this.hat.setHat(hatId);
+        } else {
+            // Just above the front wing, the top-most owl part.
+            this.hat = attachHat(this, HatWearer.SAMMY, hatId, 130);
+        }
     }
 
     render() {

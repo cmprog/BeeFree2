@@ -92,6 +92,7 @@ const imagesSources = [
     'img/gem_blue.png',
     'img/gem_gold.png',
     'img/borders/Ram Border All.png',
+    'img/hats.png',
 ];
 
 engineInit(gameInit, gameUpdate, gameUpdatePost, gameRender, gameRenderPost, imagesSources);

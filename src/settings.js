@@ -29,6 +29,23 @@ export const PERFECT_LEVEL_BONUS = 0.3;
 export const PRESTIGE_BONUS_RATE = 1 / 200;
 
 /**
+ * Honeycomb prices for each hat tier in the wardrobe. See HatTier in hats.js.
+ */
+export const HAT_PRICE_BASIC = 250;
+export const HAT_PRICE_FANCY = 1000;
+export const HAT_PRICE_FABULOUS = 3000;
+
+/**
+ * The chance (0 to 1) that a bird spawned during a Sammy party is wearing a random hat.
+ */
+export const SAMMY_PARTY_BIRD_HAT_CHANCE = 0.1;
+
+/**
+ * The chance (0 to 1) that a Sammy spawned during a Sammy party is wearing a random hat.
+ */
+export const SAMMY_PARTY_SAMMY_HAT_CHANCE = 0.5;
+
+/**
  * The duration, in seconds, for each phase of the time trial.
  */
 export const TIME_TRIAL_PHASE_DURATION = 10;

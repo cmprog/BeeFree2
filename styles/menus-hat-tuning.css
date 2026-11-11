@@ -1,0 +1,52 @@
+@import url('./variables.css');
+@import url('./menus-common.css');
+
+/* Dev-only panel docked on the right so the hat models on the canvas stay visible. */
+#menu-hat-tuning {
+  width: 340px;
+  height: 90vh;
+  margin-left: auto;
+  margin-right: 2vw;
+  font-family: sans-serif;
+  font-size: 14px;
+
+  .menu-title {
+    font-family: 'Dokdo';
+  }
+
+  .section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-default);
+    padding: var(--spacing-default) 0;
+    border-bottom: 1px solid black;
+  }
+
+  .section-header {
+    font-weight: bold;
+  }
+
+  .row {
+    display: flex;
+    gap: var(--spacing-default);
+
+    > * {
+      flex: 1 1 0;
+    }
+  }
+
+  .slider {
+    display: grid;
+    grid-template-columns: 80px 1fr 64px;
+    gap: var(--spacing-default);
+    align-items: center;
+  }
+
+  button {
+    padding: var(--spacing-default);
+  }
+
+  .status {
+    color: var(--color-muted);
+  }
+}

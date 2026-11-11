@@ -5,7 +5,9 @@ import { MultiBulletShooting, PassiveShooting, ShootingBehavior, SingleBulletSho
 import { spriteAtlas } from "./sprites.js";
 import { Honeycomb } from "./honeycomb.js";
 import { currentLevel } from "./levels.js";
-import { DEFAULT_BIRD_ATTRIBUTES } from "./settings.js";
+import { DEFAULT_BIRD_ATTRIBUTES, SAMMY_PARTY_BIRD_HAT_CHANCE } from "./settings.js";
+import { attachHat } from "./hat-attachment.js";
+import { HatWearer, pickRandomHat } from "./hats.js";
 import { BirdBulletFactory } from "./bullet.js";
 import { isWellOutsideWorldBoundary, rgb255 } from "./util.js";
 import { SPAWN_REGIONS } from "./spawning.js";
@@ -582,6 +584,24 @@ export class Bird extends EngineObject
 
         this.shooting = template.createShootingBehavior(this.attributes);
         this.movement = template.createMovementBehavior(this.attributes);
+
+        // Birds which show up to a Sammy party sometimes dress up for it.
+        if (currentLevel && currentLevel.isSammyPartyTime() && (rand() < SAMMY_PARTY_BIRD_HAT_CHANCE)) {
+            this.wearHat(pickRandomHat().id);
+        }
+    }
+
+    /**
+     * Puts a hat on the bird, replacing any current hat.
+     * @param {string} hatId
+     */
+    wearHat(hatId) {
+        if (this.hat) {
+            this.hat.setHat(hatId);
+        } else {
+            // Just above the eyelids, the top-most bird part.
+            this.hat = attachHat(this, HatWearer.BIRD, hatId, 50);
+        }
     }
     
     update() {

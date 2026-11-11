@@ -13,6 +13,7 @@ export class MainMenu extends Menu {
         // at this point since the values may not be initialized at time of constructions.
         registerClick('#main-menu-level-select', this.openMenu.bind(this, () => MENUS.LEVEL_SELECTION));
         registerClick('#main-menu-shop', this.openMenu.bind(this, () => MENUS.SHOP));
+        registerClick('#main-menu-wardrobe', this.openMenu.bind(this, () => MENUS.WARDROBE));
         registerClick('#main-menu-statistics', this.openMenu.bind(this, () => MENUS.STATISTICS));
         registerClick('#main-menu-achivements', this.openMenu.bind(this, () => MENUS.ACHIVEMENTS));
         registerClick('#main-menu-prestige', this.openMenu.bind(this, () => MENUS.PRESTIGE));        

@@ -1,3 +1,5 @@
+import { HATS, HAT_ATLAS_TILE_SIZE, getHatAtlasCell } from "./hats.js";
+
 export class BorderInfo {
 
     constructor(tileInfo, borderSizeScale, borderPaddingScale) {
@@ -205,6 +207,19 @@ class SpriteAtlas {
         this.borders = {
             flat: new BorderSetInfo(9),
         };
+
+        /**
+         * Hat tiles keyed by hat id. Built from HATS, which is ordered to match img/hats.png.
+         * @type {Object.<string, TileInfo>}
+         */
+        this.hats = {};
+        for (const hat of HATS) {
+            const { column, row } = getHatAtlasCell(hat);
+            this.hats[hat.id] = new TileInfo(
+                vec2(column, row).scale(HAT_ATLAS_TILE_SIZE),
+                vec2(HAT_ATLAS_TILE_SIZE),
+                10);
+        }
     }
 }
 

@@ -7,7 +7,8 @@ import { LevelSummaryMenu } from "./menu-level-summary.js";
 import { MENUS } from "./menus.js";
 import { Owl } from "./owl.js";
 import { currentPlayer } from "./player.js";
-import { BASE_SAMMY_CHANCE, STANDARD_LEVEL_EARNING_DECAY_BASE, NO_DAMAGE_TOKEN_LEVEL_BONUS, NO_SURVIVORS_LEVEL_BONUS, PERFECT_LEVEL_BONUS, STANDARD_LEVEL_FAILURE_EARN_RATE, TIME_TRIAL_LEVEL_EARNING_DECAY_BASE, TIME_TRIAL_PHASE_DURATION } from "./settings.js";
+import { pickRandomHat } from "./hats.js";
+import { BASE_SAMMY_CHANCE, SAMMY_PARTY_SAMMY_HAT_CHANCE, STANDARD_LEVEL_EARNING_DECAY_BASE, NO_DAMAGE_TOKEN_LEVEL_BONUS, NO_SURVIVORS_LEVEL_BONUS, PERFECT_LEVEL_BONUS, STANDARD_LEVEL_FAILURE_EARN_RATE, TIME_TRIAL_LEVEL_EARNING_DECAY_BASE, TIME_TRIAL_PHASE_DURATION } from "./settings.js";
 import { FormationDefinition, SpawnDefinition, SpawnerCollection, FormationCreationOptions, SPAWN_REGIONS } from "./spawning.js";
 import { spriteAtlas } from "./sprites.js";
 import { FONTS, getWorldSize } from "./util.js";
@@ -127,14 +128,19 @@ class Level extends EngineObject {
             const worldSize = screenToWorld(mainCanvasSize);
             worldSize.y = -worldSize.y;
 
-            const rand = new RandomGenerator(time);
+            const spawnRandom = new RandomGenerator(time);
 
             const margin = vec2(10, 10);
             const spawnRegion = randInt(0, 2) == 0 ? SPAWN_REGIONS.LEFT_UPPER : SPAWN_REGIONS.LEFT_LOWER;
-            const sammyPos = spawnRegion.getRandomPosition(rand, worldSize, margin);
+            const sammyPos = spawnRegion.getRandomPosition(spawnRandom, worldSize, margin);
 
             const sammy = this.trackObj(new Owl(sammyPos));
             sammy.velocity = vec2(1, 0).normalize(this.attributes.sammySpeed);
+
+            // Sammy sometimes shows up to his own party in a hat.
+            if (this.isSammyPartyTime() && (rand() < SAMMY_PARTY_SAMMY_HAT_CHANCE)) {
+                sammy.wearHat(pickRandomHat().id);
+            }
 
             if (currentPlayer) {
                 currentPlayer.onSammySpawned();

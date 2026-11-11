@@ -20,7 +20,8 @@
       <div class="button-group vertical">
         <button id="main-menu-level-select" type="button">Level Selection</button>
         <button id="main-menu-time-trial" type="button">Time Trial</button>
-        <button id="main-menu-shop" type="button">Spend Honeycomb</button>        
+        <button id="main-menu-shop" type="button">Spend Honeycomb</button>
+        <button id="main-menu-wardrobe" type="button">Wardrobe</button>
         <button id="main-menu-statistics" type="button">Statistics</button>
         <button id="main-menu-achivements" type="button">Achivements</button>
         <button id="main-menu-prestige" type="button">Bee Awesome(r)</button>
@@ -58,6 +59,33 @@
       </div>      
     </div>
 
+    <div id="menu-wardrobe" class="menu menu-closed">
+      <div class="header">
+        <div>
+          <span class="menu-title">Wardrobe</span>
+          <span class="available-honeycomb"></span>
+        </div>
+        <button type="button" class="main-menu-return">Back to Menu</button>
+      </div>
+      <div class="content">
+        <div class="wardrobe-preview">
+          <canvas class="preview-canvas" width="440" height="440"></canvas>
+          <div class="preview-name"></div>
+          <div class="preview-detail"></div>
+          <button type="button" class="preview-action"></button>
+        </div>
+        <div class="wardrobe-hats"></div>
+      </div>
+    </div>
+
+    <div id="menu-hat-tuning" class="menu menu-closed">
+      <div class="header">
+        <div class="menu-title">Hat Tuning</div>
+        <button type="button" class="hat-tuning-done">Done</button>
+      </div>
+      <div class="content"></div>
+    </div>
+
     <div id="menu-statistics" class="menu menu-closed">
       <div class="header">        
         <div class="menu-title">Statistics</div>
@@ -90,6 +118,7 @@
           Debug
         </div>
         <button type="button" id="settings-debug-unlock-all-levels">Unlock All Levels</button>
+        <button type="button" id="settings-debug-hat-tuning">Hat Tuning</button>
         <div>
           <div class="label">Get Honeycomb</div>
           <button type="button" data-honeycomb="100">100</button>

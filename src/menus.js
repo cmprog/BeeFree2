@@ -6,6 +6,8 @@ import { PrestigeMenu } from "./menu-prestige.js";
 import { SettingsMenu } from "./menu-settings.js";
 import { ShopMenu } from "./menu-shop.js";
 import { StatisticsMenu } from "./menu-statistics.js";
+import { WardrobeMenu } from "./menu-wardrobe.js";
+import { HatTuningMenu } from "./menu-hat-tuning.js";
 
 class MenuSet {
     constructor() {
@@ -41,6 +43,15 @@ class MenuSet {
          * @type {SettingsMenu}
          */
         this.SETTINGS = new SettingsMenu();
+        /**
+         * @type {WardrobeMenu}
+         */
+        this.WARDROBE = new WardrobeMenu();
+        /**
+         * Dev-only view for positioning hats.
+         * @type {HatTuningMenu}
+         */
+        this.HAT_TUNING = new HatTuningMenu();
     }
 }
 
