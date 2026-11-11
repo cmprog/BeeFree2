@@ -1,4 +1,4 @@
-import { AchivementsMenu } from "./menu-achivements.js";
+import { AchievementsMenu } from "./menu-achievements.js";
 import { LevelSelectionMenu } from "./menu-level-selection.js";
 import { LevelSummaryMenu } from "./menu-level-summary.js";
 import { MainMenu } from "./menu-main.js";
@@ -29,9 +29,9 @@ export class MenuSet {
          */
         this.STATISTICS = new StatisticsMenu();
         /**
-         * @type {AchivementsMenu}
+         * @type {AchievementsMenu}
          */
-        this.ACHIVEMENTS = new AchivementsMenu();
+        this.ACHIEVEMENTS = new AchievementsMenu();
         /**
          * @type {LevelSummaryMenu}
          */

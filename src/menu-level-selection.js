@@ -41,7 +41,7 @@ class LevelSelectionItem {
 
         const levelData = currentPlayer.getLevel(this.definition.id);
 
-        this.updateBadgeClass(this.noDamageEl, levelData.prestigeStatistics.noDamangeCount > 0);
+        this.updateBadgeClass(this.noDamageEl, levelData.prestigeStatistics.noDamageCount > 0);
         this.updateBadgeClass(this.noSurvivorsEl, levelData.prestigeStatistics.noSurvivorsCount > 0);
         this.updateBadgeClass(this.perfectEl, levelData.prestigeStatistics.perfectCount > 0);
 

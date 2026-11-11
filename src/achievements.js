@@ -2,7 +2,7 @@ import { currentPlayer } from './player.js'
 
 setMedalDisplaySize(vec2(300, 60));
 
-class Achivement extends Medal {
+class Achievement extends Medal {
     constructor(id, name, description, icon, src, data) {
         super(id, name, description, icon, src)
 
@@ -16,7 +16,7 @@ class Achivement extends Medal {
     }
 
     /**
-     * The percentage progress of this achivement.
+     * The percentage progress of this achievement.
      * @returns A percent progress represented as a number between 0.0 and 1.0.
      */
     getProgress() {
@@ -24,12 +24,12 @@ class Achivement extends Medal {
     }
 
     /**
-     * Reloads the achivement, specifically the unlocked state, by checking
-     * the current player's unlocks. Achivements are created before the player is
-     * loaded; game.js reloads them once it is (see reloadAchivements).
+     * Reloads the achievement, specifically the unlocked state, by checking
+     * the current player's unlocks. Achievements are created before the player is
+     * loaded; game.js reloads them once it is (see reloadAchievements).
      */
     reload() {
-        this.unlocked = Boolean(currentPlayer?.achivements[this.id]);
+        this.unlocked = Boolean(currentPlayer?.achievements[this.id]);
     }
 
     tryUnlock() {
@@ -40,7 +40,7 @@ class Achivement extends Medal {
     }
 
     /**
-     * Achivements are saved with the player data, not in the engine's medal save. Returning false
+     * Achievements are saved with the player data, not in the engine's medal save. Returning false
      * tells LittleJS that something else holds this medal, so medalsInit() never loads or
      * overwrites its unlocked state.
      * @returns {boolean}
@@ -50,7 +50,7 @@ class Achivement extends Medal {
     }
 
     /**
-     * @returns {Promise<boolean>} Whether the achivement is unlocked, matching Medal.unlock().
+     * @returns {Promise<boolean>} Whether the achievement is unlocked, matching Medal.unlock().
      */
     unlock() {
         // default logic saves each medal in its own local storage, we want to
@@ -64,7 +64,7 @@ class Achivement extends Medal {
             currentPlayer.onHoneycombCollected(this.rewardedHoneycomb);
         }
 
-        currentPlayer.achivements[this.id] = this.unlocked;
+        currentPlayer.achievements[this.id] = this.unlocked;
         currentPlayer.save();
 
         medalsDisplayQueue.push(this);
@@ -72,52 +72,52 @@ class Achivement extends Medal {
     }
 }
 
-const ACHIVEMENTS = [
+const ACHIEVEMENTS = [
 
     // ****************************************************
     // Level Start
     // ****************************************************
-    new Achivement(0, 'First Level', 'Started your first level.', undefined, undefined, {        
+    new Achievement(0, 'First Level', 'Started your first level.', undefined, undefined, {        
         getCurrentValue: () => currentPlayer.sumLevelStats(x => x.overallStatistics.startCount),
         targetValue: 1,
         rewardedHoneycomb: 1,
     }),
-    new Achivement(1, 'Fifth Level', 'Started 5 total levels.', undefined, undefined, {
+    new Achievement(1, 'Fifth Level', 'Started 5 total levels.', undefined, undefined, {
         getCurrentValue: () => currentPlayer.sumLevelStats(x => x.overallStatistics.startCount),
         targetValue: 5,
         rewardedHoneycomb: 1,
     }),
-    new Achivement(2, 'Tenth Level', 'Started 10 total levels.', undefined, undefined, {
+    new Achievement(2, 'Tenth Level', 'Started 10 total levels.', undefined, undefined, {
         getCurrentValue: () => currentPlayer.sumLevelStats(x => x.overallStatistics.startCount),
         targetValue: 10,
         rewardedHoneycomb: 5,
     }),
-    new Achivement(3, 'Twenty-fifth Level', 'Started 25 total levels.', undefined, undefined, {
+    new Achievement(3, 'Twenty-fifth Level', 'Started 25 total levels.', undefined, undefined, {
         getCurrentValue: () => currentPlayer.sumLevelStats(x => x.overallStatistics.startCount),
         targetValue: 25,
         rewardedHoneycomb: 10,
     }),
-    new Achivement(4, 'Fiftieth Level', 'Started 50 total levels.', undefined, undefined, {
+    new Achievement(4, 'Fiftieth Level', 'Started 50 total levels.', undefined, undefined, {
         getCurrentValue: () => currentPlayer.sumLevelStats(x => x.overallStatistics.startCount),
         targetValue: 50,
         rewardedHoneycomb: 20,
     }),
-    new Achivement(5, 'Hundredth Level', 'Started 100 total levels.', undefined, undefined, {
+    new Achievement(5, 'Hundredth Level', 'Started 100 total levels.', undefined, undefined, {
         getCurrentValue: () => currentPlayer.sumLevelStats(x => x.overallStatistics.startCount),
         targetValue: 100,
         rewardedHoneycomb: 25,
     }),
-    new Achivement(6, 'Two-hundredth Level', 'Started 200 total levels.', undefined, undefined, {
+    new Achievement(6, 'Two-hundredth Level', 'Started 200 total levels.', undefined, undefined, {
         getCurrentValue: () => currentPlayer.sumLevelStats(x => x.overallStatistics.startCount),
         targetValue: 200,
         rewardedHoneycomb: 50,
     }),
-    new Achivement(7, 'Five-hundredth Level', 'Started 500 total levels.', undefined, undefined, {
+    new Achievement(7, 'Five-hundredth Level', 'Started 500 total levels.', undefined, undefined, {
         getCurrentValue: () => currentPlayer.sumLevelStats(x => x.overallStatistics.startCount),
         targetValue: 500,
         rewardedHoneycomb: 100,
     }),
-    new Achivement(8, 'Thousandth Level', 'Started 1,000 total levels.', undefined, undefined, {
+    new Achievement(8, 'Thousandth Level', 'Started 1,000 total levels.', undefined, undefined, {
         getCurrentValue: () => currentPlayer.sumLevelStats(x => x.overallStatistics.startCount),
         targetValue: 1000,
         rewardedHoneycomb: 200,
@@ -126,47 +126,47 @@ const ACHIVEMENTS = [
     // ****************************************************
     // Level Completion
     // ****************************************************
-    new Achivement(9, 'First Level Complete', 'Completed your first level.', undefined, undefined, {        
+    new Achievement(9, 'First Level Complete', 'Completed your first level.', undefined, undefined, {        
         getCurrentValue: () => currentPlayer.sumLevelStats(x => x.overallStatistics.completedCount),
         targetValue: 1,
         rewardedHoneycomb: 1,
     }),
-    new Achivement(10, 'Fifth Level Complete', 'Completed 5 total levels.', undefined, undefined, {
+    new Achievement(10, 'Fifth Level Complete', 'Completed 5 total levels.', undefined, undefined, {
         getCurrentValue: () => currentPlayer.sumLevelStats(x => x.overallStatistics.completedCount),
         targetValue: 5,
         rewardedHoneycomb: 1,
     }),
-    new Achivement(11, 'Tenth Level Complete', 'Completed 10 total levels.', undefined, undefined, {
+    new Achievement(11, 'Tenth Level Complete', 'Completed 10 total levels.', undefined, undefined, {
         getCurrentValue: () => currentPlayer.sumLevelStats(x => x.overallStatistics.completedCount),
         targetValue: 10,
         rewardedHoneycomb: 5,
     }),
-    new Achivement(12, 'Twenty-fifth Level Complete', 'Completed 25 total levels.', undefined, undefined, {
+    new Achievement(12, 'Twenty-fifth Level Complete', 'Completed 25 total levels.', undefined, undefined, {
         getCurrentValue: () => currentPlayer.sumLevelStats(x => x.overallStatistics.completedCount),
         targetValue: 25,
         rewardedHoneycomb: 10,
     }),
-    new Achivement(13, 'Fiftieth Level Complete', 'Completed 50 total levels.', undefined, undefined, {
+    new Achievement(13, 'Fiftieth Level Complete', 'Completed 50 total levels.', undefined, undefined, {
         getCurrentValue: () => currentPlayer.sumLevelStats(x => x.overallStatistics.completedCount),
         targetValue: 50,
         rewardedHoneycomb: 20,
     }),
-    new Achivement(14, 'Hundredth Level Complete', 'Completed 100 total levels.', undefined, undefined, {
+    new Achievement(14, 'Hundredth Level Complete', 'Completed 100 total levels.', undefined, undefined, {
         getCurrentValue: () => currentPlayer.sumLevelStats(x => x.overallStatistics.completedCount),
         targetValue: 100,
         rewardedHoneycomb: 25,
     }),
-    new Achivement(15, 'Two-hundredth Level Complete', 'Completed 200 total levels.', undefined, undefined, {
+    new Achievement(15, 'Two-hundredth Level Complete', 'Completed 200 total levels.', undefined, undefined, {
         getCurrentValue: () => currentPlayer.sumLevelStats(x => x.overallStatistics.completedCount),
         targetValue: 200,
         rewardedHoneycomb: 50,
     }),
-    new Achivement(16, 'Five-hundredth Level Complete', 'Completed 500 total levels.', undefined, undefined, {
+    new Achievement(16, 'Five-hundredth Level Complete', 'Completed 500 total levels.', undefined, undefined, {
         getCurrentValue: () => currentPlayer.sumLevelStats(x => x.overallStatistics.completedCount),
         targetValue: 500,
         rewardedHoneycomb: 100,
     }),
-    new Achivement(17, 'Thousandth Level Complete', 'Completed 1,000 total levels.', undefined, undefined, {
+    new Achievement(17, 'Thousandth Level Complete', 'Completed 1,000 total levels.', undefined, undefined, {
         getCurrentValue: () => currentPlayer.sumLevelStats(x => x.overallStatistics.completedCount),
         targetValue: 1000,
         rewardedHoneycomb: 200,
@@ -175,22 +175,22 @@ const ACHIVEMENTS = [
     // ****************************************************
     // Level Failure
     // ****************************************************
-    new Achivement(18, 'First Level Complete', 'Failed your first level.', undefined, undefined, {        
+    new Achievement(18, 'First Level Complete', 'Failed your first level.', undefined, undefined, {        
         getCurrentValue: () => currentPlayer.sumLevelStats(x => x.overallStatistics.failureCount),
         targetValue: 1,
         rewardedHoneycomb: 1,
     }),
-    new Achivement(19, 'Fifth Level Complete', 'Failed 5 total levels.', undefined, undefined, {
+    new Achievement(19, 'Fifth Level Complete', 'Failed 5 total levels.', undefined, undefined, {
         getCurrentValue: () => currentPlayer.sumLevelStats(x => x.overallStatistics.failureCount),
         targetValue: 5,
         rewardedHoneycomb: 1,
     }),
-    new Achivement(20, 'Tenth Level Complete', 'Failed 10 total levels.', undefined, undefined, {
+    new Achievement(20, 'Tenth Level Complete', 'Failed 10 total levels.', undefined, undefined, {
         getCurrentValue: () => currentPlayer.sumLevelStats(x => x.overallStatistics.failureCount),
         targetValue: 10,
         rewardedHoneycomb: 5,
     }),
-    new Achivement(21, 'Twenty-fifth Level Complete', 'Failed 25 total levels.', undefined, undefined, {
+    new Achievement(21, 'Twenty-fifth Level Complete', 'Failed 25 total levels.', undefined, undefined, {
         getCurrentValue: () => currentPlayer.sumLevelStats(x => x.overallStatistics.failureCount),
         targetValue: 25,
         rewardedHoneycomb: 10,
@@ -199,81 +199,81 @@ const ACHIVEMENTS = [
     // ****************************************************
     // Honeycomb Collection
     // ****************************************************
-    new Achivement(22, 'Honeycomb is good', 'Collect your first honeycomb', undefined, undefined, {        
+    new Achievement(22, 'Honeycomb is good', 'Collect your first honeycomb', undefined, undefined, {        
         getCurrentValue: () => currentPlayer.overallStatistics.totalHoneycombCollected,
         targetValue: 1,
         rewardedHoneycomb: 1,
     }),
-    new Achivement(23, 'More honeycomb', 'Collect 10 honeycomb', undefined, undefined, {
+    new Achievement(23, 'More honeycomb', 'Collect 10 honeycomb', undefined, undefined, {
         getCurrentValue: () => currentPlayer.overallStatistics.totalHoneycombCollected,
         targetValue: 10,
         rewardedHoneycomb: 2,
     }),
-    new Achivement(24, 'Even more honeycomb', 'Collect 50 honeycomb', undefined, undefined, {
+    new Achievement(24, 'Even more honeycomb', 'Collect 50 honeycomb', undefined, undefined, {
         getCurrentValue: () => currentPlayer.overallStatistics.totalHoneycombCollected,
         targetValue: 50,
         rewardedHoneycomb: 5,
     }),
-    new Achivement(25, 'Why is it so sticky?', 'Collect 100 honeycomb', undefined, undefined, {
+    new Achievement(25, 'Why is it so sticky?', 'Collect 100 honeycomb', undefined, undefined, {
         getCurrentValue: () => currentPlayer.overallStatistics.totalHoneycombCollected,
         targetValue: 100,
         rewardedHoneycomb: 10,
     }),
-    new Achivement(26, 'I want more!', 'Collect 200 honeycomb', undefined, undefined, {
+    new Achievement(26, 'I want more!', 'Collect 200 honeycomb', undefined, undefined, {
         getCurrentValue: () => currentPlayer.overallStatistics.totalHoneycombCollected,
         targetValue: 200,
         rewardedHoneycomb: 20,
     }),
-    new Achivement(27, 'Even more!', 'Collect 500 honeycomb', undefined, undefined, {
+    new Achievement(27, 'Even more!', 'Collect 500 honeycomb', undefined, undefined, {
         getCurrentValue: () => currentPlayer.overallStatistics.totalHoneycombCollected,
         targetValue: 500,
         rewardedHoneycomb: 30,
     }),
-    new Achivement(28, 'I\'m not sharing...', 'Collect 1,000 honeycomb', undefined, undefined, {
+    new Achievement(28, 'I\'m not sharing...', 'Collect 1,000 honeycomb', undefined, undefined, {
         getCurrentValue: () => currentPlayer.overallStatistics.totalHoneycombCollected,
         targetValue: 1000,
         rewardedHoneycomb: 40,
     }),
-    new Achivement(29, 'Do bees have pockets?', 'Collect 2,000 honeycomb', undefined, undefined, {
+    new Achievement(29, 'Do bees have pockets?', 'Collect 2,000 honeycomb', undefined, undefined, {
         getCurrentValue: () => currentPlayer.overallStatistics.totalHoneycombCollected,
         targetValue: 2000,
         rewardedHoneycomb: 60,
     }),
-    new Achivement(30, 'Fat stacks', 'Collect 5,000 honeycomb', undefined, undefined, {
+    new Achievement(30, 'Fat stacks', 'Collect 5,000 honeycomb', undefined, undefined, {
         getCurrentValue: () => currentPlayer.overallStatistics.totalHoneycombCollected,
         targetValue: 5000,
         rewardedHoneycomb: 100,
     }),
-    new Achivement(31, 'Investment fund', 'Collect 10,000 honeycomb', undefined, undefined, {
+    new Achievement(31, 'Investment fund', 'Collect 10,000 honeycomb', undefined, undefined, {
         getCurrentValue: () => currentPlayer.overallStatistics.totalHoneycombCollected,
         targetValue: 10000,
         rewardedHoneycomb: 300,
     }),
-    new Achivement(32, 'Honey, honey, honey', 'Collect 50,000 honeycomb', undefined, undefined, {
+    new Achievement(32, 'Honey, honey, honey', 'Collect 50,000 honeycomb', undefined, undefined, {
         getCurrentValue: () => currentPlayer.overallStatistics.totalHoneycombCollected,
         targetValue: 50000,
         rewardedHoneycomb: 1000,
     }),
 ];
 
-medalsInit('achivements');
+medalsInit('achievements');
 
 /**
- * Calls the callback for every achivement, in order.
- * @param {(achivement: Achivement) => void} callback
+ * Calls the callback for every achievement, in order.
+ * @param {(achievement: Achievement) => void} callback
  */
-export function forEachAchivement(callback) {
-    ACHIVEMENTS.forEach(callback);
+export function forEachAchievement(callback) {
+    ACHIEVEMENTS.forEach(callback);
 }
 
 /**
- * Re-reads every achivement's unlocked state from the current player. Call after the player
+ * Re-reads every achievement's unlocked state from the current player. Call after the player
  * is loaded or replaced.
  */
-export function reloadAchivements() {
-    forEachAchivement(achivement => achivement.reload());
+export function reloadAchievements() {
+    forEachAchievement(achievement => achievement.reload());
 }
 
-export function tryUnlockAllAchivements() {
-    forEachAchivement(achivement => achivement.tryUnlock());
+export function tryUnlockAllAchievements() {
+    forEachAchievement(achievement => achievement.tryUnlock());
 }

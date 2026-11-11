@@ -464,8 +464,8 @@ class StandardLevel extends Level {
 
             let bonusText = `${this.levelDuration.toFixed(0)}s`;
 
-            if (currentPlayer.overallTimeTrailStatistics.longestDuration) {
-                bonusText = `${currentPlayer.overallTimeTrailStatistics.longestDuration.toFixed(0)}s -> ${bonusText}`;
+            if (currentPlayer.overallTimeTrialStatistics.longestDuration) {
+                bonusText = `${currentPlayer.overallTimeTrialStatistics.longestDuration.toFixed(0)}s -> ${bonusText}`;
             }  
 
             levelSummaryMenu.addItem('new overall record!', bonusText, '');

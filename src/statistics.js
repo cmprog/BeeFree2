@@ -19,7 +19,7 @@ export class StatisticsSet {
         this.timeTrialLevelsStarted = 0;
 
         /**
-         * The total amount of damange taken.
+         * The total amount of damage taken.
          */
         this.damageTaken = 0;
 
@@ -109,7 +109,7 @@ export class StandardLevelStatistics {
          * The number of times the level was completed without taking damage.
          * @type {number}
          */
-        this.noDamangeCount = 0;
+        this.noDamageCount = 0;
         /**
          * The number of times the level was completed without any survivors.
          * @type {number}
@@ -132,7 +132,7 @@ export class StandardLevelStatistics {
             startCount: this.startCount,
             completedCount: this.completedCount,
             failureCount: this.failureCount,
-            noDamangeCount: this.noDamangeCount,
+            noDamageCount: this.noDamageCount,
             noSurvivorsCount: this.noSurvivorsCount,
             perfectCount: this.perfectCount,
         };
@@ -158,7 +158,7 @@ export class StandardLevelStatistics {
             this.completedCount += 1;
 
             if (noDamage) {
-                this.noDamangeCount += 1;
+                this.noDamageCount += 1;
             }
 
             if (noSurvivors) {
@@ -182,7 +182,7 @@ export class StandardLevelStatistics {
         this.startCount = saveObj.startCount || 0;
         this.completedCount = saveObj.completedCount || 0;
         this.failureCount = saveObj.failureCount || 0;
-        this.noDamangeCount = saveObj.noDamangeCount || 0;
+        this.noDamageCount = saveObj.noDamageCount || 0;
         this.noSurvivorsCount = saveObj.noSurvivorsCount || 0;
         this.perfectCount = saveObj.perfectCount || 0;
     }

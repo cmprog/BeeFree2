@@ -1,23 +1,23 @@
-import { forEachAchivement } from './achivements.js';
+import { forEachAchievement } from './achievements.js';
 import { queryElement } from './html.js';
 import { Menu } from './menu.js'
 import { currentPlayer } from './player.js';
 
-class AchivementListItem {
-    constructor(achivement) {
+class AchievementListItem {
+    constructor(achievement) {
 
-        this.achivement = achivement;
+        this.achievement = achievement;
 
         this.element = document.createElement('li');
-        this.element.classList.add('achivement');
+        this.element.classList.add('achievement');
 
         const nameElement = document.createElement('div');
         nameElement.classList.add('name');
-        nameElement.innerText = achivement.name;
+        nameElement.innerText = achievement.name;
 
         const descriptionElement = document.createElement('div');        
         descriptionElement.classList.add('description');
-        descriptionElement.innerText = achivement.description;
+        descriptionElement.innerText = achievement.description;
 
         this.progressElement = document.createElement('progress');
         this.progressElement.classList.add('progress');
@@ -31,7 +31,7 @@ class AchivementListItem {
 
         const iconElement = document.createElement('div');
         iconElement.classList.add('icon');
-        iconElement.innerText = achivement.icon;
+        iconElement.innerText = achievement.icon;
 
         this.element.appendChild(iconElement);
         this.element.appendChild(contentElement);
@@ -39,10 +39,10 @@ class AchivementListItem {
 
     refresh() {
 
-        this.progressElement.value = this.achivement.getProgress();
+        this.progressElement.value = this.achievement.getProgress();
 
         const CLASS_NAME_UNLOCKED = 'unlocked';
-        if (currentPlayer.hasAchivement(this.achivement.id)) {
+        if (currentPlayer.hasAchievement(this.achievement.id)) {
             this.element.classList.add(CLASS_NAME_UNLOCKED);            
         } else {
             this.element.classList.remove(CLASS_NAME_UNLOCKED);
@@ -50,27 +50,27 @@ class AchivementListItem {
     }
 }
 
-export class AchivementsMenu extends Menu {
+export class AchievementsMenu extends Menu {
 
     constructor() {
-        super('#menu-achivements')
+        super('#menu-achievements')
 
-        this.achivementListEl = queryElement(this.element, '.achivement-list');        
+        this.achievementListEl = queryElement(this.element, '.achievement-list');        
     }
 
     onOpening() {
 
-        if (!this.achivementListItems) {
+        if (!this.achievementListItems) {
             
-            this.achivementListItems = [];
+            this.achievementListItems = [];
             
-            forEachAchivement(achivement => {
-                const listItem = new AchivementListItem(achivement);
-                this.achivementListItems.push(listItem);
-                this.achivementListEl.appendChild(listItem.element);
+            forEachAchievement(achievement => {
+                const listItem = new AchievementListItem(achievement);
+                this.achievementListItems.push(listItem);
+                this.achievementListEl.appendChild(listItem.element);
             });
         }
 
-        this.achivementListItems.forEach(li => li.refresh());
+        this.achievementListItems.forEach(li => li.refresh());
     }
 }

@@ -308,7 +308,7 @@ class ShopItemDescriptorSet {
 
         this.BEE_HEALTH = ShopItemDescriptor.create(desc => {
             desc.title = 'Health';
-            desc.description = 'Increases your maximum health making you more durable. It is recommended to just avoid taking damange in the first place.';
+            desc.description = 'Increases your maximum health making you more durable. It is recommended to just avoid taking damage in the first place.';
             desc.apply = (player, value) => {
                 player.beeAttributes.maxHealth = value;
             };
@@ -340,7 +340,7 @@ class ShopItemDescriptorSet {
 
         this.CRIT_CHANCE = ShopItemDescriptor.create(desc => {
             desc.title = 'Critical Hit Chance';
-            desc.description = 'Increases the chance that your hits will be critical, dealing additional damange.';
+            desc.description = 'Increases the chance that your hits will be critical, dealing additional damage.';
             desc.apply = (player, value) => {
                 player.beeAttributes.critChance = value;
             };
@@ -456,7 +456,7 @@ class ShopItemDescriptorSet {
 
         this.SAMMY_BULLET_DAMAGE_MULTI = ShopItemDescriptor.create(desc => {
             desc.title = 'Sammy Party Damage Multiplier';
-            desc.description = 'Increases your damange  when Sammy is throwing a party.';
+            desc.description = 'Increases your damage  when Sammy is throwing a party.';
             desc.apply = (player, value) => {
                 player.sammyAttributeMultipliers.damage = value;
             };
@@ -602,7 +602,7 @@ class ShopItemDescriptorSet {
         // COSMETICS
         // ===============================================================
 
-        this.SOMETHING = ShopItemDescriptor.create(desc => {
+        this.EXPLODING_BIRDS = ShopItemDescriptor.create(desc => {
             desc.title = 'Exploding Birds';
             desc.description = 'Causes the birds to explode when you shoot them. Very satisfying.';
             desc.canPurchase = (key, descriptor, nextLevel, nextLevelValue) => {

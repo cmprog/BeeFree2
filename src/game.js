@@ -7,7 +7,7 @@ import { CloudGenerator } from "./cloud.js";
 import { initLevels } from "./level-list.js";
 import { currentLevel } from "./levels.js";
 import { initLogging, logDebug, logError, logInfo } from "./logging.js";
-import { reloadAchivements, tryUnlockAllAchivements } from "./achivements.js";
+import { reloadAchievements, tryUnlockAllAchievements } from "./achievements.js";
 import { initBirdTemplates } from "./bird-templates.js";
 import { GAME_SETTINGS } from "./settings.js";
 import { initPlayer } from "./player.js";
@@ -45,7 +45,7 @@ function gameInit() {
     // use a 720p fixed size canvas
     setCanvasFixedSize(vec2(1280, 720));
     
-    reloadAchivements();
+    reloadAchievements();
 
     new CloudGenerator()
 
@@ -66,7 +66,7 @@ function gameUpdatePost() {
 
     // logDebug(`Solid object count: ${engineObjectsCollide.length}`);
 
-    tryUnlockAllAchivements();
+    tryUnlockAllAchievements();
 }
 
 ///////////////////////////////////////////////////////////////////////////////

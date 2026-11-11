@@ -220,7 +220,7 @@ export class Bee extends EngineObject {
             currentPlayer.onDamageTaken(actualAmount);
         }
 
-        logDebug(`Bee taking ${amount} damange (${this.health.toFixed(1)} -> ${targetHealth.toFixed(1)})`);
+        logDebug(`Bee taking ${amount} damage (${this.health.toFixed(1)} -> ${targetHealth.toFixed(1)})`);
 
         this.health = targetHealth;
 

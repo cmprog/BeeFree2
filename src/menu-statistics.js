@@ -168,7 +168,7 @@ export class StatisticsMenu extends Menu {
         this.appendField()
             .withLabel('levels completed (no damage taken)')
             .withValue(() => {
-                return this.sumLevelStats(x => x.prestigeStatistics.noDamangeCount).toFixed(0);
+                return this.sumLevelStats(x => x.prestigeStatistics.noDamageCount).toFixed(0);
             });
 
         this.appendField()
@@ -296,12 +296,12 @@ export class StatisticsMenu extends Menu {
         this.appendField()
             .withLabel('overall best')
             .withValue(() => {
-                if (!currentPlayer.overallTimeTrailStatistics.longestDuration) {                    
+                if (!currentPlayer.overallTimeTrialStatistics.longestDuration) {                    
                     return 'N/A';
                 }
 
-                const longestDurationText = currentPlayer.overallTimeTrailStatistics.longestDuration.toFixed(1);
-                const longestDurationDateText = currentPlayer.overallTimeTrailStatistics.longestDate.toDateString();
+                const longestDurationText = currentPlayer.overallTimeTrialStatistics.longestDuration.toFixed(1);
+                const longestDurationDateText = currentPlayer.overallTimeTrialStatistics.longestDate.toDateString();
                 return `${longestDurationText} seconds on ${longestDurationDateText}`;
             });
     }

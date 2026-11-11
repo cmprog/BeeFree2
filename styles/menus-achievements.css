@@ -1,21 +1,21 @@
 @import url('./variables.css');
 @import url('./menus-common.css');
 
-#menu-achivements {
+#menu-achievements {
 
   --level-button-size: 100px;
   --font-size-name: 28px;
   --font-size-description: 22px;
   
 
-  .achivement-list {
+  .achievement-list {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
     gap: var(--spacing-default);
   }
 
-  .achivement {
+  .achievement {
     border: 1px solid black;
     display: flex;
     flex-direction: row;

@@ -12,10 +12,13 @@ const SAVE_KEY_BACKUP = "save_bk";
 
 /**
  * The version of the save format written by {@link Player#toSaveObj}.
- * Version 2 stopped persisting the derived attribute sets; they are rebuilt
- * from the shop purchases on load.
+ * - Version 2 stopped persisting the derived attribute sets; they are rebuilt
+ *   from the shop purchases on load.
+ * - Version 3 fixed misspelled field names (achievements, noDamageCount,
+ *   overallTimeTrialStatistics, the EXPLODING_BIRDS shop key). Older saves were
+ *   deliberately not converted, so those values reset.
  */
-const SAVE_VERSION = 2;
+const SAVE_VERSION = 3;
 
 export class Player {
     constructor() {
@@ -38,7 +41,7 @@ export class Player {
         this.beeAttributes = DEFAULT_BEE_ATTRIBUTES.copy();
 
         /**
-         * Keeps track of the highest value ever achived for a given attribute
+         * Keeps track of the highest value ever achieved for a given attribute
          * across all prestiges.
          * @type {AttributeSet}
          */
@@ -53,7 +56,7 @@ export class Player {
         this.sammyAttributeMultipliers = DEFAULT_SAMMY_ATTRIBUTE_MULTIPLIERS.copy();
 
         /**
-         * Keeps track of the highest value ever achived for the sammy attributes.
+         * Keeps track of the highest value ever achieved for the sammy attributes.
          * @type {AttributeSet}
          */
         this.highestSammyAttributeMultipliers = DEFAULT_SAMMY_ATTRIBUTE_MULTIPLIERS.copy();
@@ -66,7 +69,7 @@ export class Player {
         this.levelAttributes = DEFAULT_LEVEL_ATTRIBUTES.copy();
 
         /**
-         * Keeps track of the highest value ever achived for a given level attribute
+         * Keeps track of the highest value ever achieved for a given level attribute
          * across all prestiges.
          * @type {LevelAttributeSet}
          */
@@ -94,7 +97,7 @@ export class Player {
          * @type {Map<number, PlayerLevel>}
          */
         this.levels = new Map();
-        this.achivements = {};
+        this.achievements = {};
         
         /**
          * The standard shop purchases which have been purchased by the player.
@@ -114,7 +117,7 @@ export class Player {
         this.prestigeStatistics = new StatisticsSet();
 
         this.dailyTimeTrialStatistics = new TimeTrialStatistics();
-        this.overallTimeTrailStatistics = new TimeTrialStatistics();
+        this.overallTimeTrialStatistics = new TimeTrialStatistics();
 
         /**
          * Whether or not birds explode on kill.
@@ -298,7 +301,7 @@ export class Player {
         this.tryResetDailyTimeTrialStatistics(today());
 
         this.dailyTimeTrialStatistics.startCount += 1;
-        this.overallTimeTrailStatistics.startCount += 1;        
+        this.overallTimeTrialStatistics.startCount += 1;        
     }
 
     /**
@@ -310,7 +313,7 @@ export class Player {
         this.tryResetDailyTimeTrialStatistics(todayDate);
         
         this.dailyTimeTrialStatistics.tryUpdate(todayDate, duration);
-        this.overallTimeTrailStatistics.tryUpdate(todayDate, duration);
+        this.overallTimeTrialStatistics.tryUpdate(todayDate, duration);
     }
 
     /**
@@ -362,8 +365,8 @@ export class Player {
      * @returns {boolean}
      */
     isOverallTimeTrialRecord(duration) {
-        if (!this.overallTimeTrailStatistics.longestDuration) return true;
-        return duration > this.overallTimeTrailStatistics.longestDuration;
+        if (!this.overallTimeTrialStatistics.longestDuration) return true;
+        return duration > this.overallTimeTrialStatistics.longestDuration;
     }
 
     /**
@@ -428,12 +431,12 @@ export class Player {
     }
 
     /**
-     * Checks if the player has unlocked the given achivement.
-     * @param {number} id The id of the achivement.
-     * @returns Boolean whether or not the player has the given achivement.
+     * Checks if the player has unlocked the given achievement.
+     * @param {number} id The id of the achievement.
+     * @returns Boolean whether or not the player has the given achievement.
      */
-    hasAchivement(id) {
-        return (id in this.achivements) && this.achivements[id];
+    hasAchievement(id) {
+        return (id in this.achievements) && this.achievements[id];
     }
 
     /**
@@ -481,7 +484,7 @@ export class Player {
             lastPrestigedOn: this.lastPrestigedOn,
             prestigeHoneycombMultiplier: this.prestigeHoneycombMultiplier,        
 
-            achivements: this.achivements,            
+            achievements: this.achievements,            
             shopPurchases: this.shopPurchases,
             foreverShopPurchases: this.foreverShopPurchases,
 
@@ -492,7 +495,7 @@ export class Player {
             prestigeStatistics: this.prestigeStatistics.toSaveObj(),
 
             dailyTimeTrialStatistics: this.dailyTimeTrialStatistics.toSaveObj(),
-            overallTimeTrailStatistics: this.overallTimeTrailStatistics.toSaveObj(),
+            overallTimeTrialStatistics: this.overallTimeTrialStatistics.toSaveObj(),
         };
 
         saveObj.levels = {};
@@ -574,10 +577,10 @@ export class Player {
         this.ownedHats = new Set((saveObj.ownedHats ?? []).filter(id => getHat(id)));
         this.equippedHat = this.ownsHat(saveObj.equippedHat) ? saveObj.equippedHat : null;
 
-        this.achivements = { };
-        if (saveObj.achivements) {            
-            for (const key of Object.keys(saveObj.achivements)) {
-                this.achivements[key] = saveObj.achivements[key];
+        this.achievements = { };
+        if (saveObj.achievements) {            
+            for (const key of Object.keys(saveObj.achievements)) {
+                this.achievements[key] = saveObj.achievements[key];
             }
         }
 
@@ -585,7 +588,7 @@ export class Player {
         this.prestigeStatistics.loadSaveObj(saveObj.prestigeStatistics);
 
         this.dailyTimeTrialStatistics.loadSaveObj(saveObj.dailyTimeTrialStatistics);
-        this.overallTimeTrailStatistics.loadSaveObj(saveObj.overallTimeTrailStatistics);
+        this.overallTimeTrialStatistics.loadSaveObj(saveObj.overallTimeTrialStatistics);
 
         // The first level must always be playable, even with a damaged save.
         this.markLevelAvailable(0);
@@ -615,7 +618,7 @@ export class Player {
 
     /**
      * Replaces the current player with a brand new one and saves it, wiping the old save.
-     * Callers should reload the achivements afterwards (reloadAchivements in achivements.js).
+     * Callers should reload the achievements afterwards (reloadAchievements in achievements.js).
      */
     reset() {
         currentPlayer = new Player();

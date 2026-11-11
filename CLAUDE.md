@@ -94,8 +94,8 @@ revamped because the author's daughter plays it. Deployed to GitHub Pages from t
   The player saves owned hats in `ownedHats` and the worn hat in `equippedHat`. Prestige doesn't
   reset them.
 - Achievements extend the LittleJS `Medal` class but are persisted in the player save.
-  `Achivement.isLocal()` returns false so the engine's `medalsInit` never loads or saves their
-  state. Use `forEachAchivement`/`reloadAchivements` from `achivements.js`, not `medalsForEach`.
+  `Achievement.isLocal()` returns false so the engine's `medalsInit` never loads or saves their
+  state. Use `forEachAchievement`/`reloadAchievements` from `achievements.js`, not `medalsForEach`.
 - `src/player.js` holds `currentPlayer` and all persistent state, saved as JSON in `localStorage`
   (`save` key, previous save copied to `save_bk`). `currentPlayer` is created and loaded by
   `initPlayer()` at the top of `game.js`, so it's `undefined` while modules are still loading.
@@ -114,8 +114,6 @@ revamped because the author's daughter plays it. Deployed to GitHub Pages from t
   third argument when you need `.value`). Plain objects can't use objects as keys; use a `Map`.
 - Keep the existing style: 4-space indentation, semicolons, single quotes or double quotes as in
   the surrounding file, ES module imports with explicit `.js` extensions.
-- Existing identifiers spell "achievement" as `achivement`. Keep it consistent unless doing a
-  deliberate rename.
 
 ## Task tracking
 
@@ -142,6 +140,8 @@ revamped because the author's daughter plays it. Deployed to GitHub Pages from t
 
 - **Save compatibility:** Normally saves must keep loading (`loadSaveObj` should tolerate old/missing
   fields). Breaking a save is acceptable only when the author explicitly OKs it for a given change.
+  Save format version 3 (`SAVE_VERSION` in `player.js`) renamed misspelled fields without converting
+  older saves, with the author's OK. Don't add conversion code for versions before 3.
 - Level-end bonuses (no damage, no survivors, perfect) are meant to pay out honeycomb.
 - Shop upgrades of every category, including Sammy upgrades, are meant to affect gameplay.
 - The Time Trial diminishing-returns penalty, based on Time Trials started during the current

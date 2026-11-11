@@ -108,14 +108,14 @@ describe('prestige', () => {
         buy(player, foreverKey);
         player.availableHoneycomb = HatTier.FABULOUS.price;
         player.purchaseHat('crown');
-        player.achivements[3] = true;
+        player.achievements[3] = true;
 
         player.prestige();
 
         assert.equal(player.foreverShopPurchases[foreverKey], 1);
         assert.ok(player.ownsHat('crown'));
         assert.equal(player.equippedHat, 'crown');
-        assert.equal(player.hasAchivement(3), true);
+        assert.equal(player.hasAchievement(3), true);
     });
 
     test('raises the honeycomb multiplier based on honeycomb collected this prestige', () => {
@@ -208,6 +208,20 @@ describe('saving and loading', () => {
 
         assert.deepEqual([...player.ownedHats], ['crown']);
         assert.equal(player.equippedHat, null);
+    });
+
+    test('saves use the version 3 field names', () => {
+        const player = new Player();
+        player.achievements[1] = true;
+        player.onStandardLevelCompleted(0, false, true, false);
+        player.save();
+
+        const saved = JSON.parse(localStorage.getItem('save'));
+        assert.equal(saved.saveVersion, 3);
+        assert.deepEqual(saved.achievements, { 1: true });
+        assert.ok('overallTimeTrialStatistics' in saved);
+        assert.equal(saved.levels[0].overallStatistics.noDamageCount, 1);
+        assert.ok('EXPLODING_BIRDS' in SHOP_ITEMS);
     });
 
     test('the previous save is kept as a backup', () => {

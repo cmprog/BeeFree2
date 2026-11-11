@@ -54,7 +54,7 @@ describe('level statistics', () => {
         for (const statistics of [level.overallStatistics, level.prestigeStatistics]) {
             assert.equal(statistics.startCount, 1);
             assert.equal(statistics.completedCount, 1);
-            assert.equal(statistics.noDamangeCount, 1);
+            assert.equal(statistics.noDamageCount, 1);
             assert.equal(statistics.noSurvivorsCount, 1);
             assert.equal(statistics.perfectCount, 1);
         }
@@ -129,6 +129,6 @@ describe('time trial records', () => {
 
         player.onTimeTrialCompleted(10);
         assert.equal(player.dailyTimeTrialStatistics.longestDuration, 10);
-        assert.equal(player.overallTimeTrailStatistics.longestDuration, 30);
+        assert.equal(player.overallTimeTrialStatistics.longestDuration, 30);
     });
 });

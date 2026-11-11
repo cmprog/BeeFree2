@@ -44,8 +44,5 @@ What's next for BeeFree. Finished work is recorded in [changelog/](changelog/), 
   filled in by `init*()` calls at startup. Now that LittleJS loads before any module, some could
   probably become plain constants built when their module loads. Check first whether they need
   loaded images.
-- **Misspelled names stored in saves** (`noDamangeCount`, `overallTimeTrailStatistics`, the
-  `SOMETHING` shop key, `achivement`). They can be renamed by converting old saves on load, using
-  `saveVersion`. Purely cosmetic, so it's low priority.
 - **Achievements vs. medals.** Achievements are saved on the player, but the LittleJS `Medal`
   objects they're built on are global. Leave this until something needs it.
