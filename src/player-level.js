@@ -17,8 +17,7 @@ export class PlayerLevel {
             logError(`Level started but not unlocked.`);
         }
 
-        this.prestigeStatistics.onStarted();
-        this.overallStatistics.onStarted();
+        this.updateStatistics(statistics => statistics.onStarted());
     }
 
     /**
@@ -33,9 +32,17 @@ export class PlayerLevel {
             logError(`Level completed but not unlocked.`);
         }
 
-        this.prestigeStatistics.onCompleted(failed, noDamage, noSurvivors);
-        this.overallStatistics.onCompleted(failed, noDamage, noSurvivors);
-        
+        this.updateStatistics(statistics => statistics.onCompleted(failed, noDamage, noSurvivors));
+    }
+
+    /**
+     * Applies the same change to both the overall statistics and the statistics for the current
+     * prestige, so the two always stay in step.
+     * @param {(statistics: StandardLevelStatistics) => void} update
+     */
+    updateStatistics(update) {
+        update(this.overallStatistics);
+        update(this.prestigeStatistics);
     }
 
     /**

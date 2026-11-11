@@ -224,78 +224,76 @@ export class Player {
      */
     onHoneycombCollected(amount) {
         this.availableHoneycomb += amount;
-        this.overallStatistics.totalHoneycombCollected += amount;
-        this.prestigeStatistics.totalHoneycombCollected += amount;
+        this.updateStatistics(statistics => statistics.totalHoneycombCollected += amount);
     }
 
-    onBirdKilled(){
-        this.overallStatistics.killCount += 1;
-        this.prestigeStatistics.killCount += 1;
+    /**
+     * Applies the same change to both the overall statistics and the statistics for the current
+     * prestige, so the two always stay in step. Use this for every statistic update.
+     * @param {(statistics: StatisticsSet) => void} update
+     */
+    updateStatistics(update) {
+        update(this.overallStatistics);
+        update(this.prestigeStatistics);
+    }
+
+    onBirdKilled() {
+        this.updateStatistics(statistics => statistics.killCount += 1);
     }
 
     /**
      * @param {number} amount 
      */
     onDamageTaken(amount) {
-        this.overallStatistics.damageTaken += amount;
-        this.prestigeStatistics.damageTaken += amount;
+        this.updateStatistics(statistics => statistics.damageTaken += amount);
     }
 
     onBeeDeath() {
-        this.overallStatistics.deathCount += 1;
-        this.prestigeStatistics.deathCount += 1;
+        this.updateStatistics(statistics => statistics.deathCount += 1);
     }
 
     /**
      * @param {number} damageDealt 
      */
     onHit(damageDealt) {
-        this.overallStatistics.hitCount += 1;
-        this.prestigeStatistics.hitCount += 1;
-
-        this.overallStatistics.damageDealt += damageDealt;
-        this.prestigeStatistics.damageDealt += damageDealt;
+        this.updateStatistics(statistics => {
+            statistics.hitCount += 1;
+            statistics.damageDealt += damageDealt;
+        });
     }
 
     onShotFired(bulletCount) {
-        this.overallStatistics.shotCount += 1;
-        this.prestigeStatistics.shotCount += 1;
-
-        this.overallStatistics.bulletCount += bulletCount;
-        this.prestigeStatistics.bulletCount += bulletCount;
+        this.updateStatistics(statistics => {
+            statistics.shotCount += 1;
+            statistics.bulletCount += bulletCount;
+        });
     }
 
     onSammySpawned() {
-        this.overallStatistics.sammySpawnCount += 1;
-        this.prestigeStatistics.sammySpawnCount += 1;
+        this.updateStatistics(statistics => statistics.sammySpawnCount += 1);
     }
 
     onSammyCollected() {
-        this.overallStatistics.sammyCollectionCount += 1;
-        this.prestigeStatistics.sammyCollectionCount += 1;
+        this.updateStatistics(statistics => statistics.sammyCollectionCount += 1);
     }
 
     /**
      * @param {number} distance 
      */
     onDistanceTraveled(distance) {
-        this.overallStatistics.distanceTraveled += distance;
-        this.prestigeStatistics.distanceTraveled += distance;
+        this.updateStatistics(statistics => statistics.distanceTraveled += distance);
     }
 
     onShopUpgradePurchased() {
-        this.overallStatistics.shopUpgradesPurchased += 1;
-        this.prestigeStatistics.shopUpgradesPurchased += 1;
+        this.updateStatistics(statistics => statistics.shopUpgradesPurchased += 1);
     }
 
     onCriticalHit() {
-        this.overallStatistics.criticalHitCount += 1;
-        this.prestigeStatistics.criticalHitCount += 1;
+        this.updateStatistics(statistics => statistics.criticalHitCount += 1);
     }
 
     onTimeTrialStarted() {
-        this.overallStatistics.timeTrialLevelsStarted += 1;
-        this.prestigeStatistics.timeTrialLevelsStarted += 1;
+        this.updateStatistics(statistics => statistics.timeTrialLevelsStarted += 1);
 
         this.tryResetDailyTimeTrialStatistics(today());
 
