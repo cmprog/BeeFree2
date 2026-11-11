@@ -7,7 +7,7 @@ import { LevelSummaryMenu } from "./menu-level-summary.js";
 import { MENUS } from "./menus.js";
 import { Owl } from "./owl.js";
 import { currentPlayer } from "./player.js";
-import { BASE_SAMMY_CHANCE, DEFAULT_LEVEL_ATTRIBUTES, STANDARD_LEVEL_EARNING_DECAY_BASE, NO_DAMAGE_TOKEN_LEVEL_BONUS, NO_SURVIVORS_LEVEL_BONUS, PERFECT_LEVEL_BONUS, STANDARD_LEVEL_FAILURE_EARN_RATE, TIME_TRIAL_LEVEL_EARNING_DECAY_BASE, TIME_TRIAL_PHASE_DURATION } from "./settings.js";
+import { BASE_SAMMY_CHANCE, STANDARD_LEVEL_EARNING_DECAY_BASE, NO_DAMAGE_TOKEN_LEVEL_BONUS, NO_SURVIVORS_LEVEL_BONUS, PERFECT_LEVEL_BONUS, STANDARD_LEVEL_FAILURE_EARN_RATE, TIME_TRIAL_LEVEL_EARNING_DECAY_BASE, TIME_TRIAL_PHASE_DURATION } from "./settings.js";
 import { FormationDefinition, SpawnDefinition, SpawnerCollection, FormationCreationOptions, SPAWN_REGIONS } from "./spawning.js";
 import { spriteAtlas } from "./sprites.js";
 import { FONTS, getWorldSize } from "./util.js";
@@ -78,7 +78,7 @@ class Level extends EngineObject {
 
         this.bee = this.trackObj(new Bee(currentPlayer.beeAttributes));
         
-        this.attributes = DEFAULT_LEVEL_ATTRIBUTES.copy();
+        this.attributes = currentPlayer.levelAttributes.copy();
 
         this.sammyTimer = new Timer();
 
@@ -113,7 +113,11 @@ class Level extends EngineObject {
             this.onLevelCompleted(levelSummaryMenu);
             levelSummaryMenu.open();
 
-            this.destroy();      
+            this.destroy();
+
+            // The level is over, nothing else should spawn. Subclasses must
+            // also check `this.destroyed` after calling `super.update()`.
+            return;
         }
 
         if (randInt(0, BASE_SAMMY_CHANCE * (1 / this.attributes.sammyChance)) == 0) {
@@ -285,31 +289,39 @@ class StandardLevel extends Level {
 
         } else {
 
+            // Each bonus is a percentage of the collected honeycomb (before any
+            // other bonus), so they stack additively.
             let bonusAmount = 0;
 
             if (this.noDamage) {
+                const bonus = honeycombEarned * NO_DAMAGE_TOKEN_LEVEL_BONUS;
+                bonusAmount += bonus;
                 levelSummaryMenu.addItem(
                     'no damage taken',
                     `${(NO_DAMAGE_TOKEN_LEVEL_BONUS * 100).toFixed(0)}% bonus`,
-                    `+ ${(honeycombEarned * NO_DAMAGE_TOKEN_LEVEL_BONUS).toFixed(1)}`,
+                    `+ ${bonus.toFixed(1)}`,
                     '<div class="level-badge level-badge-no-damage"></div>'
                 )
             }
 
             if (noSurvivors) {
+                const bonus = honeycombEarned * NO_SURVIVORS_LEVEL_BONUS;
+                bonusAmount += bonus;
                 levelSummaryMenu.addItem(
                     'no survivors',
                     `${(NO_SURVIVORS_LEVEL_BONUS * 100).toFixed(0)}% bonus`,
-                    `+ ${(honeycombEarned * NO_SURVIVORS_LEVEL_BONUS).toFixed(1)}`,
+                    `+ ${bonus.toFixed(1)}`,
                     '<div class="level-badge level-badge-no-survivors"></div>'
                 )
             }
 
-            if (this.noDamage && noSurvivors) {                                
+            if (this.noDamage && noSurvivors) {
+                const bonus = honeycombEarned * PERFECT_LEVEL_BONUS;
+                bonusAmount += bonus;
                 levelSummaryMenu.addItem(
                     'perfect',
                     `${(PERFECT_LEVEL_BONUS * 100).toFixed(0)}% bonus`,
-                    `+ ${(honeycombEarned * PERFECT_LEVEL_BONUS).toFixed(1)}`,
+                    `+ ${bonus.toFixed(1)}`,
                     '<div class="level-badge level-badge-perfect"></div>'
                 )
             }
@@ -360,6 +372,7 @@ class StandardLevel extends Level {
     update() {
 
         super.update();
+        if (this.destroyed) return;
 
         this.spawner.update();
 
@@ -390,8 +403,6 @@ class StandardLevel extends Level {
 
         this.timeRemainingBar.size = vec2(10, 1.0);
         this.timeRemainingBar.value = 1;
-
-        this.sammyChance = currentPlayer.sammyChance;
 
         const currentDate = new Date();
         const currentDateValue = currentDate.setHours(0, 0, 0, 0);
@@ -535,12 +546,11 @@ class StandardLevel extends Level {
 
         const margin = vec2(1, 1);
 
-        const spawnRegions = birdTemplate.spawnRegions;
-        if (!spawnRegions.length) {
-            // Just default to the right side of the screen.
-            spawnRegions.push(SPAWN_REGIONS.RIGHT_UPPER);
-            spawnRegions.push(SPAWN_REGIONS.RIGHT_LOWER);
-        }
+        // Default to the right side of the screen. Don't modify the template's
+        // array since templates are shared across every level.
+        const spawnRegions = birdTemplate.spawnRegions.length
+            ? birdTemplate.spawnRegions
+            : [SPAWN_REGIONS.RIGHT_UPPER, SPAWN_REGIONS.RIGHT_LOWER];
 
         const targetSpawnRegion = spawnRegions[this.rand.int(0, spawnRegions.length)];
         const pos = targetSpawnRegion.getRandomPosition(this.rand, worldSize, margin);
@@ -556,6 +566,7 @@ class StandardLevel extends Level {
     update() {
 
         super.update();
+        if (this.destroyed) return;
 
         this.levelDuration = time - this.spawnTime;
 

@@ -152,7 +152,7 @@ export class Bee extends EngineObject {
         if (isUsingGamepad) {
 
             direction = gamepadStick(0);            
-            holdingFire = gamepadIsDown(0) || gamepadIsDown(0);
+            holdingFire = gamepadIsDown(0);
             
         } else {
             
@@ -229,7 +229,7 @@ export class Bee extends EngineObject {
     getDamage() {
         
         let damage = this.attributes.damage;
-        if (rand(0, 1) >= this.attributes.critChance) {
+        if (rand(0, 1) < this.attributes.critChance) {
             damage = damage * this.attributes.critMultiplier;
 
             if (currentPlayer) {

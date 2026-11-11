@@ -107,9 +107,9 @@ export class BirdTemplate {
         return this;
     }
 
-    withCritical(chance, multipler) {
+    withCritical(chance, multiplier) {
         this.attributes.critChance = chance;
-        this.attributes.multipler = multipler;
+        this.attributes.critMultiplier = multiplier;
         return this;
     }
 
@@ -669,7 +669,7 @@ export class Bird extends EngineObject
 
     getDamage() {        
         let damage = this.attributes.damage;
-        if (rand(0, 1) >= this.attributes.critChance) {
+        if (rand(0, 1) < this.attributes.critChance) {
             damage = damage * this.attributes.critMultiplier;
         }
         return damage;

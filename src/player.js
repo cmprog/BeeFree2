@@ -1,12 +1,20 @@
 import { AttributeSet, LevelAttributeSet } from "./attributes.js";
 import { logDebug, logError } from "./logging.js";
 import { PlayerLevel } from "./player-level.js";
+import { SHOP_ITEMS } from "./shop-items.js";
 import { DEFAULT_BEE_ATTRIBUTES, DEFAULT_LEVEL_ATTRIBUTES, DEFAULT_SAMMY_ATTRIBUTE_MULTIPLIERS, GAME_SETTINGS, PRESTIGE_BONUS_RATE } from "./settings.js";
 import { StatisticsSet, TimeTrialStatistics } from "./statistics.js";
 import { today } from "./util.js";
 
 const SAVE_KEY = "save";
 const SAVE_KEY_BACKUP = "save_bk";
+
+/**
+ * The version of the save format written by {@link Player#toSaveObj}.
+ * Version 2 stopped persisting the derived attribute sets; they are rebuilt
+ * from the shop purchases on load.
+ */
+const SAVE_VERSION = 2;
 
 export class Player {
     constructor() {
@@ -23,6 +31,7 @@ export class Player {
 
         /**
          * The current set of attributes for the bee for the current prestige.
+         * Derived from the shop purchases, see {@link Player#rebuildAttributes}.
          * @type {AttributeSet}
          */
         this.beeAttributes = DEFAULT_BEE_ATTRIBUTES.copy();
@@ -32,11 +41,12 @@ export class Player {
          * across all prestiges.
          * @type {AttributeSet}
          */
-        this.highestBeeAttributes = this.beeAttributes.copy();
+        this.highestBeeAttributes = DEFAULT_BEE_ATTRIBUTES.copy();
 
         /**
          * This is a special set of attributes which contain multipliers which are
          * in affect during a special sammy powerup.
+         * Derived from the shop purchases, see {@link Player#rebuildAttributes}.
          * @type {AttributeSet}
          */
         this.sammyAttributeMultipliers = DEFAULT_SAMMY_ATTRIBUTE_MULTIPLIERS.copy();
@@ -45,10 +55,12 @@ export class Player {
          * Keeps track of the highest value ever achived for the sammy attributes.
          * @type {AttributeSet}
          */
-        this.highestSammyAttributeMultipliers = this.sammyAttributeMultipliers.copy();
-        
+        this.highestSammyAttributeMultipliers = DEFAULT_SAMMY_ATTRIBUTE_MULTIPLIERS.copy();
+
         /**
          * The current set of level attributes for the bee for the current prestige.
+         * Derived from the shop purchases, see {@link Player#rebuildAttributes}.
+         * @type {LevelAttributeSet}
          */
         this.levelAttributes = DEFAULT_LEVEL_ATTRIBUTES.copy();
 
@@ -57,7 +69,7 @@ export class Player {
          * across all prestiges.
          * @type {LevelAttributeSet}
          */
-        this.highestLevelAttributes = this.levelAttributes.copy();
+        this.highestLevelAttributes = DEFAULT_LEVEL_ATTRIBUTES.copy();
 
         /**
          * The number of times the player has prestiged.
@@ -104,13 +116,55 @@ export class Player {
         this.overallTimeTrailStatistics = new TimeTrialStatistics();
 
         /**
-         * Whether or not birds explode on kill. If undefined it means the feature
-         * has not been purchased yet in the shop.
-         * @type {boolean | undefined}
+         * Whether or not birds explode on kill.
+         * Derived from the shop purchases, see {@link Player#rebuildAttributes}.
+         * @type {boolean}
          */
-        this.birdsExplodeOnKill = undefined;
+        this.birdsExplodeOnKill = false;
 
-        this.markLevelAvailable(0);    
+        this.markLevelAvailable(0);
+        this.rebuildAttributes();
+    }
+
+    /**
+     * Rebuilds all attributes which are derived from shop purchases, starting from
+     * the defaults and applying every shop item at its purchased level. This is the
+     * single source of truth for those attributes; they are not persisted directly.
+     * Also updates the 'highest' attribute tracking.
+     */
+    rebuildAttributes() {
+
+        this.beeAttributes = DEFAULT_BEE_ATTRIBUTES.copy();
+        this.sammyAttributeMultipliers = DEFAULT_SAMMY_ATTRIBUTE_MULTIPLIERS.copy();
+        this.levelAttributes = DEFAULT_LEVEL_ATTRIBUTES.copy();
+        this.birdsExplodeOnKill = false;
+
+        for (const [key, descriptor] of Object.entries(SHOP_ITEMS)) {
+            const level = descriptor.getPurchasedLevel(this, key);
+            descriptor.apply(this, descriptor.computeValue(level));
+        }
+
+        this.highestBeeAttributes = this.highestBeeAttributes.max(this.beeAttributes);
+        this.highestSammyAttributeMultipliers = this.highestSammyAttributeMultipliers.max(this.sammyAttributeMultipliers);
+        this.highestLevelAttributes = this.highestLevelAttributes.max(this.levelAttributes);
+    }
+
+    /**
+     * Purchases the next level of a shop item.
+     * @param {string} key The key of the item within SHOP_ITEMS.
+     * @param {import('./shop-items.js').ShopItemDescriptor} descriptor
+     * @param {number} price
+     */
+    purchaseShopItem(key, descriptor, price) {
+
+        this.spendHoneycomb(price);
+
+        const purchaseSet = descriptor.getShopPurchaseSet(this);
+        purchaseSet[key] = descriptor.getPurchasedLevel(this, key) + 1;
+
+        this.rebuildAttributes();
+        this.onShopUpgradePurchased();
+        this.save();
     }
 
     /**
@@ -224,23 +278,16 @@ export class Player {
         this.prestigeHoneycombMultiplier += this.calculatePotentialPrestigeEarnings();
         this.availableHoneycomb = 0;
 
-        this.highestLevelAttributes = this.highestBeeAttributes.max(this.beeAttributes);
-        this.beeAttributes = DEFAULT_BEE_ATTRIBUTES.copy();
-
-        this.highestSammyAttributeMultipliers = this.highestSammyAttributeMultipliers.max(this.sammyAttributeMultipliers);
-        this.sammyAttributeMultipliers = DEFAULT_SAMMY_ATTRIBUTE_MULTIPLIERS.copy();
-
-        this.highestLevelAttributes = this.highestLevelAttributes.max(this.highestLevelAttributes);
-        this.levelAttributes = DEFAULT_LEVEL_ATTRIBUTES.copy();
-
         this.prestigeStatistics = new StatisticsSet();
 
         for (const [key, value] of this.levels) {
             value.onPrestige();
         }
 
-        // Reset all standard shop purchases
+        // Reset all standard shop purchases, forever purchases are kept.
+        // The 'highest' attributes were already captured by the last rebuild.
         this.shopPurchases = { };
+        this.rebuildAttributes();
 
         // Be sure to unlock the first level
         this.markLevelAvailable(0);
@@ -308,7 +355,6 @@ export class Player {
     }
 
     onLevelStarted(levelId) {
-        this.levelsStartCount += 1;
         this.getLevel(levelId).onLevelStarted();
         this.save();
     }
@@ -320,9 +366,9 @@ export class Player {
      * @param {boolean} noDamage 
      * @param {boolean} noSurvivors 
      */
-    onStandardLevelCompleted(levelId, failed, noDamage, perfect) {
+    onStandardLevelCompleted(levelId, failed, noDamage, noSurvivors) {
         const level = this.getLevel(levelId);
-        level.onLevelCompleted(failed, noDamage, perfect);
+        level.onLevelCompleted(failed, noDamage, noSurvivors);
         this.save();
     }
 
@@ -365,7 +411,9 @@ export class Player {
     toSaveObj() {
 
         const saveObj = {
-            
+
+            saveVersion: SAVE_VERSION,
+
             name: this.name,
             createdOn: this.createdOn.valueOf(),
             lastPlayedOn: this.lastPlayedOn.valueOf(),
@@ -373,13 +421,10 @@ export class Player {
 
             availableHoneycomb: this.availableHoneycomb,
 
-            beeAttributes: this.beeAttributes.toSaveObj(),
+            // The current attribute sets are derived from the shop purchases
+            // so only the 'highest' tracking needs to be persisted.
             highestBeeAttributes: this.highestBeeAttributes.toSaveObj(),
-            
-            sammyAttributeMultipliers: this.sammyAttributeMultipliers.toSaveObj(),
-            sammyAttributeMultipliers: this.sammyAttributeMultipliers.toSaveObj(),
-            
-            levelAttributes: this.levelAttributes.toSaveObj(),
+            highestSammyAttributeMultipliers: this.highestSammyAttributeMultipliers.toSaveObj(),
             highestLevelAttributes: this.highestLevelAttributes.toSaveObj(),
 
             prestigeCount: this.prestigeCount,
@@ -389,8 +434,6 @@ export class Player {
             achivements: this.achivements,            
             shopPurchases: this.shopPurchases,
             foreverShopPurchases: this.foreverShopPurchases,
-
-            birdsExplodeOnKill: this.birdsExplodeOnKill,
 
             overallStatistics: this.overallStatistics.toSaveObj(),
             prestigeStatistics: this.prestigeStatistics.toSaveObj(),
@@ -437,23 +480,21 @@ export class Player {
         this.lastPlayedOn = new Date(saveObj.lastPlayedOn || Date.now());
         this.lastSavedOn = new Date(saveObj.lastSavedOn || Date.now());
 
-        this.availableHoneycomb = saveObj.availableHoneycomb || 0;
-        
-        this.beeAttributes.loadSaveObj(saveObj.beeAttributes, DEFAULT_BEE_ATTRIBUTES);
-        this.highestBeeAttributes.loadSaveObj(saveObj.highestBeeAttributes, this.beeAttributes);
-        
-        this.sammyAttributeMultipliers.loadSaveObj(saveObj.sammyAttributeMultipliers, DEFAULT_SAMMY_ATTRIBUTE_MULTIPLIERS);
-        this.highestSammyAttributeMultipliers.loadSaveObj(saveObj.highestSammyAttributeMultipliers, this.sammyAttributeMultipliers);
-        
-        this.levelAttributes.loadSaveObj(saveObj.levelAttributes, DEFAULT_LEVEL_ATTRIBUTES);
-        this.highestLevelAttributes.loadSaveObj(saveObj.highestLevelAttributes, this.levelAttributes);
+        this.availableHoneycomb = saveObj.availableHoneycomb ?? 0;
 
-        this.prestigeCount = saveObj.prestigeCount || 0;
+        // Version 1 saves also contain the current attribute sets (beeAttributes,
+        // sammyAttributeMultipliers, levelAttributes, birdsExplodeOnKill). Those are
+        // ignored; the attributes are rebuilt from the shop purchases below.
+        this.highestBeeAttributes.loadSaveObj(saveObj.highestBeeAttributes, DEFAULT_BEE_ATTRIBUTES);
+        this.highestSammyAttributeMultipliers.loadSaveObj(saveObj.highestSammyAttributeMultipliers, DEFAULT_SAMMY_ATTRIBUTE_MULTIPLIERS);
+        this.highestLevelAttributes.loadSaveObj(saveObj.highestLevelAttributes, DEFAULT_LEVEL_ATTRIBUTES);
+
+        this.prestigeCount = saveObj.prestigeCount ?? 0;
         this.lastPrestigedOn = saveObj.lastPrestigedOn ? new Date(saveObj.lastPrestigedOn) : undefined;
-        this.prestigeHoneycombMultiplier = saveObj.prestigeHoneycombMultiplier;
+        this.prestigeHoneycombMultiplier = saveObj.prestigeHoneycombMultiplier ?? 1;
                 
         this.levels.clear();
-        for (const levelIdText of Object.keys(saveObj.levels)) {
+        for (const levelIdText of Object.keys(saveObj.levels ?? {})) {
             const levelObj = saveObj.levels[levelIdText];
             
             const playerLevel = new PlayerLevel(levelObj.id);
@@ -483,13 +524,16 @@ export class Player {
             }
         }
 
-        this.birdsExplodeOnKill = saveObj.birdsExplodeOnKill;
-
         this.overallStatistics.loadSaveObj(saveObj.overallStatistics);
         this.prestigeStatistics.loadSaveObj(saveObj.prestigeStatistics);
 
         this.dailyTimeTrialStatistics.loadSaveObj(saveObj.dailyTimeTrialStatistics);
         this.overallTimeTrailStatistics.loadSaveObj(saveObj.overallTimeTrailStatistics);
+
+        // The first level must always be playable, even with a damaged save.
+        this.markLevelAvailable(0);
+
+        this.rebuildAttributes();
     }
 
     load() {

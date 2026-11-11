@@ -103,19 +103,19 @@ export class AttributeSet {
 
         saveObj = saveObj || {};
 
-        this.speed = saveObj.speed || defaults.speed;
-        this.maxHealth = saveObj.maxHealth || defaults.maxHealth;
-        this.healthRegen = saveObj.healthRegen || defaults.healthRegen;
-        this.fireRate = saveObj.fireRate || defaults.fireRate;
-        this.damage = saveObj.damage || defaults.damage;
-        this.shotCount = saveObj.shotCount || defaults.shotCount;
-        this.honeycombAttraction = saveObj.honeycombAttraction || defaults.honeycombAttraction;
-        this.honeycombAttractionDistance = saveObj.honeycombAttractionDistance || defaults.honeycombAttractionDistance;
-        this.bulletSpeed = saveObj.bulletSpeed || defaults.bulletSpeed;
-        this.critChance = saveObj.critChance || defaults.critChance;
-        this.critMultiplier = saveObj.critMultiplier || defaults.critMultiplier;
-        this.doubleShotChance = saveObj.doubleShotChance || defaults.doubleShotChance;
-        this.touchDamage = saveObj.touchDamage || defaults.touchDamage;
+        this.speed = saveObj.speed ?? defaults.speed;
+        this.maxHealth = saveObj.maxHealth ?? defaults.maxHealth;
+        this.healthRegen = saveObj.healthRegen ?? defaults.healthRegen;
+        this.fireRate = saveObj.fireRate ?? defaults.fireRate;
+        this.damage = saveObj.damage ?? defaults.damage;
+        this.shotCount = saveObj.shotCount ?? defaults.shotCount;
+        this.honeycombAttraction = saveObj.honeycombAttraction ?? defaults.honeycombAttraction;
+        this.honeycombAttractionDistance = saveObj.honeycombAttractionDistance ?? defaults.honeycombAttractionDistance;
+        this.bulletSpeed = saveObj.bulletSpeed ?? defaults.bulletSpeed;
+        this.critChance = saveObj.critChance ?? defaults.critChance;
+        this.critMultiplier = saveObj.critMultiplier ?? defaults.critMultiplier;
+        this.doubleShotChance = saveObj.doubleShotChance ?? defaults.doubleShotChance;
+        this.touchDamage = saveObj.touchDamage ?? defaults.touchDamage;
     }
 }
 
@@ -192,8 +192,8 @@ export class LevelAttributeSet {
         
         saveObj = saveObj || {};
 
-        this.sammyChance = saveObj.sammyChance || defaults.sammyChance;
-        this.sammySpeed = saveObj.sammySpeed || defaults.sammySpeed;
-        this.sammyDuration = saveObj.sammyDuration || defaults.sammyDuration;
+        this.sammyChance = saveObj.sammyChance ?? defaults.sammyChance;
+        this.sammySpeed = saveObj.sammySpeed ?? defaults.sammySpeed;
+        this.sammyDuration = saveObj.sammyDuration ?? defaults.sammyDuration;
     }
 }

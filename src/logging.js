@@ -47,13 +47,13 @@ class Logger {
 
         this.isEnabled = {};
         for (const level of LOG_LEVELS) {
-            this.isEnabled[level] = true;
+            this.isEnabled[level.displayText] = true;
         }
     }
 
     log(level, message) {
 
-        if (!this.isEnabled[level]) return;
+        if (!this.isEnabled[level.displayText]) return;
 
         const formattedTimestamp = formatTimestamp(new Date());
 
@@ -107,7 +107,7 @@ class Logger {
 const LOGGER = new Logger();
 
 export function logDebug(message) {
-    LOGGER.log(LogLevel.INFO, message);
+    LOGGER.log(LogLevel.DEBUG, message);
 }
 
 export function logInfo(message) {

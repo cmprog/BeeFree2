@@ -1,0 +1,64 @@
+# BeeFree
+
+A browser shoot-'em-up with incremental/idle progression (shop upgrades, prestige, achievements),
+built on the [LittleJS](https://github.com/KilledByAPixel/LittleJS) engine. Originally written in 2013,
+revamped because the author's daughter plays it. Deployed to GitHub Pages from the `main` branch.
+
+## Running
+
+- No build step and no package manager. Plain ES modules served statically.
+- `run_local.bat` starts `python -m http.server 8080` and opens `http://localhost:8080`.
+- Running on `localhost` enables dev-only behavior: the on-screen log panel, the LittleJS watermark,
+  and the Debug section of the Settings menu (unlock all levels, grant honeycomb). See
+  `GAME_SETTINGS.IS_LOCAL_DEV_ENVIRONMENT` in `src/settings.js`.
+- There are no automated tests. Verify changes by playing in the browser.
+
+## Architecture
+
+- `dist/littlejs.js` is a vendored, unmodified copy of LittleJS (currently 1.12.13). It is loaded as
+  a classic script, so engine APIs (`vec2`, `EngineObject`, `Timer`, `drawTile`, `time`, ...) are
+  **globals**, not imports. Don't edit it; upgrade it by replacing the file.
+- `src/game.js` is the entry point (`engineInit`, image list, init order).
+- Gameplay entities are on the canvas (`bee.js`, `birds.js`, `owl.js` = Sammy, `bullet.js`,
+  `honeycomb.js`, `entities.js` for HUD pieces). Bird behavior is split into templates
+  (`BirdTemplate` in `birds.js`) with movement behaviors (`movement.js`) and shooting behaviors (`shooting.js`).
+- Levels are defined with the fluent builders in `levels.js` (`LevelDefinition`, formations) and
+  `spawning.js`. `StandardLevel` is scripted; `TimeTrialLevel` is endless, seeded by the date.
+- Menus are HTML/CSS overlays (`index.html` markup, `src/menu-*.js` behavior, `styles/menus-*.css`).
+  Each menu extends `Menu` in `menu.js` and is registered in `menus.js` (`MENUS`).
+- The shop is data-driven. `shop-items.js` defines `SHOP_ITEMS`: each `ShopItemDescriptor` has
+  cost/value growth params and an `apply(player, value)` callback. `menu-shop.js` is only the UI.
+  `isForever` items (cosmetics) survive prestige. `SHOP_ITEMS` keys are persisted in saves, so don't
+  rename them. `shop-items.js` must not import `player.js`, because that would create an import cycle.
+- **Player attributes are derived, not stored.** `Player.rebuildAttributes()` resets the bee, Sammy and
+  level attribute sets to the defaults in `settings.js`, then applies every shop item at its purchased
+  level. Only the purchase levels (and the "highest ever" tracking) are saved. Call `rebuildAttributes()`
+  after anything that changes purchases. Never set attributes directly from shop code.
+- Achievements extend the LittleJS `Medal` class but are persisted in the player save.
+- `src/player.js` holds `currentPlayer` and all persistent state, saved as JSON in `localStorage`
+  (`save` key, previous save copied to `save_bk`).
+- Balance constants and default attribute sets live in `src/settings.js`.
+  `docs/shop-balancing.xlsx` is the balancing spreadsheet.
+
+## Conventions
+
+- Standard JavaScript conventions: camelCase locals/params/members, PascalCase classes,
+  UPPER_SNAKE_CASE constants and frozen enum-like objects. The author's global C# naming rules
+  (`l`/`m` prefixes, `this.` qualification) do **not** apply to this repo.
+- Use JSDoc for types (`@type`, `@param`, `@returns`). The codebase relies on it for editor IntelliSense.
+- Keep the existing style: 4-space indentation, semicolons, single quotes or double quotes as in
+  the surrounding file, ES module imports with explicit `.js` extensions.
+- Existing identifiers spell "achievement" as `achivement`. Keep it consistent unless doing a
+  deliberate rename.
+
+## Decisions and game-design intent
+
+- **Save compatibility:** Normally saves must keep loading (`loadSaveObj` should tolerate old/missing
+  fields). Breaking a save is acceptable only when the author explicitly OKs it for a given change.
+- Level-end bonuses (no damage, no survivors, perfect) are meant to pay out honeycomb.
+- Shop upgrades of every category, including Sammy upgrades, are meant to affect gameplay.
+- The Time Trial diminishing-returns penalty, based on Time Trials started during the current
+  prestige and never resetting daily, is **intended**.
+- Cosmetics, including hats, are "forever" shop purchases that persist through prestige.
+- Prestige resets level unlocks and normal shop purchases. It keeps overall statistics,
+  achievements, and forever purchases.

@@ -1,3 +1,4 @@
+import { logError } from "./logging.js";
 import { StandardLevelStatistics } from "./statistics.js";
 
 export class PlayerLevel {
