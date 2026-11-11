@@ -82,7 +82,6 @@ revamped because the author's daughter plays it. Deployed to GitHub Pages from t
   The wardrobe preview (`menu-wardrobe.js`) uses the same `computeHatPlacement` as the game.
   The player saves owned hats in `ownedHats` and the worn hat in `equippedHat`. Prestige doesn't
   reset them.
-- Planned features and known code cleanup are tracked in `README.md` ("Planned Changes" and "Code Cleanup").
 - Achievements extend the LittleJS `Medal` class but are persisted in the player save.
 - `src/player.js` holds `currentPlayer` and all persistent state, saved as JSON in `localStorage`
   (`save` key, previous save copied to `save_bk`). `currentPlayer` is created and loaded by
@@ -104,6 +103,27 @@ revamped because the author's daughter plays it. Deployed to GitHub Pages from t
   the surrounding file, ES module imports with explicit `.js` extensions.
 - Existing identifiers spell "achievement" as `achivement`. Keep it consistent unless doing a
   deliberate rename.
+
+## Task tracking
+
+- `docs/roadmap.md` lists what's next, in four sections:
+  - **Planned:** decided.
+  - **Ideas:** not committed; often unfinished thoughts.
+  - **Known issues.**
+  - **Code cleanup.**
+- Add new ideas you notice to Ideas. Never move anything from Ideas to Planned yourself; that's the
+  author's decision.
+- When you finish an item, remove it from the roadmap and record it in the current
+  `docs/changelog/` entry.
+- `docs/changelog/` has one file per batch of work, named `YYYY-MM-DD-short-title.md`, with these sections:
+  - Summary
+  - What changed for players
+  - Under the hood
+  - Decisions
+  - Follow-ups
+  Keep entries high level; git has the details. Start a new entry when a batch is pushed or the work
+  changes direction.
+- A decision that becomes a lasting rule also goes in "Decisions and game-design intent" below.
 
 ## Decisions and game-design intent
 
