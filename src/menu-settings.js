@@ -1,6 +1,6 @@
 import { queryAllElements, queryElement } from "./html.js";
 import { DoubleClickButton } from "./button.js";
-import { LEVELS } from "./levels.js";
+import { LEVELS } from "./level-list.js";
 import { Menu } from "./menu.js";
 import { currentPlayer } from "./player.js";
 import { GAME_SETTINGS } from "./settings.js";

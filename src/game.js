@@ -3,7 +3,8 @@
 import { initSpriteAtlas, spriteAtlas } from "./sprites.js";
 import { initMenus, MENUS } from "./menus.js";
 import { CloudGenerator } from "./cloud.js";
-import { currentLevel, initLevels } from "./levels.js";
+import { initLevels } from "./level-list.js";
+import { currentLevel } from "./levels.js";
 import { logDebug, logError, logInfo } from "./logging.js";
 import { tryUnlockAllAchivements } from "./achivements.js";
 import { initBirdTemplates } from "./birds.js";

@@ -1,5 +1,5 @@
 import { appendChildHtml, queryElement } from './html.js';
-import { LEVELS } from './levels.js';
+import { LEVELS } from './level-list.js';
 import { Menu } from './menu.js'
 import { currentPlayer } from './player.js';
 import { registerClick } from './util.js';

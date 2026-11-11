@@ -26,8 +26,17 @@ revamped because the author's daughter plays it. Deployed to GitHub Pages from t
 - Gameplay entities are on the canvas (`bee.js`, `birds.js`, `owl.js` = Sammy, `bullet.js`,
   `honeycomb.js`, `entities.js` for HUD pieces). Bird behavior is split into templates
   (`BirdTemplate` in `birds.js`) with movement behaviors (`movement.js`) and shooting behaviors (`shooting.js`).
-- Levels are defined with the fluent builders in `levels.js` (`LevelDefinition`, formations) and
-  `spawning.js`. `StandardLevel` is scripted; `TimeTrialLevel` is endless, seeded by the date.
+- Levels:
+  - `level-list.js` holds `LEVELS`, the scripted levels, written with the fluent `LevelDefinition`
+    builder (`level-definition.js`) and the reusable formations in `formations.js`. Spawn plumbing
+    (`FormationDefinition`, `FormationCreationOptions`, spawn regions) is in `spawning.js`.
+  - `levels.js` is the level runtime: `Level`, `StandardLevel` (scripted), `TimeTrialLevel`
+    (endless, seeded by the date), and `currentLevel`. An exported `let` can only be reassigned by
+    its own module, so anything that sets `currentLevel` (`startStandardLevel`, `startTimeTrial`)
+    must live in `levels.js`.
+  - Don't move classes that other modules extend (such as `Level`) into a file that's part of an
+    import cycle with their subclasses. ES modules evaluate cycles in load order, so a subclass can
+    end up evaluated before its base class exists.
 - Menus are HTML/CSS overlays (`index.html` markup, `src/menu-*.js` behavior, `styles/menus-*.css`).
   Each menu extends `Menu` in `menu.js` and is registered in `menus.js` (`MENUS`).
 - The shop is data-driven. `shop-items.js` defines `SHOP_ITEMS`: each `ShopItemDescriptor` has
