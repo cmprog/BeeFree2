@@ -4,9 +4,11 @@ class GeneralGameSettings {
     constructor() {
 
         /**
+         * Whether the game is being served from localhost. Enables dev-only behavior such as the
+         * on-screen log panel and the Debug settings. False outside a browser (in tests).
          * @type {boolean}
          */
-        this.IS_LOCAL_DEV_ENVIRONMENT = document.location.href.indexOf('localhost') >= 0;
+        this.IS_LOCAL_DEV_ENVIRONMENT = globalThis.location?.href.includes('localhost') ?? false;
         
         /**
          * Whether or not bee damange is disabled. This is purely a dev

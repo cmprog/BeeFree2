@@ -1,5 +1,5 @@
-// Fakes the parts of the browser the game touches when its modules load, then loads the
-// vendored LittleJS engine so its globals (vec2, EngineObject, Timer, ...) exist, just like
+// Fakes the few browser features needed to load the game's modules (localStorage, plus what
+// LittleJS uses when it loads), then loads the vendored LittleJS engine so its globals (vec2, EngineObject, Timer, ...) exist, just like
 // the <script> tag in index.html. Imported by setup.js; don't import it directly from tests.
 //
 // This file must not import any game code: ES module imports run before the importing file's
@@ -18,43 +18,17 @@ globalThis.localStorage = {
     clear: () => fakeStorage.clear(),
 };
 
-/** A stand-in for any HTML element: accepts the calls the game makes and does nothing. */
-function fakeElement() {
-    return {
-        classList: { add() {}, remove() {}, toggle() {}, contains: () => false },
-        style: {},
-        dataset: {},
-        children: [],
-        appendChild: child => child,
-        removeChild: child => child,
-        addEventListener() {},
-        querySelector: () => fakeElement(),
-        querySelectorAll: () => [],
-        scrollTo() {},
-        scrollHeight: 0,
-    };
-}
-
-// Not 'localhost', so the game runs with production settings (no dev tools or dev hat tuning).
-globalThis.document = {
-    location: { href: 'http://tests.invalid/', hostname: 'tests.invalid' },
-    body: fakeElement(),
-    querySelector: () => fakeElement(),
-    querySelectorAll: () => [],
-    createElement: () => fakeElement(),
-};
-
+// LittleJS checks window.ontouchstart and creates its audio context when it loads.
 globalThis.window = globalThis;
 
-// LittleJS creates its audio context when it loads.
 globalThis.AudioContext = class {
     constructor() { this.destination = {}; }
     createGain() { return { connect() {}, gain: {} }; }
 };
 
-// The game's logger copies console.debug/info when it loads and replaces the console
-// methods. Silence debug/info output (saves, spawns, ...) so test results stay readable.
-// setup.js restores the real console afterwards so console.log works in tests.
+// The game's logger keeps a copy of console.debug/info/log from when it loads and writes
+// debug output (saves, spawns, ...) through them. Silence them while it loads so test results
+// stay readable; setup.js restores the real console afterwards so console.log works in tests.
 export const realConsole = { ...console };
 console.debug = () => {};
 console.info = () => {};

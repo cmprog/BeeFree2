@@ -1,3 +1,5 @@
+import { GAME_SETTINGS } from "./settings.js";
+
 // Just defining something to use like an enum
 const LogLevel = Object.freeze({
     DEBUG: { displayText: "DEBUG", className: "debug", browserLog: console.debug.bind(console), },
@@ -23,11 +25,51 @@ function formatTimestamp(timestamp) {
     return `${hourText}:${minText}:${secText}`;
 }
 
+/**
+ * Writes log messages to the browser console and, on localhost, to the on-screen log panel.
+ * The panel exists so output can be seen on devices without dev tools, such as phones.
+ *
+ * Nothing touches the page or the console methods until initLogging() is called, so modules
+ * can be loaded outside a browser. Messages logged before then are kept and shown in the
+ * panel once it is attached.
+ */
 class Logger {
 
     constructor() {
 
-        this.browseConsoleLog = console.log.bind(console);
+        this.consoleLoggingEnabled = true;
+
+        /** Whether messages go to the on-screen panel. Decided by initLogging(). */
+        this.uiLoggingEnabled = false;
+
+        /** Whether initLogging() has run. */
+        this.isInitialized = false;
+
+        /**
+         * Panel entries logged before initLogging() ran.
+         * @type {Array<[timestamp: string, level: object, message: string]>}
+         */
+        this.pendingUiEntries = [];
+
+        /** @type {HTMLElement} */
+        this.listElement = undefined;
+        /** @type {HTMLElement} */
+        this.scrollElement = undefined;
+
+        this.isEnabled = {};
+        for (const level of LOG_LEVELS) {
+            this.isEnabled[level.displayText] = true;
+        }
+    }
+
+    /**
+     * Attaches to the log panel and starts mirroring everything written to the console into it.
+     */
+    init() {
+
+        if (this.isInitialized) return;
+        this.isInitialized = true;
+
         console.log = this.interceptBrowserConsole.bind(this, LogLevel.INFO);
         console.info = this.interceptBrowserConsole.bind(this, LogLevel.INFO);
         console.debug = this.interceptBrowserConsole.bind(this, LogLevel.DEBUG);
@@ -37,17 +79,17 @@ class Logger {
 
         this.listElement = document.querySelector('.log-messages');
         this.scrollElement = document.querySelector('.log-container > .content');
-        
-        this.consoleLoggingEnabled = true;
-        this.uiLoggingEnabled = (document.location.href.indexOf('localhost') >= 0);
-        
+
+        this.uiLoggingEnabled = GAME_SETTINGS.IS_LOCAL_DEV_ENVIRONMENT;
+
         if (!this.uiLoggingEnabled) {
             document.querySelector('.log-container').classList.add('hidden');
         }
 
-        this.isEnabled = {};
-        for (const level of LOG_LEVELS) {
-            this.isEnabled[level.displayText] = true;
+        const pending = this.pendingUiEntries;
+        this.pendingUiEntries = [];
+        for (const entry of pending) {
+            this.logToUI(...entry);
         }
     }
 
@@ -62,6 +104,11 @@ class Logger {
     }
 
     logToUI(formattedTimestamp, level, message) {
+
+        if (!this.isInitialized) {
+            this.pendingUiEntries.push([formattedTimestamp, level, message]);
+            return;
+        }
 
         if (!this.uiLoggingEnabled) return;
 
@@ -94,7 +141,7 @@ class Logger {
     }
 
     interceptBrowserConsole(level, ...args) {
-        this.logToUI(formatTimestamp(new Date()), level, ...args);
+        this.logToUI(formatTimestamp(new Date()), level, args.map(String).join(' '));
         level.browserLog(...args);
     }
 
@@ -105,6 +152,14 @@ class Logger {
 }
 
 const LOGGER = new Logger();
+
+/**
+ * Starts the on-screen log panel (on localhost) and mirrors console output into it.
+ * Called once by game.js at startup.
+ */
+export function initLogging() {
+    LOGGER.init();
+}
 
 export function logDebug(message) {
     LOGGER.log(LogLevel.DEBUG, message);

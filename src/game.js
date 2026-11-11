@@ -6,10 +6,12 @@ import { MENUS } from "./menu-registry.js";
 import { CloudGenerator } from "./cloud.js";
 import { initLevels } from "./level-list.js";
 import { currentLevel } from "./levels.js";
-import { logDebug, logError, logInfo } from "./logging.js";
+import { initLogging, logDebug, logError, logInfo } from "./logging.js";
 import { tryUnlockAllAchivements } from "./achivements.js";
 import { initBirdTemplates } from "./birds.js";
 import { GAME_SETTINGS } from "./settings.js";
+
+initLogging();
 
 if (isTouchDevice) {
     logDebug("Touch device detected, initializing touch gamepad.");

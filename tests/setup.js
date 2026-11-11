@@ -7,7 +7,7 @@
 
 import { fakeStorage, realConsole } from './support/browser-env.js';
 
-// The game's logger replaces the console methods when it loads. Load it now, then restore the
+// Load the game's logger while the console is silenced (see browser-env.js), then restore the
 // real console so console.log works in tests.
 import '../src/logging.js';
 

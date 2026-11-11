@@ -11,6 +11,11 @@ revamped because the author's daughter plays it. Deployed to GitHub Pages from t
 - Running on `localhost` enables dev-only behavior: the on-screen log panel, the LittleJS watermark,
   and the Debug section of the Settings menu (unlock all levels, grant honeycomb). See
   `GAME_SETTINGS.IS_LOCAL_DEV_ENVIRONMENT` in `src/settings.js`.
+- The on-screen log panel exists to see output on devices without dev tools (it was built to debug
+  iOS/mobile Safari touch issues). Keep it working. `initLogging()` (called first thing in `game.js`)
+  mirrors all console output into it. Messages logged before that are held and shown afterwards.
+- Modules must not touch the page (`document`, DOM elements) or patch globals when they are imported.
+  Do that in an `init*()` function called from `game.js`, so modules load in tests.
 
 ## Checks and tests
 
