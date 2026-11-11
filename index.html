@@ -256,7 +256,23 @@
     };
   </script>
 
-  <script type="text/javascript" src="dist/littlejs.js" charset="utf-8"></script>
-  <script type="module" src="src/game.js" charset="utf-8"></script>
+  <script>
+    // Load the LittleJS engine, then the game. The engine is a classic script so its APIs are
+    // globals, and it has to finish loading before game.js runs. Players get the small, minified
+    // release build; localhost gets the debug build, which has the engine's asserts and debug tools.
+    // (Same localhost rule as GAME_SETTINGS.IS_LOCAL_DEV_ENVIRONMENT in src/settings.js.)
+    (function () {
+      const isLocalDev = window.location.href.includes('localhost');
+      const engine = document.createElement('script');
+      engine.src = isLocalDev ? 'dist/littlejs.js' : 'dist/littlejs.min.js';
+      engine.onload = function () {
+        const game = document.createElement('script');
+        game.type = 'module';
+        game.src = 'src/game.js';
+        document.body.appendChild(game);
+      };
+      document.body.appendChild(engine);
+    })();
+  </script>
 
 </html>

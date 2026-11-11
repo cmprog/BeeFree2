@@ -39,6 +39,7 @@ lets every module load without a browser.
   - textures are passed as `textureInfos[i]`
   - achievements opt out of the engine's own medal save
   - the touch gamepad uses its new default size
+  - players now get the minified release build (159 KB compressed); localhost keeps the debug build
 - Added `CLAUDE.md` with repo instructions for agents.
 
 ## Decisions

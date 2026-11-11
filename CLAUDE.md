@@ -44,11 +44,15 @@ revamped because the author's daughter plays it. Deployed to GitHub Pages from t
 
 ## Architecture
 
-- `dist/littlejs.js` is a vendored, unmodified copy of LittleJS (currently 1.29.1, the debug build
-  from the `littlejsengine` npm package's `dist/littlejs.js`). It is loaded as a classic script, so
-  engine APIs (`vec2`, `EngineObject`, `Timer`, `drawTile`, `time`, ...) are **globals**, not imports.
-  Don't edit it. To upgrade:
-  - Replace the file.
+- `dist/` holds vendored, unmodified LittleJS builds (currently 1.29.1), from the `littlejsengine`
+  npm package's `dist/` folder:
+  - `littlejs.js` is the debug build. It's used on localhost, by the type check, and by the tests.
+  - `littlejs.min.js` is the minified release build, served to players.
+  The inline loader at the bottom of `index.html` picks the build, then loads `src/game.js` once the
+  engine is ready. The engine is a classic script, so its APIs (`vec2`, `EngineObject`, `Timer`,
+  `drawTile`, `time`, ...) are **globals**, not imports. Don't edit these files. To upgrade:
+  - Replace both files.
+  - Check the live site with the release build as well; it strips debug-only code.
   - Run `check.bat`. The type check flags renamed or removed APIs.
   - Diff the signatures of the functions the game calls. New parameters added in the middle aren't
     caught by the type check.
