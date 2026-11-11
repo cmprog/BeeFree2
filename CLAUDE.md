@@ -14,8 +14,19 @@ revamped because the author's daughter plays it. Deployed to GitHub Pages from t
 - The on-screen log panel exists to see output on devices without dev tools (it was built to debug
   iOS/mobile Safari touch issues). Keep it working. `initLogging()` (called first thing in `game.js`)
   mirrors all console output into it. Messages logged before that are held and shown afterwards.
-- Modules must not touch the page (`document`, DOM elements) or patch globals when they are imported.
-  Do that in an `init*()` function called from `game.js`, so modules load in tests.
+- **Importing a module only declares things.** A module's top level may declare:
+  - classes and functions;
+  - fixed data built only from its own file and `settings.js`: numbers, frozen enums, the
+    default attribute sets, `SHOP_ITEMS`, `HATS`.
+- Everything else is created by an `init*()` function: runtime state (`currentPlayer`, `MENUS`), anything
+  that uses the engine, the page or `localStorage` (achievements, sounds, dev hat tuning, logging),
+  and game content built from other modules' classes (`BIRD_TEMPLATES`, `FORMATIONS`, `LEVELS`,
+  `spriteAtlas`). Such globals are `export let`, set by their init function.
+- `game.js` calls every init function in one ordered, commented list: a few before the engine
+  starts, and the rest in `gameInit()` once images are loaded. Add new ones there, in dependency
+  order.
+- `tests/module-loading.test.js` enforces this. It fails if importing a module uses `localStorage`,
+  registers medals or creates engine objects.
 
 ## Checks and tests
 

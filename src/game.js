@@ -7,13 +7,23 @@ import { CloudGenerator } from "./cloud.js";
 import { initLevels } from "./level-list.js";
 import { currentLevel } from "./levels.js";
 import { initLogging, logDebug, logError, logInfo } from "./logging.js";
-import { reloadAchievements, tryUnlockAllAchievements } from "./achievements.js";
+import { initAchievements, tryUnlockAllAchievements } from "./achievements.js";
 import { initBirdTemplates } from "./bird-templates.js";
 import { GAME_SETTINGS } from "./settings.js";
 import { initPlayer } from "./player.js";
+import { initHatTuning } from "./hats.js";
 
-initLogging();
-initPlayer();
+///////////////////////////////////////////////////////////////////////////////
+// Startup
+//
+// Importing a module only declares things (classes, functions, fixed data). Everything the game
+// creates at runtime is set up by the init*() calls here and in gameInit(), in this order.
+
+// Before the engine starts; none of this needs the images.
+initLogging();      // first, so everything after it shows up in the log panel
+initHatTuning();    // dev-only hat tuning saved in this browser (localhost)
+initPlayer();       // loads the save
+initAchievements(); // after the player: each achievement reads its unlocked state from it
 
 if (isTouchDevice) {
     logDebug("Touch device detected, initializing touch gamepad.");
@@ -37,15 +47,14 @@ function gameInit() {
 
     soundEnable = false;
 
-    initSpriteAtlas();
+    // Once the engine has loaded the images.
+    initSpriteAtlas();   // needs the loaded images
     initBirdTemplates();
-    initLevels();
-    initMenus();
+    initLevels();        // after the bird templates: levels are built from them
+    initMenus();         // last: menus read the player, levels and sprites
 
     // use a 720p fixed size canvas
     setCanvasFixedSize(vec2(1280, 720));
-    
-    reloadAchievements();
 
     new CloudGenerator()
 

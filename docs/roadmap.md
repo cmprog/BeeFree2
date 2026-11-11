@@ -10,8 +10,8 @@ What's next for BeeFree. Finished work is recorded in [changelog/](changelog/), 
 
 ## Planned
 
-- **Sound effects.** `src/sounds.js` has a start on this but isn't imported yet, and `gameInit`
-  turns sound off (`soundEnable = false`).
+- **Sound effects.** `src/sounds.js` has a start on this (`initSounds()`), but it isn't called or
+  imported yet, and `gameInit` turns sound off (`soundEnable = false`).
 - **Tune hat placement.** Every hat still uses the default position. Use Settings > Debug >
   Hat Tuning on localhost, then paste the copied file over `src/hat-adjustments.js`.
 - **Playtest hat prices.** The tiers are 250 / 1,000 / 3,000 honeycomb (`HAT_PRICE_*` in
@@ -40,9 +40,5 @@ What's next for BeeFree. Finished work is recorded in [changelog/](changelog/), 
 
 ## Code cleanup
 
-- **Startup-only variables.** `BIRD_TEMPLATES`, `FORMATIONS`, `LEVELS` and `spriteAtlas` are only
-  filled in by `init*()` calls at startup. Now that LittleJS loads before any module, some could
-  probably become plain constants built when their module loads. Check first whether they need
-  loaded images.
 - **Achievements vs. medals.** Achievements are saved on the player, but the LittleJS `Medal`
   objects they're built on are global. Leave this until something needs it.

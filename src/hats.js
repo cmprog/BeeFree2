@@ -304,7 +304,12 @@ ${adjustmentLines.join('\n')}
 `;
 }
 
-if (GAME_SETTINGS.IS_LOCAL_DEV_ENVIRONMENT) {
+/**
+ * On localhost, applies hat tuning saved in this browser by the hat tuning view, on top of
+ * hat-adjustments.js. Call once at startup.
+ */
+export function initHatTuning() {
+    if (!GAME_SETTINGS.IS_LOCAL_DEV_ENVIRONMENT) return;
     try {
         loadDevHatTuning();
     } catch (error) {

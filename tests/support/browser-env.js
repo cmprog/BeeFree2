@@ -11,11 +11,14 @@ import vm from 'node:vm';
 /** In-memory localStorage. Tests can clear it with resetLocalStorage() from setup.js. */
 export const fakeStorage = new Map();
 
+/** How many times localStorage has been used, so tests can check that importing doesn't use it. */
+export const storageUse = { count: 0 };
+
 globalThis.localStorage = {
-    getItem: key => fakeStorage.has(key) ? fakeStorage.get(key) : null,
-    setItem: (key, value) => { fakeStorage.set(key, String(value)); },
-    removeItem: key => { fakeStorage.delete(key); },
-    clear: () => fakeStorage.clear(),
+    getItem: key => { storageUse.count++; return fakeStorage.has(key) ? fakeStorage.get(key) : null; },
+    setItem: (key, value) => { storageUse.count++; fakeStorage.set(key, String(value)); },
+    removeItem: key => { storageUse.count++; fakeStorage.delete(key); },
+    clear: () => { storageUse.count++; fakeStorage.clear(); },
 };
 
 // LittleJS checks window.ontouchstart and creates its audio context when it loads.
