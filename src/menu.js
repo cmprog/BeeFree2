@@ -1,5 +1,4 @@
 import { queryElement } from "./html.js";
-import { logDebug } from "./logging.js";
 import { MENUS } from "./menu-registry.js";
 import { registerClick } from "./util.js";
 
@@ -36,15 +35,6 @@ export class Menu {
         this.onOpened();
 
         setInputPreventDefault(false);
-
-        const contentEl = queryElement(this.element, '.content');
-        if (contentEl) {
-            const computedStyle = window.getComputedStyle(contentEl);
-            
-            logDebug(`contentEl.scrollHeight: ${contentEl.scrollHeight}`);
-            logDebug(`computedStyle.height: ${computedStyle.height}`);
-        }
-        
     }
 
     onOpening() {

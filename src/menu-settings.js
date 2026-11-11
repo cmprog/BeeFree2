@@ -36,6 +36,23 @@ export class SettingsMenu extends Menu {
             this.close();
             MENUS.HAT_TUNING.open();
         });
+
+        this.beeDamageButton = queryElement(this.element, '#settings-debug-bee-damage');
+        registerClick(this.beeDamageButton, this.toggleBeeDamage.bind(this));
+        this.refreshBeeDamageButton();
+    }
+
+    /**
+     * Dev only: turns bee damage off or back on, for testing levels without dying.
+     */
+    toggleBeeDamage() {
+        if (!GAME_SETTINGS.IS_LOCAL_DEV_ENVIRONMENT) return;
+        GAME_SETTINGS.BEE_DAMAGE_DISABLED = !GAME_SETTINGS.BEE_DAMAGE_DISABLED;
+        this.refreshBeeDamageButton();
+    }
+
+    refreshBeeDamageButton() {
+        this.beeDamageButton.innerText = GAME_SETTINGS.BEE_DAMAGE_DISABLED ? 'Bee Damage: Off' : 'Bee Damage: On';
     }
 
     resetSave() {

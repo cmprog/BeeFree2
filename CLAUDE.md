@@ -9,7 +9,7 @@ revamped because the author's daughter plays it. Deployed to GitHub Pages from t
 - No build step and no package manager. Plain ES modules served statically.
 - `run_local.bat` starts `python -m http.server 8080` and opens `http://localhost:8080`.
 - Running on `localhost` enables dev-only behavior: the on-screen log panel, the LittleJS watermark,
-  and the Debug section of the Settings menu (unlock all levels, grant honeycomb). See
+  and the Debug section of the Settings menu (unlock all levels, hat tuning, turn bee damage off, grant honeycomb). See
   `GAME_SETTINGS.IS_LOCAL_DEV_ENVIRONMENT` in `src/settings.js`.
 - The on-screen log panel exists to see output on devices without dev tools (it was built to debug
   iOS/mobile Safari touch issues). Keep it working. `initLogging()` (called first thing in `game.js`)
@@ -82,6 +82,7 @@ revamped because the author's daughter plays it. Deployed to GitHub Pages from t
   The wardrobe preview (`menu-wardrobe.js`) uses the same `computeHatPlacement` as the game.
   The player saves owned hats in `ownedHats` and the worn hat in `equippedHat`. Prestige doesn't
   reset them.
+- Planned features and known code cleanup are tracked in `README.md` ("Planned Changes" and "Code Cleanup").
 - Achievements extend the LittleJS `Medal` class but are persisted in the player save.
 - `src/player.js` holds `currentPlayer` and all persistent state, saved as JSON in `localStorage`
   (`save` key, previous save copied to `save_bk`). `currentPlayer` is created and loaded by

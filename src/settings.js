@@ -11,11 +11,11 @@ class GeneralGameSettings {
         this.IS_LOCAL_DEV_ENVIRONMENT = globalThis.location?.href.includes('localhost') ?? false;
         
         /**
-         * Whether or not bee damange is disabled. This is purely a dev
-         * environment setting used for testing.
+         * Whether the bee ignores all damage. A dev-only testing aid, toggled with
+         * Settings > Debug > Bee Damage on localhost. Not saved; resets on reload.
          * @type {boolean}
          */
-        this.BEE_DAMAGE_DISABLED = false && this.IS_LOCAL_DEV_ENVIRONMENT;
+        this.BEE_DAMAGE_DISABLED = false;
     }
 }
 

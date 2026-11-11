@@ -1,5 +1,6 @@
 import { BirdTemplate } from "./birds.js";
 import { currentLevel } from "./levels.js";
+import { logDebug } from "./logging.js";
 
 export const SPAWN_REGIONS = {
 
@@ -335,7 +336,7 @@ class SingleEnemySpawner extends Spawner {
 
     update() {
         if (this.timer.elapsed() && currentLevel) {
-            console.log(`Spawning bird '${this.template.name}' at ${this.pos}.`)
+            logDebug(`Spawning bird '${this.template.name}' at ${this.pos}.`);
             const bird = this.template.create(this.pos)
             currentLevel.trackObj(bird);
             currentLevel.onBirdSpawned();            
