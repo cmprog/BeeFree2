@@ -16,13 +16,13 @@ import { currentPlayer } from "./player.js";
 
 /**
  * @callback ShootingBehaviorFactory
- * @param {AttributeSet}
+ * @param {AttributeSet} attributeSet
  * @returns {ShootingBehavior}
  */
 
 /**
  * @callback MovementBehaviorFactory
- * @param {AttributeSet}
+ * @param {AttributeSet} attributeSet
  * @returns {MovementBehavior}
  */
 
@@ -117,7 +117,7 @@ export class BirdTemplate {
 
     /**
      * @callback ConfigureAttributesCallback
-     * @param {AttributeSet}
+     * @param {AttributeSet} attributeSet
      */
 
     /**
@@ -144,7 +144,7 @@ class BirdTemplateSet {
          * A simple bird, simple movement and no shooting.
          * @type {BirdTemplate}
          */
-        this.fred = new BirdTemplate('Fred', 'A simple bird, simple movement and no shooting.', 1, 1)
+        this.fred = new BirdTemplate('Fred', 'A simple bird, simple movement and no shooting.')
             .configureAttributes(attr => {
                 attr.maxHealth = 1;
                 attr.touchDamage = 1;

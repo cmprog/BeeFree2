@@ -253,16 +253,17 @@ export class Bee extends EngineObject {
     }
 
     /**
-     * @param {EngineObject} o 
-     * @returns 
+     * @param {EngineObject & { entityType?: object }} o
+     * @returns {boolean}
      */
     collideWithObject(o) {
 
         if (o.entityType == EntityType.HONEYCOMB) {
 
+            const honeycomb = /** @type {import('./honeycomb.js').Honeycomb} */ (o);
             if (currentLevel) {
-                currentLevel.onHoneycombCollected(o.value);
-                currentLevel.trackObj(new Score(o.pos, o.value));
+                currentLevel.onHoneycombCollected(honeycomb.value);
+                currentLevel.trackObj(new Score(honeycomb.pos, honeycomb.value));
             }
 
             // Don't signal to the player. Honeycomb isn't truely

@@ -8,7 +8,7 @@ export const SPAWN_REGIONS = {
          * Gets a random position within this spawn region.
          * @param {RandomGenerator} rand 
          * @param {Vector2} worldSize 
-         * @param {vec2} margin 
+         * @param {Vector2} margin 
          */
         getRandomPosition(rand, worldSize, margin) {
             const posX = worldSize.x + (rand.float() * margin.x);
@@ -21,7 +21,7 @@ export const SPAWN_REGIONS = {
          * Gets a random position within this spawn region.
          * @param {RandomGenerator} rand 
          * @param {Vector2} worldSize 
-         * @param {vec2} margin 
+         * @param {Vector2} margin 
          */
         getRandomPosition(rand, worldSize, margin) {
             const posX = worldSize.x + (rand.float() * margin.x);
@@ -35,7 +35,7 @@ export const SPAWN_REGIONS = {
          * Gets a random position within this spawn region.
          * @param {RandomGenerator} rand 
          * @param {Vector2} worldSize 
-         * @param {vec2} margin 
+         * @param {Vector2} margin 
          */
         getRandomPosition(rand, worldSize, margin) {
             const posX = rand.float() * -worldSize.x;
@@ -48,7 +48,7 @@ export const SPAWN_REGIONS = {
          * Gets a random position within this spawn region.
          * @param {RandomGenerator} rand 
          * @param {Vector2} worldSize 
-         * @param {vec2} margin 
+         * @param {Vector2} margin 
          */
         getRandomPosition(rand, worldSize, margin) {
             const posX = rand.float() * worldSize.x;
@@ -62,7 +62,7 @@ export const SPAWN_REGIONS = {
          * Gets a random position within this spawn region.
          * @param {RandomGenerator} rand 
          * @param {Vector2} worldSize 
-         * @param {vec2} margin 
+         * @param {Vector2} margin 
          */
         getRandomPosition(rand, worldSize, margin) {
             const posX = rand.float() * -worldSize.x;
@@ -75,7 +75,7 @@ export const SPAWN_REGIONS = {
          * Gets a random position within this spawn region.
          * @param {RandomGenerator} rand 
          * @param {Vector2} worldSize 
-         * @param {vec2} margin 
+         * @param {Vector2} margin 
          */
         getRandomPosition(rand, worldSize, margin) {
             const posX = rand.float() * worldSize.x;
@@ -89,7 +89,7 @@ export const SPAWN_REGIONS = {
          * Gets a random position within this spawn region.
          * @param {RandomGenerator} rand 
          * @param {Vector2} worldSize 
-         * @param {vec2} margin 
+         * @param {Vector2} margin 
          */
         getRandomPosition(rand, worldSize, margin) {
             const posX = -worldSize.x - (rand.float() * margin.x);
@@ -102,7 +102,7 @@ export const SPAWN_REGIONS = {
          * Gets a random position within this spawn region.
          * @param {RandomGenerator} rand 
          * @param {Vector2} worldSize 
-         * @param {vec2} margin 
+         * @param {Vector2} margin 
          */
         getRandomPosition(rand, worldSize, margin) {
             const posX = -worldSize.x - (rand.float() * margin.x);
@@ -118,12 +118,12 @@ export class FormationCreationOptions {
 
     constructor() {
 
-        /** @property{Vector2} */
+        /** @type {Vector2} */
         this.positionOffset = vec2(0);
 
         /**
          * Component-wise multiplier for the positioning.
-         * @type {number}
+         * @type {Vector2}
          */
         this.positionScale = vec2(1);
 
@@ -132,10 +132,12 @@ export class FormationCreationOptions {
          */
         this.timeScale = 1;
         
-        /** @property A dictionary mapping used to replace templates from the
-         * formation with different templates
+        /**
+         * Replaces templates from the formation with different templates. A Map is used because
+         * plain object keys are converted to strings, which would make every template match.
+         * @type {Map<BirdTemplate, BirdTemplate>}
          */
-        this.templateMapping = { };
+        this.templateMapping = new Map();
 
         /**
          * Positional bird template replacements.
@@ -154,6 +156,10 @@ export class FormationCreationOptions {
         return this;
     }
     
+    /**
+     * Moves every spawn position by the given amount.
+     * @param {Vector2} offset
+     */
     withPositionOffset(offset) {
         this.positionOffset = offset;
         return this;
@@ -177,8 +183,13 @@ export class FormationCreationOptions {
         return this;
     }
 
+    /**
+     * Replaces every bird of one template in the formation with another template.
+     * @param {BirdTemplate} sourceTemplate
+     * @param {BirdTemplate} targetTemplate
+     */
     withTemplateMapping(sourceTemplate, targetTemplate) {
-        this.templateMapping[sourceTemplate] = targetTemplate;
+        this.templateMapping.set(sourceTemplate, targetTemplate);
         return this;
     }
 }
@@ -242,8 +253,8 @@ export class FormationDefinition {
 
                 time = time * options.timeScale;
 
-                if (template in options.templateMapping) {
-                    template = options.templateMapping[template];
+                if (options.templateMapping.has(template)) {
+                    template = options.templateMapping.get(template);
                 }
 
                 if (iSpawn in options.replacements) {

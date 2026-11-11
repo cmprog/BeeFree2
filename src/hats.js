@@ -59,6 +59,7 @@ export const HAT_ATLAS_COLUMNS = 7;
 export const HAT_ATLAS_TILE_SIZE = 128;
 
 // Ordered to match img/hats.png, which is laid out alphabetically by the file names in img/hats/.
+/** @type {Array<[id: string, name: string, tier: HatTier]>} */
 const HAT_DEFINITIONS = [
     ['fiftiesMilitary', '50s Military', HatTier.BASIC],
     ['fiftiesNurse', '50s Nurse', HatTier.BASIC],

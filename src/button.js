@@ -1,12 +1,23 @@
 import { registerClick } from "./util.js";
 
+/**
+ * @callback OnClickCallback
+ * @param {DoubleClickButton} doubleClickButton
+ * @returns {void}
+ */
+
+/**
+ * @callback GetTextCallback
+ * @param {DoubleClickButton} doubleClickButton
+ * @returns {string}
+ */
+
+/**
+ * A button which must be clicked twice to act. The first click changes its text to a
+ * confirmation message, and the second click (within a couple of seconds) runs the action.
+ */
 export class DoubleClickButton {
 
-    /**
-     * @callback OnClickCallback
-     * @param {DoubleClickButton}
-     */
-    
     /**
      * 
      * @param {HTMLElement} el 
@@ -22,11 +33,6 @@ export class DoubleClickButton {
          * @type {number}
          */
         this.confirmationTimeoutDuration = 2000;
-
-        /**
-         * @callback GetTextCallback
-         * @param {DoubleClickButton}
-         */
 
         /**
          * @type {string}
@@ -110,7 +116,7 @@ export class DoubleClickButton {
 
     /**
      * @param {HTMLElement} el 
-     * @param {OnClickCallback}
+     * @param {OnClickCallback} onClick
      * @returns {DoubleClickButton}
      */
     static create(el, onClick) {
@@ -119,7 +125,7 @@ export class DoubleClickButton {
         button.onClick = onClick;
 
         button.defaultText = el.innerText;
-        button.confirmationText = el.dataset['confirmation-text'];
+        button.confirmationText = el.dataset.confirmationText;
 
         return button;
     }

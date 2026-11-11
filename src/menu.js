@@ -1,3 +1,4 @@
+import { queryElement } from "./html.js";
 import { logDebug } from "./logging.js";
 import { MENUS } from "./menus.js";
 import { registerClick } from "./util.js";
@@ -12,7 +13,7 @@ export class Menu {
          * The root level element representing the menu.
          * @type {HTMLDivElement}
          */
-        this.element = document.querySelector(selector);
+        this.element = queryElement(document, selector);
 
         /**
          * Whether or not the menu is currently open.
@@ -36,7 +37,7 @@ export class Menu {
 
         setInputPreventDefault(false);
 
-        const contentEl = this.element.querySelector('.content');
+        const contentEl = queryElement(this.element, '.content');
         if (contentEl) {
             const computedStyle = window.getComputedStyle(contentEl);
             

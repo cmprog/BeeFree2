@@ -8,7 +8,7 @@ export class ShootingBehavior {
      * @returns {number} The number of bullets fired.
      */
     fire(shooter) {
-        
+        return 0;
     }
 
     /**
@@ -80,7 +80,7 @@ export class MultiBulletShooting extends ShootingBehavior {
         
         /**
          * A unit vector base direction we should be shooting the bullets.
-         * @type {number}
+         * @type {Vector2}
          * @public
          * @readonly
          */

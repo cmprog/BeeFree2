@@ -5,7 +5,7 @@ import {
     HATS, HatWearer, clearDevHatTuning, getHatAdjustment, getHatWearerAnchor, resetHatAdjustment,
     resetHatWearerAnchor, saveDevHatTuning, serializeHatAdjustmentsFile,
 } from './hats.js';
-import { appendChildHtml } from './html.js';
+import { appendChildHtml, queryElement } from './html.js';
 import { logInfo } from './logging.js';
 import { Menu } from './menu.js';
 import { MENUS } from './menus.js';
@@ -109,7 +109,7 @@ export class HatTuningMenu extends Menu {
     constructor() {
         super('#menu-hat-tuning');
 
-        this.contentEl = this.element.querySelector('.content');
+        this.contentEl = queryElement(this.element, '.content');
 
         this.hatIndex = 0;
         this.wearer = HatWearer.BEE;
@@ -122,7 +122,7 @@ export class HatTuningMenu extends Menu {
 
         this.buildControls();
 
-        registerClick(this.element.querySelector('.hat-tuning-done'), () => {
+        registerClick(queryElement(this.element, '.hat-tuning-done'), () => {
             this.close();
             MENUS.SETTINGS.open();
         });
@@ -137,7 +137,7 @@ export class HatTuningMenu extends Menu {
         // ---- Hat selection ----------------------------------------------------
         const hatSection = this.appendSection('Hat');
 
-        const hatSelect = appendChildHtml(hatSection, `<select class="hat-select"></select>`);
+        const hatSelect = appendChildHtml(hatSection, `<select class="hat-select"></select>`, HTMLSelectElement);
         HATS.forEach((hat, index) => {
             const option = document.createElement('option');
             option.value = index.toString();
@@ -152,8 +152,8 @@ export class HatTuningMenu extends Menu {
                 <button type="button" class="prev">&larr; Prev</button>
                 <button type="button" class="next">Next &rarr;</button>
             </div>`);
-        registerClick(hatNav.querySelector('.prev'), () => this.setHatIndex((this.hatIndex + HATS.length - 1) % HATS.length));
-        registerClick(hatNav.querySelector('.next'), () => this.setHatIndex((this.hatIndex + 1) % HATS.length));
+        registerClick(queryElement(hatNav, '.prev'), () => this.setHatIndex((this.hatIndex + HATS.length - 1) % HATS.length));
+        registerClick(queryElement(hatNav, '.next'), () => this.setHatIndex((this.hatIndex + 1) % HATS.length));
 
         // ---- Per-hat adjustments ------------------------------------------------
         const adjustmentSection = this.appendSection('Hat adjustment (shared by all wearers)');
@@ -172,7 +172,7 @@ export class HatTuningMenu extends Menu {
         // ---- Wearer anchors -----------------------------------------------------
         const wearerSection = this.appendSection('Wearer anchor (shared by all hats)');
 
-        const wearerSelect = appendChildHtml(wearerSection, `<select></select>`);
+        const wearerSelect = appendChildHtml(wearerSection, `<select></select>`, HTMLSelectElement);
         for (const wearer of Object.values(HatWearer)) {
             const option = document.createElement('option');
             option.value = wearer.key;
@@ -200,7 +200,7 @@ export class HatTuningMenu extends Menu {
         const outputSection = this.appendSection('Output');
 
         const guides = appendChildHtml(outputSection, `<label><input type="checkbox" checked> Show guides</label>`);
-        const guidesCheckbox = guides.querySelector('input');
+        const guidesCheckbox = queryElement(guides, 'input', HTMLInputElement);
         guidesCheckbox.addEventListener('change', () => {
             if (this.scene) this.scene.showGuides = guidesCheckbox.checked;
         });
@@ -226,7 +226,7 @@ export class HatTuningMenu extends Menu {
             <div class="section">
                 <div class="section-header"></div>
             </div>`);
-        sectionEl.querySelector('.section-header').innerText = title;
+        queryElement(sectionEl, '.section-header').innerText = title;
         return sectionEl;
     }
 
@@ -248,10 +248,10 @@ export class HatTuningMenu extends Menu {
                 <input type="range" min="${min}" max="${max}" step="${step}">
                 <input type="number" min="${min}" max="${max}" step="${step}">
             </div>`);
-        rowEl.querySelector('.label').innerText = label;
+        queryElement(rowEl, '.label').innerText = label;
 
-        const rangeEl = rowEl.querySelector('input[type=range]');
-        const numberEl = rowEl.querySelector('input[type=number]');
+        const rangeEl = queryElement(rowEl, 'input[type=range]', HTMLInputElement);
+        const numberEl = queryElement(rowEl, 'input[type=number]', HTMLInputElement);
 
         const onInput = (ev) => {
             const value = Number(ev.target.value);

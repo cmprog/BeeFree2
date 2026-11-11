@@ -1,4 +1,4 @@
-import { appendChildHtml } from './html.js';
+import { appendChildHtml, queryElement } from './html.js';
 import { Menu } from './menu.js'
 import { PlayerLevel } from './player-level.js';
 import { currentPlayer } from './player.js';
@@ -6,9 +6,6 @@ import { today } from './util.js';
 
 class StatisticField {
 
-    /**
-     * @param {HTMLElement} parentEl 
-     */
     constructor() {
 
         const templateHtml = `       
@@ -30,14 +27,14 @@ class StatisticField {
     }
 
     withLabel(text) {
-        const el = this.containerElement.querySelector('.label');
+        const el = queryElement(this.containerElement, '.label');
         el.innerText = text;
         return this;
     }
 
     refresh() {
         if (this.valueAccessor) {
-            const el = this.containerElement.querySelector('.value');
+            const el = queryElement(this.containerElement, '.value');
             el.innerText = this.valueAccessor();
         }
     }
@@ -318,14 +315,14 @@ export class StatisticsMenu extends Menu {
         const field = new StatisticField();
         this.fields.push(field);
 
-        const contentEl = this.element.querySelector('.content');
+        const contentEl = queryElement(this.element, '.content');
         contentEl.appendChild(field.containerElement);
 
         return field;
     }
 
     appendSeperator() {
-        const contentEl = this.element.querySelector('.content');
+        const contentEl = queryElement(this.element, '.content');
         contentEl.appendChild(document.createElement('hr'));
     }
 
@@ -335,7 +332,7 @@ export class StatisticsMenu extends Menu {
         headingEl.classList.add('section-header');
         headingEl.innerText = text;
 
-        const contentEl = this.element.querySelector('.content');
+        const contentEl = queryElement(this.element, '.content');
         contentEl.appendChild(headingEl);
     }
 
@@ -356,7 +353,7 @@ export class StatisticsMenu extends Menu {
         const msPerMonth = msPerDay * 30;
         const msPerYear = msPerDay * 365;
 
-        const elapsedMs = new Date() - timestamp;
+        const elapsedMs = Date.now() - timestamp.getTime();
         if (elapsedMs < 1000) {
             return 'just now';
         }
@@ -386,7 +383,7 @@ export class StatisticsMenu extends Menu {
 
     /**
      * @callback LevelSelectorCallback
-     * @param {PlayerLevel}
+     * @param {PlayerLevel} playerLevel
      * @returns {number}
      */
 

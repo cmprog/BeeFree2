@@ -1,4 +1,4 @@
-import { appendChildHtml } from './html.js';
+import { appendChildHtml, queryElement } from './html.js';
 import { Menu } from './menu.js'
 import { currentPlayer } from './player.js';
 import { SHOP_ITEMS, ShopItemCategory, ShopItemDescriptor } from './shop-items.js';
@@ -52,10 +52,10 @@ class ShopItem {
         this.listItemEl.classList.add('shop-item');
         appendChildHtml(this.listItemEl, templateHtml);
 
-        this.currentValueEl = this.listItemEl.querySelector('.attribute-value.attribute-current');
-        this.nextValueEl = this.listItemEl.querySelector('.attribute-value.attribute-next');
+        this.currentValueEl = queryElement(this.listItemEl, '.attribute-value.attribute-current');
+        this.nextValueEl = queryElement(this.listItemEl, '.attribute-value.attribute-next');
 
-        this.purchaseButton = this.listItemEl.querySelector('.purchase');
+        this.purchaseButton = queryElement(this.listItemEl, '.purchase');
         registerClick(this.purchaseButton, this.onPurchaseButtonClick.bind(this));
     }
 
@@ -140,7 +140,7 @@ class ShopItem {
         if (this.isDisabled) {
             this.purchaseButton.appendChild(document.createTextNode(canPurchaseResult.reason));
         } else {
-            this.purchaseButton.appendChild(document.createTextNode(this.computePrice()));
+            this.purchaseButton.appendChild(document.createTextNode(this.computePrice().toString()));
             this.purchaseButton.appendChild(document.createElement('br'));
             this.purchaseButton.appendChild(document.createTextNode('honeycomb'));
         }
@@ -151,7 +151,7 @@ export class ShopMenu extends Menu {
     constructor() {
         super('#menu-shop')
 
-        const menuContentEl = this.element.querySelector('.content');
+        const menuContentEl = queryElement(this.element, '.content');
 
         /**
          * @type {Array.<ShopItem>}
@@ -173,7 +173,7 @@ export class ShopMenu extends Menu {
             `;
 
             const sectionEl = appendChildHtml(menuContentEl, templateHtml);
-            const listEl = sectionEl.querySelector('.shop-item-list');
+            const listEl = queryElement(sectionEl, '.shop-item-list');
 
             for (const shopDescriptorKey of Object.keys(SHOP_ITEMS)) {
 
@@ -202,7 +202,7 @@ export class ShopMenu extends Menu {
     }
 
     refreshAvaialbleHoneycomb(){
-        const availableHoneycombEl = this.element.querySelector('.available-honeycomb');
+        const availableHoneycombEl = queryElement(this.element, '.available-honeycomb');
         availableHoneycombEl.innerText = `${currentPlayer.availableHoneycomb.toFixed(1)} honeycomb available`;
     }
 }

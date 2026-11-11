@@ -111,6 +111,7 @@ class Level extends EngineObject {
              * @type {LevelSummaryMenu}
              */
             const levelSummaryMenu = MENUS.LEVEL_SUMMARY;
+            levelSummaryMenu.levelFailed = this.levelFailed;
             this.onLevelCompleted(levelSummaryMenu);
             levelSummaryMenu.open();
 

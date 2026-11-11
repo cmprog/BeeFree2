@@ -58,6 +58,9 @@ revamped because the author's daughter plays it. Deployed to GitHub Pages from t
   UPPER_SNAKE_CASE constants and frozen enum-like objects. The author's global C# naming rules
   (`l`/`m` prefixes, `this.` qualification) do **not** apply to this repo.
 - Use JSDoc for types (`@type`, `@param`, `@returns`). The codebase relies on it for editor IntelliSense.
+- In menus, look up elements with `queryElement` / `queryAllElements` from `html.js` rather than
+  `querySelector`, so the result is typed as an HTML element (pass e.g. `HTMLInputElement` as the
+  third argument when you need `.value`). Plain objects can't use objects as keys; use a `Map`.
 - Keep the existing style: 4-space indentation, semicolons, single quotes or double quotes as in
   the surrounding file, ES module imports with explicit `.js` extensions.
 - Existing identifiers spell "achievement" as `achivement`. Keep it consistent unless doing a

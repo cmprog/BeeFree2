@@ -1,4 +1,4 @@
-import { appendChildHtml } from './html.js';
+import { appendChildHtml, queryElement } from './html.js';
 import { LEVELS } from './levels.js';
 import { Menu } from './menu.js'
 import { currentPlayer } from './player.js';
@@ -27,10 +27,10 @@ class LevelSelectionItem {
         this.listItemEl = document.createElement('li');
         appendChildHtml(this.listItemEl, templateHtml);
 
-        this.noDamageEl = this.listItemEl.querySelector('.level-badge-no-damage');
-        this.noSurvivorsEl = this.listItemEl.querySelector('.level-badge-no-survivors');
-        this.perfectEl = this.listItemEl.querySelector('.level-badge-perfect');
-        this.element = this.listItemEl.querySelector('button');
+        this.noDamageEl = queryElement(this.listItemEl, '.level-badge-no-damage');
+        this.noSurvivorsEl = queryElement(this.listItemEl, '.level-badge-no-survivors');
+        this.perfectEl = queryElement(this.listItemEl, '.level-badge-perfect');
+        this.element = queryElement(this.listItemEl, 'button');
        
         registerClick(this.element, this.loadLevel.bind(this));
         
@@ -78,7 +78,7 @@ export class LevelSelectionMenu extends Menu {
     constructor() {
         super('#level-selection-menu')
 
-        const levelsList = this.element.querySelector('ol.levels');
+        const levelsList = queryElement(this.element, 'ol.levels');
 
         this.buttons = [];
 

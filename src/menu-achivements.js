@@ -1,3 +1,4 @@
+import { queryElement } from './html.js';
 import { Menu } from './menu.js'
 import { currentPlayer } from './player.js';
 
@@ -53,7 +54,7 @@ export class AchivementsMenu extends Menu {
     constructor() {
         super('#menu-achivements')
 
-        this.achivementListEl = this.element.querySelector('.achivement-list');        
+        this.achivementListEl = queryElement(this.element, '.achivement-list');        
     }
 
     onOpening() {

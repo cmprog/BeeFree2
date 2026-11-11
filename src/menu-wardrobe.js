@@ -1,4 +1,4 @@
-import { appendChildHtml } from './html.js';
+import { appendChildHtml, queryElement } from './html.js';
 import { HAT_ATLAS_COLUMNS, HAT_ATLAS_TILE_SIZE, HATS, HatTier, HatWearer, computeHatPlacement, getHat, getHatAtlasCell } from './hats.js';
 import { Menu } from './menu.js';
 import { currentPlayer } from './player.js';
@@ -28,12 +28,12 @@ export class WardrobeMenu extends Menu {
         super('#menu-wardrobe');
 
         /** @type {HTMLCanvasElement} */
-        this.previewCanvas = this.element.querySelector('.preview-canvas');
+        this.previewCanvas = queryElement(this.element, '.preview-canvas', HTMLCanvasElement);
         this.previewContext = this.previewCanvas.getContext('2d');
-        this.previewNameEl = this.element.querySelector('.preview-name');
-        this.previewDetailEl = this.element.querySelector('.preview-detail');
-        this.actionButton = this.element.querySelector('.preview-action');
-        this.availableHoneycombEl = this.element.querySelector('.available-honeycomb');
+        this.previewNameEl = queryElement(this.element, '.preview-name');
+        this.previewDetailEl = queryElement(this.element, '.preview-detail');
+        this.actionButton = queryElement(this.element, '.preview-action', HTMLButtonElement);
+        this.availableHoneycombEl = queryElement(this.element, '.available-honeycomb');
 
         this.beeImage = new Image();
         this.beeImage.src = 'img/bee.png';
@@ -70,7 +70,7 @@ export class WardrobeMenu extends Menu {
 
     buildHatList() {
 
-        const hatsEl = this.element.querySelector('.wardrobe-hats');
+        const hatsEl = queryElement(this.element, '.wardrobe-hats');
 
         const noHatListEl = appendChildHtml(hatsEl, `<ol class="hat-list"></ol>`);
         this.createHatTile(noHatListEl, null);
@@ -84,7 +84,7 @@ export class WardrobeMenu extends Menu {
                 </div>
             `);
 
-            const listEl = sectionEl.querySelector('.hat-list');
+            const listEl = queryElement(sectionEl, '.hat-list');
             for (const hat of HATS.filter(x => x.tier == tier)) {
                 this.createHatTile(listEl, hat);
             }
@@ -105,7 +105,7 @@ export class WardrobeMenu extends Menu {
             </li>
         `);
 
-        const thumbnailEl = tileEl.querySelector('.hat-thumbnail');
+        const thumbnailEl = queryElement(tileEl, '.hat-thumbnail');
 
         if (hat) {
             const rowCount = Math.ceil(HATS.length / HAT_ATLAS_COLUMNS);
@@ -117,7 +117,7 @@ export class WardrobeMenu extends Menu {
             tileEl.classList.add('no-hat');
         }
 
-        tileEl.querySelector('.hat-name').innerText = hat ? hat.name : 'No Hat';
+        queryElement(tileEl, '.hat-name').innerText = hat ? hat.name : 'No Hat';
 
         const hatId = hat ? hat.id : null;
 
@@ -227,7 +227,7 @@ export class WardrobeMenu extends Menu {
             } else {
                 status = `${hat.tier.price} honeycomb`;
             }
-            tileEl.querySelector('.hat-status').innerText = status;
+            queryElement(tileEl, '.hat-status').innerText = status;
         }
 
         this.refreshPreviewText();

@@ -177,7 +177,7 @@ export class ShopItemDescriptor {
 
     /**
      * @callback ConfigureShopItemDescriptorCallback
-     * @param {ShopItemDescriptor}
+     * @param {ShopItemDescriptor} shopItemDescriptor
      */
 
     /**

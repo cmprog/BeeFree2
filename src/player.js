@@ -370,11 +370,11 @@ export class Player {
 
     /**
      * If the daily time trial stats are not for 'today' then it resets them.
-     * @param {Date} todayDate
+     * @param {Date} [todayDate] Defaults to today.
      */
     tryResetDailyTimeTrialStatistics(todayDate) {
 
-        todayDate = todayDate || today();
+        todayDate = todayDate ?? today();
 
         // Nothing to do if the daily stats are not defined
         if (!this.dailyTimeTrialStatistics.longestDate) {
@@ -440,7 +440,7 @@ export class Player {
 
     /**
      * @callback LevelSelectorCallback
-     * @param {PlayerLevel}
+     * @param {PlayerLevel} playerLevel
      * @returns {number}
      */
 

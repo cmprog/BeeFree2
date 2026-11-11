@@ -1,4 +1,4 @@
-import { appendChildHtml } from "./html.js";
+import { appendChildHtml, queryElement } from "./html.js";
 import { logDebug } from "./logging.js";
 import { Menu } from "./menu.js";
 import { MENUS } from "./menus.js";
@@ -38,12 +38,18 @@ export class LevelSummaryMenu extends Menu {
     constructor() {
         super('#menu-level-summary');
 
-        this.tableContainerEl = this.element.querySelector('.table-container');
+        this.tableContainerEl = queryElement(this.element, '.table-container');
 
-        this.returnButtonEl = this.element.querySelector('button.return');
+        this.returnButtonEl = queryElement(this.element, 'button.return');
         registerClick(this.returnButtonEl, this.onReturnButtonClick.bind(this));
 
         this.totalHoneycombEarned = 0;
+
+        /**
+         * Whether the level ended in failure. Set by the level before the menu opens.
+         * @type {boolean}
+         */
+        this.levelFailed = false;
 
         /**
          * @type {LevelSummaryItem[]}
@@ -63,7 +69,7 @@ export class LevelSummaryMenu extends Menu {
 
     onOpening() {
 
-        const resultEl = this.element.querySelector('.level-result');
+        const resultEl = queryElement(this.element, '.level-result');
         resultEl.innerText = this.levelFailed ? 'Level Failed' : 'Level Completed';
 
         while (this.tableContainerEl.lastChild) {
@@ -117,7 +123,7 @@ export class LevelSummaryMenu extends Menu {
      * @param {string} description 
      * @param {string} bonus 
      * @param {string} amount 
-     * @param {string} icon 
+     * @param {string} [icon]
      */
     addItem(description, bonus, amount, icon) {
         this.items.push(new LevelSummaryItem(description, bonus, amount, icon));

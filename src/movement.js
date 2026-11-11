@@ -8,6 +8,7 @@ export class MovementBehavior {
 
     /**
      * Gets a copy of the behavior. This is only really needed for stateful behaviors.
+     * @returns {MovementBehavior}
      */
     copy() {
         return this;

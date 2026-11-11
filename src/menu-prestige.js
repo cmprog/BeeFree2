@@ -1,3 +1,4 @@
+import { queryElement } from "./html.js";
 import { Menu } from "./menu.js";
 import { MENUS } from "./menus.js";
 import { currentPlayer } from "./player.js";
@@ -8,17 +9,17 @@ export class PrestigeMenu extends Menu {
     constructor() {
         super('#menu-prestige');
 
-        this.confirmButton = this.element.querySelector('button.confirm');
+        this.confirmButton = queryElement(this.element, 'button.confirm');
         registerClick(this.confirmButton, this.onConfirmButtonClick.bind(this));
     }
 
     onOpening() {
-        const currentBonusEl = this.element.querySelector('.prestige-multiplier-current');
+        const currentBonusEl = queryElement(this.element, '.prestige-multiplier-current');
         currentBonusEl.innerText = this.formatMultiplier(currentPlayer.prestigeHoneycombMultiplier);
 
         const additionalPrestigeBonus = currentPlayer.calculatePotentialPrestigeEarnings();
         const newPrestigeBonus = currentPlayer.prestigeHoneycombMultiplier + additionalPrestigeBonus;
-        const nextBonusEl = this.element.querySelector('.prestige-multiplier-new');
+        const nextBonusEl = queryElement(this.element, '.prestige-multiplier-new');
         nextBonusEl.innerText = this.formatMultiplier(newPrestigeBonus);
     }
 
