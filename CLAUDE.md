@@ -84,7 +84,9 @@ revamped because the author's daughter plays it. Deployed to GitHub Pages from t
   reset them.
 - Achievements extend the LittleJS `Medal` class but are persisted in the player save.
 - `src/player.js` holds `currentPlayer` and all persistent state, saved as JSON in `localStorage`
-  (`save` key, previous save copied to `save_bk`).
+  (`save` key, previous save copied to `save_bk`). `currentPlayer` is created and loaded by
+  `initPlayer()` at the top of `game.js`, so it's `undefined` while modules are still loading.
+  Achievements are created on import, before the player exists, and are reloaded once it's loaded.
 - Balance constants and default attribute sets live in `src/settings.js`.
   `docs/shop-balancing.xlsx` is the balancing spreadsheet.
 

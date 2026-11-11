@@ -10,8 +10,10 @@ import { initLogging, logDebug, logError, logInfo } from "./logging.js";
 import { tryUnlockAllAchivements } from "./achivements.js";
 import { initBirdTemplates } from "./birds.js";
 import { GAME_SETTINGS } from "./settings.js";
+import { initPlayer } from "./player.js";
 
 initLogging();
+initPlayer();
 
 if (isTouchDevice) {
     logDebug("Touch device detected, initializing touch gamepad.");

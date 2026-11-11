@@ -622,5 +622,17 @@ export class Player {
     }
 }
 
-export let currentPlayer = new Player();
-currentPlayer.load();
+/**
+ * The player whose game is being played. Created by initPlayer() at startup.
+ * @type {Player}
+ */
+export let currentPlayer;
+
+/**
+ * Creates the current player and loads their save. Called by game.js at startup, before anything
+ * uses currentPlayer.
+ */
+export function initPlayer() {
+    currentPlayer = new Player();
+    currentPlayer.load();
+}

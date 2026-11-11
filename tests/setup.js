@@ -2,8 +2,9 @@
 //
 //     import './setup.js';
 //
-// Each test file runs in its own Node process, so state like currentPlayer and localStorage
-// starts fresh for every file.
+// Each test file runs in its own Node process, so module state and localStorage start fresh for
+// every file. currentPlayer isn't created until initPlayer() is called; most tests create their
+// own `new Player()` instead.
 
 import { fakeStorage, realConsole } from './support/browser-env.js';
 

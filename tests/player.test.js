@@ -3,7 +3,7 @@ import { resetLocalStorage } from './setup.js';
 import { beforeEach, describe, test } from 'node:test';
 import assert from 'node:assert/strict';
 
-import { Player } from '../src/player.js';
+import { Player, currentPlayer, initPlayer } from '../src/player.js';
 import { SHOP_ITEMS } from '../src/shop-items.js';
 import { HATS, HatTier } from '../src/hats.js';
 import { DEFAULT_BEE_ATTRIBUTES } from '../src/settings.js';
@@ -33,6 +33,15 @@ function reload(player) {
     loaded.load();
     return loaded;
 }
+
+test('initPlayer loads the saved game into currentPlayer', () => {
+    localStorage.setItem('save', JSON.stringify({ name: 'Saved', availableHoneycomb: 42 }));
+
+    initPlayer();
+
+    assert.equal(currentPlayer.name, 'Saved');
+    assert.equal(currentPlayer.availableHoneycomb, 42);
+});
 
 describe('a new player', () => {
 

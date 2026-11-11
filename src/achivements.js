@@ -25,10 +25,11 @@ class Achivement extends Medal {
 
     /**
      * Reloads the achivement, specifically the unlocked state, by checking
-     * the current player's unlocks.
+     * the current player's unlocks. Achivements are created before the player is
+     * loaded; they are reloaded once it is.
      */
-    reload() {        
-        this.unlocked = (this.id in currentPlayer.achivements) && currentPlayer.achivements[this.id];
+    reload() {
+        this.unlocked = Boolean(currentPlayer?.achivements[this.id]);
     }
 
     tryUnlock() {
