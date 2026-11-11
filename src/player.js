@@ -610,15 +610,16 @@ export class Player {
 
         this.loadSaveObj(saveObj);
 
-        medalsForEach(m => m.reload());
-
         logDebug(`Player data loaded successfully!`);
     }
 
+    /**
+     * Replaces the current player with a brand new one and saves it, wiping the old save.
+     * Callers should reload the achivements afterwards (reloadAchivements in achivements.js).
+     */
     reset() {
         currentPlayer = new Player();
-        currentPlayer.save();        
-        medalsForEach(m => m.reload());
+        currentPlayer.save();
     }
 }
 

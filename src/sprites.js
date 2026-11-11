@@ -15,7 +15,7 @@ export class BorderInfo {
          */
         this.nineSliceTileInfo = new TileInfo(
             this.fullTileInfo.pos, this.fullTileInfo.size.scale(1 / 3), 
-            this.fullTileInfo.textureIndex, this.fullTileInfo.padding);
+            this.fullTileInfo.textureInfo, this.fullTileInfo.padding);
 
         /**
          * @type {number}
@@ -52,6 +52,9 @@ export class BorderInfo {
 }
 
 class BorderSetInfo {
+    /**
+     * @param {number} textureIndex Index of the border image in game.js's image list.
+     */
     constructor(textureIndex) {
 
         const borderTemplateSize = 64;
@@ -65,7 +68,7 @@ class BorderSetInfo {
                 (iRow * borderTemplateSize),
             );
 
-            const tileInfo = new TileInfo(tilePos, vec2(borderTemplateSize), textureIndex);
+            const tileInfo = new TileInfo(tilePos, vec2(borderTemplateSize), textureInfos[textureIndex]);
 
             return new BorderInfo(tileInfo, 
                 borderSizeScale || (1 / 3), 
@@ -163,45 +166,46 @@ class BorderSetInfo {
     }
 }
 
+// Texture indexes match the order of the images in game.js (imagesSources).
 class SpriteAtlas {
     constructor() {
         
-        this.bee = new TileInfo(vec2(0, 0), vec2(75, 59), 0);
+        this.bee = new TileInfo(vec2(0, 0), vec2(75, 59), textureInfos[0]);
 
         this.clouds = [
-            new TileInfo(vec2(7, 12), vec2(62, 37), 1),
-            new TileInfo(vec2(8, 55), vec2(34, 23), 1),
-            new TileInfo(vec2(16, 86), vec2(41, 28), 1),
-            new TileInfo(vec2(81, 24), vec2(30, 20), 1),
-            new TileInfo(vec2(67, 55), vec2(50, 29), 1),
-            new TileInfo(vec2(72, 92), vec2(31, 24), 1),
+            new TileInfo(vec2(7, 12), vec2(62, 37), textureInfos[1]),
+            new TileInfo(vec2(8, 55), vec2(34, 23), textureInfos[1]),
+            new TileInfo(vec2(16, 86), vec2(41, 28), textureInfos[1]),
+            new TileInfo(vec2(81, 24), vec2(30, 20), textureInfos[1]),
+            new TileInfo(vec2(67, 55), vec2(50, 29), textureInfos[1]),
+            new TileInfo(vec2(72, 92), vec2(31, 24), textureInfos[1]),
         ];
 
         this.bird = {
-            body: new TileInfo(vec2(2, 22), vec2(51, 40), 2),
-            head: new TileInfo(vec2(0, 0), vec2(18, 21), 2),
-            face: new TileInfo(vec2(23, 2), vec2(13, 13), 2),
-            eyelids: new TileInfo(vec2(24, 18), vec2(11, 4), 2),
-            legs: new TileInfo(vec2(39, 0), vec2(29, 19), 2),            
+            body: new TileInfo(vec2(2, 22), vec2(51, 40), textureInfos[2]),
+            head: new TileInfo(vec2(0, 0), vec2(18, 21), textureInfos[2]),
+            face: new TileInfo(vec2(23, 2), vec2(13, 13), textureInfos[2]),
+            eyelids: new TileInfo(vec2(24, 18), vec2(11, 4), textureInfos[2]),
+            legs: new TileInfo(vec2(39, 0), vec2(29, 19), textureInfos[2]),            
         };
 
         this.ammo = {
-            bee: new TileInfo(vec2(0, 0), vec2(15, 12), 3),
-            bird: new TileInfo(vec2(17, 1), vec2(15, 10), 3),
+            bee: new TileInfo(vec2(0, 0), vec2(15, 12), textureInfos[3]),
+            bird: new TileInfo(vec2(17, 1), vec2(15, 10), textureInfos[3]),
         };
 
         this.owl = {
-            body: new TileInfo(vec2(0, 0), vec2(190, 200), 4),
-            frontWing: new TileInfo(vec2(189, 2), vec2(100, 110), 4),
-            backWing: new TileInfo(vec2(292, 11), vec2(85, 75), 4),
+            body: new TileInfo(vec2(0, 0), vec2(190, 200), textureInfos[4]),
+            frontWing: new TileInfo(vec2(189, 2), vec2(100, 110), textureInfos[4]),
+            backWing: new TileInfo(vec2(292, 11), vec2(85, 75), textureInfos[4]),
         };
 
-        this.honeycomb = new TileInfo(vec2(0, 0), vec2(45, 39), 5);
+        this.honeycomb = new TileInfo(vec2(0, 0), vec2(45, 39), textureInfos[5]);
 
         this.gems = {
-            red: new TileInfo(vec2(0, 0), vec2(16), 6),
-            blue: new TileInfo(vec2(0, 0), vec2(16), 7),
-            gold: new TileInfo(vec2(0, 0), vec2(16), 8),
+            red: new TileInfo(vec2(0, 0), vec2(16), textureInfos[6]),
+            blue: new TileInfo(vec2(0, 0), vec2(16), textureInfos[7]),
+            gold: new TileInfo(vec2(0, 0), vec2(16), textureInfos[8]),
         };
 
         this.borders = {
@@ -218,7 +222,7 @@ class SpriteAtlas {
             this.hats[hat.id] = new TileInfo(
                 vec2(column, row).scale(HAT_ATLAS_TILE_SIZE),
                 vec2(HAT_ATLAS_TILE_SIZE),
-                10);
+                textureInfos[10]);
         }
     }
 }

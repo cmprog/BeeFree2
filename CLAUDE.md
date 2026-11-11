@@ -44,9 +44,16 @@ revamped because the author's daughter plays it. Deployed to GitHub Pages from t
 
 ## Architecture
 
-- `dist/littlejs.js` is a vendored, unmodified copy of LittleJS (currently 1.12.13). It is loaded as
-  a classic script, so engine APIs (`vec2`, `EngineObject`, `Timer`, `drawTile`, `time`, ...) are
-  **globals**, not imports. Don't edit it; upgrade it by replacing the file.
+- `dist/littlejs.js` is a vendored, unmodified copy of LittleJS (currently 1.29.1, the debug build
+  from the `littlejsengine` npm package's `dist/littlejs.js`). It is loaded as a classic script, so
+  engine APIs (`vec2`, `EngineObject`, `Timer`, `drawTile`, `time`, ...) are **globals**, not imports.
+  Don't edit it. To upgrade:
+  - Replace the file.
+  - Run `check.bat`. The type check flags renamed or removed APIs.
+  - Diff the signatures of the functions the game calls. New parameters added in the middle aren't
+    caught by the type check.
+  - Play through, including on a phone.
+  - The package's `littlejs.d.ts` declares an importable module, not globals, so it isn't used here.
 - `src/game.js` is the entry point (`engineInit`, image list, init order).
 - Gameplay entities are on the canvas (`bee.js`, `birds.js`, `owl.js` = Sammy, `bullet.js`,
   `honeycomb.js`, `entities.js` for HUD pieces). Bird behavior is split into templates
@@ -83,6 +90,8 @@ revamped because the author's daughter plays it. Deployed to GitHub Pages from t
   The player saves owned hats in `ownedHats` and the worn hat in `equippedHat`. Prestige doesn't
   reset them.
 - Achievements extend the LittleJS `Medal` class but are persisted in the player save.
+  `Achivement.isLocal()` returns false so the engine's `medalsInit` never loads or saves their
+  state. Use `forEachAchivement`/`reloadAchivements` from `achivements.js`, not `medalsForEach`.
 - `src/player.js` holds `currentPlayer` and all persistent state, saved as JSON in `localStorage`
   (`save` key, previous save copied to `save_bk`). `currentPlayer` is created and loaded by
   `initPlayer()` at the top of `game.js`, so it's `undefined` while modules are still loading.

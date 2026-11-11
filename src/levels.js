@@ -341,8 +341,8 @@ class StandardLevel extends Level {
 
     render() {
         const formattedSecondsRemaining = `${(Math.max(0, -this.levelTimer.get())).toFixed(1)} s`
-        drawTextOverlay(formattedSecondsRemaining, this.timeRemainingBar.pos, 0.8 * this.timeRemainingBar.size.y, BLACK, undefined, undefined, undefined, FONTS.SECONDARY);
-        drawTextOverlay('time remaining', this.timeRemainingBar.pos.add(vec2(0, -this.timeRemainingBar.size.y)), 0.8 * this.timeRemainingBar.size.y, BLACK, undefined, undefined, undefined, FONTS.SECONDARY);
+        drawText(formattedSecondsRemaining, this.timeRemainingBar.pos, 0.8 * this.timeRemainingBar.size.y, BLACK, undefined, undefined, undefined, FONTS.SECONDARY);
+        drawText('time remaining', this.timeRemainingBar.pos.add(vec2(0, -this.timeRemainingBar.size.y)), 0.8 * this.timeRemainingBar.size.y, BLACK, undefined, undefined, undefined, FONTS.SECONDARY);
     }
 }
 
@@ -531,7 +531,7 @@ class StandardLevel extends Level {
 
     render() {
         const formattedLevelDuration = `${(time - this.spawnTime).toFixed(1)} s`
-        drawTextOverlay(formattedLevelDuration, this.timeRemainingBar.pos, 0.8 * this.timeRemainingBar.size.y, BLACK, undefined, undefined, undefined, FONTS.SECONDARY);
+        drawText(formattedLevelDuration, this.timeRemainingBar.pos, 0.8 * this.timeRemainingBar.size.y, BLACK, undefined, undefined, undefined, FONTS.SECONDARY);
     }
 }
 

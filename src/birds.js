@@ -614,9 +614,9 @@ export class Bird extends EngineObject
         this.healthBar.localPos = computeHealthBarOffset(this.hat, HEALTH_BAR_OFFSET_Y);
 
         if (currentLevel && currentLevel.isSammyPartyTime()) {
-            this.angle = (-PI / 4) + wave(1, PI / 2, time - this.spawnTime);
+            this.angle = (-PI / 4) + oscillate(1, PI / 2, time - this.spawnTime);
             for (const child of this.children) {
-                child.drawSize = child.size.scale(0.8 + wave(1, 0.4, time - this.spawnTime));
+                child.drawSize = child.size.scale(0.8 + oscillate(1, 0.4, time - this.spawnTime));
             }
             
         } else {

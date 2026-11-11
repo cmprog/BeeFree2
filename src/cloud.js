@@ -61,8 +61,8 @@ export class Cloud extends EngineObject
         super.update();
 
         if (currentLevel && currentLevel.isSammyPartyTime()) {
-            this.color = hsl(wave(1 / 5, 1, time - this.spawnTime), 0.5, 0.5); 
-            this.drawSize = this.size.scale(0.8 + wave(1, 0.4, time - this.spawnTime));   
+            this.color = hsl(oscillate(1 / 5, 1, time - this.spawnTime), 0.5, 0.5); 
+            this.drawSize = this.size.scale(0.8 + oscillate(1, 0.4, time - this.spawnTime));   
         } else {
             this.color = undefined;
             this.drawSize = undefined;

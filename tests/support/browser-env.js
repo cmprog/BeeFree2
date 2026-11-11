@@ -21,9 +21,20 @@ globalThis.localStorage = {
 // LittleJS checks window.ontouchstart and creates its audio context when it loads.
 globalThis.window = globalThis;
 
+// Sounds made when a module loads (sounds.js) render their samples into a buffer.
 globalThis.AudioContext = class {
-    constructor() { this.destination = {}; }
-    createGain() { return { connect() {}, gain: {} }; }
+    constructor() {
+        this.destination = {};
+        this.sampleRate = 44100;
+        this.currentTime = 0;
+        this.state = 'suspended';
+    }
+    addEventListener() {}
+    createGain() { return { connect() {}, gain: { value: 1 } }; }
+    createBuffer(channels, length) {
+        const data = Array.from({ length: channels }, () => new Float32Array(length));
+        return { getChannelData: channel => data[channel], copyToChannel() {} };
+    }
 };
 
 // The game's logger keeps a copy of console.debug/info/log from when it loads and writes

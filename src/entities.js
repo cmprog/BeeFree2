@@ -143,7 +143,7 @@ export class LevelScoreTracker extends EngineObject {
         let valuePos = this.pos.copy();
         valuePos.x = this.pos.x - (honeycombSize.x / 2);
         
-        drawTextOverlay(this.value.toString(), valuePos, this.size.y * 0.9, BLACK, undefined, undefined, undefined, FONTS.SECONDARY);
+        drawText(this.value.toString(), valuePos, this.size.y * 0.9, BLACK, undefined, undefined, undefined, FONTS.SECONDARY);
     }
 }
 
@@ -176,6 +176,6 @@ export class Score extends EngineObject {
 
     render() {
 
-        drawTextOverlay(this.valueText, this.pos, 1, this.color, undefined, undefined, undefined, FONTS.SECONDARY);
+        drawText(this.valueText, this.pos, 1, this.color, undefined, undefined, undefined, FONTS.SECONDARY);
     }
 }

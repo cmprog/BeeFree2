@@ -1,3 +1,4 @@
+import { reloadAchivements } from "./achivements.js";
 import { queryAllElements, queryElement } from "./html.js";
 import { DoubleClickButton } from "./button.js";
 import { LEVELS } from "./level-list.js";
@@ -58,6 +59,7 @@ export class SettingsMenu extends Menu {
     resetSave() {
         if (currentPlayer) {
             currentPlayer.reset();
+            reloadAchivements();
         }
     }
 

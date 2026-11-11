@@ -7,7 +7,7 @@ import { CloudGenerator } from "./cloud.js";
 import { initLevels } from "./level-list.js";
 import { currentLevel } from "./levels.js";
 import { initLogging, logDebug, logError, logInfo } from "./logging.js";
-import { tryUnlockAllAchivements } from "./achivements.js";
+import { reloadAchivements, tryUnlockAllAchivements } from "./achivements.js";
 import { initBirdTemplates } from "./birds.js";
 import { GAME_SETTINGS } from "./settings.js";
 import { initPlayer } from "./player.js";
@@ -18,7 +18,8 @@ initPlayer();
 if (isTouchDevice) {
     logDebug("Touch device detected, initializing touch gamepad.");
     touchGamepadEnable = true;
-    touchGamepadSize = 200;
+    // touchGamepadSize is in screen (CSS) pixels since LittleJS 1.2x. The default of 100 matches the
+    // size the old setting of 200 canvas pixels came out to on a phone.
 }
 
 // Write up some error handing to we can see it in our UI logger
@@ -27,7 +28,7 @@ window.addEventListener('error', (errorMsg, url, lineNumber) => {
 });
 
 // Only show the watermark when we are running in dev.
-showWatermark = GAME_SETTINGS.IS_LOCAL_DEV_ENVIRONMENT;
+setDebugWatermark(GAME_SETTINGS.IS_LOCAL_DEV_ENVIRONMENT);
 
 ///////////////////////////////////////////////////////////////////////////////
 function gameInit() {
@@ -44,7 +45,7 @@ function gameInit() {
     // use a 720p fixed size canvas
     setCanvasFixedSize(vec2(1280, 720));
     
-    medalsForEach(m => m.reload());
+    reloadAchivements();
 
     new CloudGenerator()
 

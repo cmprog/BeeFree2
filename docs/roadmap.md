@@ -40,8 +40,6 @@ What's next for BeeFree. Finished work is recorded in [changelog/](changelog/), 
 
 ## Code cleanup
 
-- **Upgrade LittleJS** (`dist/littlejs.js`, currently 1.12.13). Replace the file, then fix
-  anything `check.bat` or a play-through turns up.
 - **Split `src/birds.js`.** Move the bird templates (`BIRD_TEMPLATES`) into their own file, the way
   `level-list.js` holds the levels.
 - **Startup-only variables.** `BIRD_TEMPLATES`, `FORMATIONS`, `LEVELS` and `spriteAtlas` are only

@@ -1,3 +1,4 @@
+import { forEachAchivement } from './achivements.js';
 import { queryElement } from './html.js';
 import { Menu } from './menu.js'
 import { currentPlayer } from './player.js';
@@ -63,7 +64,7 @@ export class AchivementsMenu extends Menu {
             
             this.achivementListItems = [];
             
-            medalsForEach(achivement => {
+            forEachAchivement(achivement => {
                 const listItem = new AchivementListItem(achivement);
                 this.achivementListItems.push(listItem);
                 this.achivementListEl.appendChild(listItem.element);

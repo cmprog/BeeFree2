@@ -26,7 +26,7 @@ class Achivement extends Medal {
     /**
      * Reloads the achivement, specifically the unlocked state, by checking
      * the current player's unlocks. Achivements are created before the player is
-     * loaded; they are reloaded once it is.
+     * loaded; game.js reloads them once it is (see reloadAchivements).
      */
     reload() {
         this.unlocked = Boolean(currentPlayer?.achivements[this.id]);
@@ -39,11 +39,24 @@ class Achivement extends Medal {
         }
     }
 
+    /**
+     * Achivements are saved with the player data, not in the engine's medal save. Returning false
+     * tells LittleJS that something else holds this medal, so medalsInit() never loads or
+     * overwrites its unlocked state.
+     * @returns {boolean}
+     */
+    isLocal() {
+        return false;
+    }
+
+    /**
+     * @returns {Promise<boolean>} Whether the achivement is unlocked, matching Medal.unlock().
+     */
     unlock() {
         // default logic saves each medal in its own local storage, we want to
         // save it with the player data, so we overwrite the whole method
 
-        if (medalsPreventUnlock || this.unlocked) return;
+        if (medalsPreventUnlock || this.unlocked) return Promise.resolve(this.unlocked);
 
         this.unlocked = true;
 
@@ -55,6 +68,7 @@ class Achivement extends Medal {
         currentPlayer.save();
 
         medalsDisplayQueue.push(this);
+        return Promise.resolve(true);
     }
 }
 
@@ -244,8 +258,22 @@ const ACHIVEMENTS = [
 
 medalsInit('achivements');
 
+/**
+ * Calls the callback for every achivement, in order.
+ * @param {(achivement: Achivement) => void} callback
+ */
+export function forEachAchivement(callback) {
+    ACHIVEMENTS.forEach(callback);
+}
+
+/**
+ * Re-reads every achivement's unlocked state from the current player. Call after the player
+ * is loaded or replaced.
+ */
+export function reloadAchivements() {
+    forEachAchivement(achivement => achivement.reload());
+}
+
 export function tryUnlockAllAchivements() {
-    medalsForEach(achivement => {
-        achivement.tryUnlock();
-    });
+    forEachAchivement(achivement => achivement.tryUnlock());
 }
