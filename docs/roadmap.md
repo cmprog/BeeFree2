@@ -40,5 +40,4 @@ What's next for BeeFree. Finished work is recorded in [changelog/](changelog/), 
 
 ## Code cleanup
 
-- **Achievements vs. medals.** Achievements are saved on the player, but the LittleJS `Medal`
-  objects they're built on are global. Leave this until something needs it.
+Nothing right now.

@@ -104,13 +104,14 @@ revamped because the author's daughter plays it. Deployed to GitHub Pages from t
   The wardrobe preview (`menu-wardrobe.js`) uses the same `computeHatPlacement` as the game.
   The player saves owned hats in `ownedHats` and the worn hat in `equippedHat`. Prestige doesn't
   reset them.
-- Achievements extend the LittleJS `Medal` class but are persisted in the player save.
+- Achievements extend the LittleJS `Medal` class (for the unlock pop-up) but are persisted in the
+  player save, which is the only record: `Achievement.unlocked` is a getter that reads
+  `currentPlayer.achievements`, so nothing needs reloading when the player is replaced.
   `Achievement.isLocal()` returns false so the engine's `medalsInit` never loads or saves their
-  state. Use `forEachAchievement`/`reloadAchievements` from `achievements.js`, not `medalsForEach`.
+  state. Use `forEachAchievement` from `achievements.js`, not `medalsForEach`.
 - `src/player.js` holds `currentPlayer` and all persistent state, saved as JSON in `localStorage`
   (`save` key, previous save copied to `save_bk`). `currentPlayer` is created and loaded by
   `initPlayer()` at the top of `game.js`, so it's `undefined` while modules are still loading.
-  Achievements are created on import, before the player exists, and are reloaded once it's loaded.
 - Balance constants and default attribute sets live in `src/settings.js`.
   `docs/shop-balancing.xlsx` is the balancing spreadsheet.
 

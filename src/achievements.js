@@ -4,13 +4,19 @@ class Achievement extends Medal {
     constructor(id, name, description, icon, src, data) {
         super(id, name, description, icon, src)
 
+        // The player save is the only record of whether an achievement is unlocked, so it always
+        // matches the current player, even after the save is reset. Medal's constructor just set a
+        // plain unlocked = false; this replaces it. Writes are ignored: use unlock().
+        Object.defineProperty(this, 'unlocked', {
+            get: () => Boolean(currentPlayer?.hasAchievement(this.id)),
+            set: () => { },
+        });
+
         this.getCurrentValue = data.getCurrentValue;
         this.targetValue = data.targetValue;
         this.rewardedHoneycomb = data.rewardedHoneycomb;
 
         this.checkUnlock = data.checkUnlock || (() => (this.getCurrentValue() >= this.targetValue));
-
-        this.reload();
     }
 
     /**
@@ -19,15 +25,6 @@ class Achievement extends Medal {
      */
     getProgress() {
         return clamp(this.getCurrentValue() / this.targetValue, 0, 1);
-    }
-
-    /**
-     * Reloads the achievement, specifically the unlocked state, by checking
-     * the current player's unlocks. Achievements are created before the player is
-     * loaded; game.js reloads them once it is (see reloadAchievements).
-     */
-    reload() {
-        this.unlocked = Boolean(currentPlayer?.achievements[this.id]);
     }
 
     tryUnlock() {
@@ -56,13 +53,12 @@ class Achievement extends Medal {
 
         if (medalsPreventUnlock || this.unlocked) return Promise.resolve(this.unlocked);
 
-        this.unlocked = true;
+        currentPlayer.achievements[this.id] = true;
 
         if (this.rewardedHoneycomb) {
             currentPlayer.onHoneycombCollected(this.rewardedHoneycomb);
         }
 
-        currentPlayer.achievements[this.id] = this.unlocked;
         currentPlayer.save();
 
         medalsDisplayQueue.push(this);
@@ -183,22 +179,22 @@ function createAchievements() {
         // ****************************************************
         // Level Failure
         // ****************************************************
-        new Achievement(18, 'First Level Complete', 'Failed your first level.', undefined, undefined, {        
+        new Achievement(18, 'First Level Failed', 'Failed your first level.', undefined, undefined, {        
             getCurrentValue: () => currentPlayer.sumLevelStats(x => x.overallStatistics.failureCount),
             targetValue: 1,
             rewardedHoneycomb: 1,
         }),
-        new Achievement(19, 'Fifth Level Complete', 'Failed 5 total levels.', undefined, undefined, {
+        new Achievement(19, 'Fifth Level Failed', 'Failed 5 total levels.', undefined, undefined, {
             getCurrentValue: () => currentPlayer.sumLevelStats(x => x.overallStatistics.failureCount),
             targetValue: 5,
             rewardedHoneycomb: 1,
         }),
-        new Achievement(20, 'Tenth Level Complete', 'Failed 10 total levels.', undefined, undefined, {
+        new Achievement(20, 'Tenth Level Failed', 'Failed 10 total levels.', undefined, undefined, {
             getCurrentValue: () => currentPlayer.sumLevelStats(x => x.overallStatistics.failureCount),
             targetValue: 10,
             rewardedHoneycomb: 5,
         }),
-        new Achievement(21, 'Twenty-fifth Level Complete', 'Failed 25 total levels.', undefined, undefined, {
+        new Achievement(21, 'Twenty-fifth Level Failed', 'Failed 25 total levels.', undefined, undefined, {
             getCurrentValue: () => currentPlayer.sumLevelStats(x => x.overallStatistics.failureCount),
             targetValue: 25,
             rewardedHoneycomb: 10,
@@ -282,14 +278,6 @@ export function initAchievements() {
  */
 export function forEachAchievement(callback) {
     ACHIEVEMENTS.forEach(callback);
-}
-
-/**
- * Re-reads every achievement's unlocked state from the current player. Call after the player
- * is loaded or replaced.
- */
-export function reloadAchievements() {
-    forEachAchievement(achievement => achievement.reload());
 }
 
 export function tryUnlockAllAchievements() {

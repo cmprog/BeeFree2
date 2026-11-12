@@ -618,7 +618,6 @@ export class Player {
 
     /**
      * Replaces the current player with a brand new one and saves it, wiping the old save.
-     * Callers should reload the achievements afterwards (reloadAchievements in achievements.js).
      */
     reset() {
         currentPlayer = new Player();

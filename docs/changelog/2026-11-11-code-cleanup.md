@@ -10,6 +10,7 @@ A cleanup batch after the hats release:
 ## What changed for players
 
 - "Achivements" is now spelled "Achievements", and other visible spelling fixes ("damange", "achived").
+- The four "failed a level" achievements were titled "... Level Complete"; they're now "... Level Failed".
 - **Saves from before this change reset these values:**
   - achievements (they unlock again, and pay out their honeycomb again)
   - level "no damage" badges
@@ -32,7 +33,9 @@ A cleanup batch after the hats release:
   - sounds (`initSounds`)
   The module-loading test fails if importing a module uses `localStorage`, registers medals or
   creates engine objects.
-- New tests cover the bird templates and the version 3 field names.
+- Achievements no longer keep their own copy of the unlocked state. `Achievement.unlocked` reads the
+  player save directly, so `reloadAchievements()` is gone.
+- New tests cover the bird templates, the version 3 field names and achievements.
 
 ## Decisions
 
