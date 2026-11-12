@@ -1,16 +1,16 @@
-import { logDebug } from "./logging.js";
-import { EntityType, ProgressBar } from './entities.js';
+import { logDebug } from "../core/logging.js";
+import { EntityType, ProgressBar } from '../entities/hud.js';
 import { MovementBehavior, StaticMovement } from "./movement.js";
 import { PassiveShooting, ShootingBehavior } from "./shooting.js";
-import { spriteAtlas } from "./sprites.js";
-import { Honeycomb } from "./honeycomb.js";
-import { currentLevel } from "./levels.js";
-import { DEFAULT_BIRD_ATTRIBUTES, SAMMY_PARTY_BIRD_HAT_CHANCE } from "./settings.js";
-import { attachHat, computeHealthBarOffset } from "./hat-attachment.js";
-import { HatWearer, pickRandomHat } from "./hats.js";
-import { isWellOutsideWorldBoundary } from "./util.js";
-import { AttributeSet } from "./attributes.js";
-import { currentPlayer } from "./player.js";
+import { spriteAtlas } from "../core/sprites.js";
+import { Honeycomb } from "../entities/honeycomb.js";
+import { currentLevel } from "../levels/levels.js";
+import { DEFAULT_BIRD_ATTRIBUTES, SAMMY_PARTY_BIRD_HAT_CHANCE } from "../settings.js";
+import { attachHat, computeHealthBarOffset } from "../hats/attachment.js";
+import { HatWearer, pickRandomHat } from "../hats/hats.js";
+import { isWellOutsideWorldBoundary } from "../core/util.js";
+import { AttributeSet } from "../player/attributes.js";
+import { currentPlayer } from "../player/player.js";
 
 /**
  * @callback ShootingBehaviorFactory

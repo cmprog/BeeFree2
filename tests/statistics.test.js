@@ -3,8 +3,8 @@ import { resetLocalStorage } from './setup.js';
 import { afterEach, beforeEach, describe, mock, test } from 'node:test';
 import assert from 'node:assert/strict';
 
-import { Player } from '../src/player.js';
-import { PlayerLevel } from '../src/player-level.js';
+import { Player } from '../src/player/player.js';
+import { PlayerLevel } from '../src/player/player-level.js';
 
 beforeEach(() => resetLocalStorage());
 

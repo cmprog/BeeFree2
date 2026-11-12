@@ -1,18 +1,18 @@
-import { BIRD_TEMPLATES } from './bird-templates.js';
-import { Bird, BirdTemplate } from './birds.js';
-import { DoubleClickButton } from './button.js';
-import { attachHat } from './hat-attachment.js';
+import { BIRD_TEMPLATES } from '../../birds/templates.js';
+import { Bird, BirdTemplate } from '../../birds/bird.js';
+import { DoubleClickButton } from '../button.js';
+import { attachHat } from '../../hats/attachment.js';
 import {
     HATS, HatWearer, clearDevHatTuning, getHatAdjustment, getHatWearerAnchor, resetHatAdjustment,
     resetHatWearerAnchor, saveDevHatTuning, serializeHatAdjustmentsFile,
-} from './hats.js';
-import { appendChildHtml, queryElement } from './html.js';
-import { logInfo } from './logging.js';
-import { Menu } from './menu.js';
-import { MENUS } from './menu-registry.js';
-import { Owl } from './owl.js';
-import { spriteAtlas } from './sprites.js';
-import { registerClick } from './util.js';
+} from '../../hats/hats.js';
+import { appendChildHtml, queryElement } from '../../core/html.js';
+import { logInfo } from '../../core/logging.js';
+import { Menu } from '../menu.js';
+import { MENUS } from '../registry.js';
+import { Owl } from '../../entities/sammy.js';
+import { spriteAtlas } from '../../core/sprites.js';
+import { registerClick } from '../../core/util.js';
 
 // The camera zooms in on the models while tuning, and is restored afterwards.
 const TUNING_CAMERA_SCALE = 80;
@@ -49,7 +49,7 @@ class HatTuningScene extends EngineObject {
         this.owl = new Owl(vec2(2, 0));
         this.owl.wearHat(hatId);
 
-        /** @type {Array<import('./hat-attachment.js').HatAttachment>} */
+        /** @type {Array<import('../../hats/attachment.js').HatAttachment>} */
         this.hats = [beeHat, this.bird.hat, this.owl.hat];
     }
 
@@ -102,7 +102,7 @@ class HatTuningScene extends EngineObject {
 
 /**
  * Dev-only view for positioning hats. Adjust the sliders while looking at the bee, a bird and
- * Sammy wearing the hat, then copy the generated hat-adjustments.js. Tuning is kept in local
+ * Sammy wearing the hat, then copy the generated hats/adjustments.js. Tuning is kept in local
  * storage between reloads until it is discarded.
  */
 export class HatTuningMenu extends Menu {
@@ -215,7 +215,7 @@ export class HatTuningMenu extends Menu {
             window.location.reload();
         });
 
-        this.statusEl = appendChildHtml(outputSection, `<div class="status">Tuning is saved in this browser until copied into src/hat-adjustments.js.</div>`);
+        this.statusEl = appendChildHtml(outputSection, `<div class="status">Tuning is saved in this browser until copied into src/hats/adjustments.js.</div>`);
     }
 
     /**
@@ -298,7 +298,7 @@ export class HatTuningMenu extends Menu {
         logInfo(`Hat adjustments file:\n${text}`);
 
         navigator.clipboard.writeText(text)
-            .then(() => this.statusEl.innerText = 'Copied! Paste it over src/hat-adjustments.js.')
+            .then(() => this.statusEl.innerText = 'Copied! Paste it over src/hats/adjustments.js.')
             .catch(() => this.statusEl.innerText = 'Copy failed. The file contents were written to the console log instead.');
     }
 

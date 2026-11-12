@@ -10,7 +10,7 @@ import { fakeStorage, realConsole } from './support/browser-env.js';
 
 // Load the game's logger while the console is silenced (see browser-env.js), then restore the
 // real console so console.log works in tests.
-import '../src/logging.js';
+import '../src/core/logging.js';
 
 Object.assign(console, realConsole);
 

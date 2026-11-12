@@ -1,8 +1,8 @@
-import { appendChildHtml, queryElement } from "./html.js";
-import { logDebug } from "./logging.js";
+import { appendChildHtml, queryElement } from "../core/html.js";
+import { logDebug } from "../core/logging.js";
 import { Menu } from "./menu.js";
-import { MENUS } from "./menu-registry.js";
-import { registerClick } from "./util.js";
+import { MENUS } from "./registry.js";
+import { registerClick } from "../core/util.js";
 
 /**
  * Represents a line item shown on the summary screen.

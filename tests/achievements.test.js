@@ -3,8 +3,8 @@ import { resetLocalStorage } from './setup.js';
 import { beforeEach, test } from 'node:test';
 import assert from 'node:assert/strict';
 
-import { forEachAchievement, initAchievements } from '../src/achievements.js';
-import { currentPlayer, initPlayer } from '../src/player.js';
+import { forEachAchievement, initAchievements } from '../src/player/achievements.js';
+import { currentPlayer, initPlayer } from '../src/player/player.js';
 
 resetLocalStorage();
 initPlayer();

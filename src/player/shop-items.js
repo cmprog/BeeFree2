@@ -1,6 +1,6 @@
-import { DEFAULT_BEE_ATTRIBUTES, DEFAULT_LEVEL_ATTRIBUTES, DEFAULT_SAMMY_ATTRIBUTE_MULTIPLIERS } from './settings.js';
+import { DEFAULT_BEE_ATTRIBUTES, DEFAULT_LEVEL_ATTRIBUTES, DEFAULT_SAMMY_ATTRIBUTE_MULTIPLIERS } from '../settings.js';
 
-// NOTE: This module must not import player.js. The player derives its attributes
+// NOTE: This module must not import player/player.js. The player derives its attributes
 // from these descriptors when loading a save, so importing the player here would
 // create a circular dependency during module initialization.
 

@@ -1,11 +1,11 @@
-import { queryAllElements, queryElement } from "./html.js";
+import { queryAllElements, queryElement } from "../core/html.js";
 import { DoubleClickButton } from "./button.js";
-import { LEVELS } from "./level-list.js";
+import { LEVELS } from "../levels/level-list.js";
 import { Menu } from "./menu.js";
-import { currentPlayer } from "./player.js";
-import { GAME_SETTINGS } from "./settings.js";
-import { MENUS } from "./menu-registry.js";
-import { registerClick } from "./util.js";
+import { currentPlayer } from "../player/player.js";
+import { GAME_SETTINGS } from "../settings.js";
+import { MENUS } from "./registry.js";
+import { registerClick } from "../core/util.js";
 
 export class SettingsMenu extends Menu {
     constructor() {

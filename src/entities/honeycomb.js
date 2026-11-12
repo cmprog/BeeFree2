@@ -1,8 +1,8 @@
-import { EntityType } from "./entities.js";
-import { currentLevel } from "./levels.js";
-import { currentPlayer } from "./player.js";
-import { spriteAtlas } from "./sprites.js";
-import { isWellOutsideWorldBoundary } from "./util.js";
+import { EntityType } from "./hud.js";
+import { currentLevel } from "../levels/levels.js";
+import { currentPlayer } from "../player/player.js";
+import { spriteAtlas } from "../core/sprites.js";
+import { isWellOutsideWorldBoundary } from "../core/util.js";
 
 export class Honeycomb extends EngineObject{
 

@@ -1,6 +1,6 @@
-import { RENDER_LAYERS } from "./layers.js";
-import { BorderInfo, spriteAtlas } from "./sprites.js";
-import { FONTS, rgb255 } from "./util.js";
+import { RENDER_LAYERS } from "../core/layers.js";
+import { BorderInfo, spriteAtlas } from "../core/sprites.js";
+import { FONTS, rgb255 } from "../core/util.js";
 
 export const EntityType = Object.freeze({
     BEE: { },

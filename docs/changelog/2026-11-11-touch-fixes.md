@@ -15,7 +15,7 @@ Fixes found while playtesting on a phone.
   the button's `touchend`, which turns the touch gamepad on before the engine sees that `touchend`.
   The engine then ignores it, so the "mouse" never lifts. Whenever the stick was idle, the bee switched
   to mouse control and flew to where the tap had been. On a touch device with the touch gamepad on,
-  the bee now always uses the gamepad (`bee.js`).
+  the bee now always uses the gamepad (`entities/bee.js`).
 
 ## Decisions
 

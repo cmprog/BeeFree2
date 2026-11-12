@@ -3,9 +3,9 @@ import { resetLocalStorage } from './setup.js';
 import { beforeEach, describe, test } from 'node:test';
 import assert from 'node:assert/strict';
 
-import { Player, currentPlayer, initPlayer } from '../src/player.js';
-import { SHOP_ITEMS } from '../src/shop-items.js';
-import { HATS, HatTier } from '../src/hats.js';
+import { Player, currentPlayer, initPlayer } from '../src/player/player.js';
+import { SHOP_ITEMS } from '../src/player/shop-items.js';
+import { HATS, HatTier } from '../src/hats/hats.js';
 import { DEFAULT_BEE_ATTRIBUTES } from '../src/settings.js';
 
 beforeEach(() => resetLocalStorage());

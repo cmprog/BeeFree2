@@ -1,8 +1,8 @@
-import { HAT_ADJUSTMENTS, HAT_WEARER_ANCHORS } from './hat-adjustments.js';
-import { GAME_SETTINGS, HAT_PRICE_BASIC, HAT_PRICE_FABULOUS, HAT_PRICE_FANCY } from './settings.js';
+import { HAT_ADJUSTMENTS, HAT_WEARER_ANCHORS } from './adjustments.js';
+import { GAME_SETTINGS, HAT_PRICE_BASIC, HAT_PRICE_FABULOUS, HAT_PRICE_FANCY } from '../settings.js';
 
-// NOTE: This module must not import player.js (the player validates hats on load)
-// or sprites.js (the sprite atlas builds the hat tiles from HATS).
+// NOTE: This module must not import player/player.js (the player validates hats on load)
+// or core/sprites.js (the sprite atlas builds the hat tiles from HATS).
 
 /**
  * @typedef {object} HatTier
@@ -201,13 +201,13 @@ export function computeHatPlacement(hatId, wearer) {
 
 const DEV_TUNING_STORAGE_KEY = 'dev_hat_tuning';
 
-// Snapshots of the values from hat-adjustments.js, taken before any local tuning is applied,
+// Snapshots of the values from hats/adjustments.js, taken before any local tuning is applied,
 // so the tuning view can reset back to them.
 const SOURCE_WEARER_ANCHORS = JSON.parse(JSON.stringify(HAT_WEARER_ANCHORS));
 const SOURCE_HAT_ADJUSTMENTS = JSON.parse(JSON.stringify(HAT_ADJUSTMENTS));
 
 /**
- * Resets a hat's adjustment to the value in hat-adjustments.js.
+ * Resets a hat's adjustment to the value in hats/adjustments.js.
  * @param {string} hatId
  */
 export function resetHatAdjustment(hatId) {
@@ -215,7 +215,7 @@ export function resetHatAdjustment(hatId) {
 }
 
 /**
- * Resets a wearer's anchor to the value in hat-adjustments.js.
+ * Resets a wearer's anchor to the value in hats/adjustments.js.
  * @param {{ key: string }} wearer One of {@link HatWearer}.
  */
 export function resetHatWearerAnchor(wearer) {
@@ -261,7 +261,7 @@ function loadDevHatTuning() {
 }
 
 /**
- * Produces the full contents of hat-adjustments.js using the current values.
+ * Produces the full contents of hats/adjustments.js using the current values.
  * @returns {string}
  */
 export function serializeHatAdjustmentsFile() {
@@ -306,7 +306,7 @@ ${adjustmentLines.join('\n')}
 
 /**
  * On localhost, applies hat tuning saved in this browser by the hat tuning view, on top of
- * hat-adjustments.js. Call once at startup.
+ * hats/adjustments.js. Call once at startup.
  */
 export function initHatTuning() {
     if (!GAME_SETTINGS.IS_LOCAL_DEV_ENVIRONMENT) return;

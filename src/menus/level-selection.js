@@ -1,8 +1,8 @@
-import { appendChildHtml, queryElement } from './html.js';
-import { LEVELS } from './level-list.js';
+import { appendChildHtml, queryElement } from '../core/html.js';
+import { LEVELS } from '../levels/level-list.js';
 import { Menu } from './menu.js'
-import { currentPlayer } from './player.js';
-import { registerClick } from './util.js';
+import { currentPlayer } from '../player/player.js';
+import { registerClick } from '../core/util.js';
 
 class LevelSelectionItem {
 

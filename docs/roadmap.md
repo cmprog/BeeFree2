@@ -10,10 +10,10 @@ What's next for BeeFree. Finished work is recorded in [changelog/](changelog/), 
 
 ## Planned
 
-- **Sound effects.** `src/sounds.js` has a start on this (`initSounds()`), but it isn't called or
+- **Sound effects.** `src/core/sounds.js` has a start on this (`initSounds()`), but it isn't called or
   imported yet, and `gameInit` turns sound off (`soundEnable = false`).
 - **Tune hat placement.** Every hat still uses the default position. Use Settings > Debug >
-  Hat Tuning on localhost, then paste the copied file over `src/hat-adjustments.js`.
+  Hat Tuning on localhost, then paste the copied file over `src/hats/adjustments.js`.
 - **Playtest hat prices.** The tiers are 250 / 1,000 / 3,000 honeycomb (`HAT_PRICE_*` in
   `src/settings.js`).
 - **Watch a Sammy party.** Check that about 10% of birds and half of the Sammys spawned during a party

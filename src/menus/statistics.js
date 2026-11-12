@@ -1,8 +1,8 @@
-import { appendChildHtml, queryElement } from './html.js';
+import { appendChildHtml, queryElement } from '../core/html.js';
 import { Menu } from './menu.js'
-import { PlayerLevel } from './player-level.js';
-import { currentPlayer } from './player.js';
-import { today } from './util.js';
+import { PlayerLevel } from '../player/player-level.js';
+import { currentPlayer } from '../player/player.js';
+import { today } from '../core/util.js';
 
 class StatisticField {
 

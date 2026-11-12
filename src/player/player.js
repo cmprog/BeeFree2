@@ -1,11 +1,11 @@
 import { AttributeSet, LevelAttributeSet } from "./attributes.js";
-import { logDebug, logError } from "./logging.js";
+import { logDebug, logError } from "../core/logging.js";
 import { PlayerLevel } from "./player-level.js";
 import { SHOP_ITEMS } from "./shop-items.js";
-import { getHat } from "./hats.js";
-import { DEFAULT_BEE_ATTRIBUTES, DEFAULT_LEVEL_ATTRIBUTES, DEFAULT_SAMMY_ATTRIBUTE_MULTIPLIERS, GAME_SETTINGS, PRESTIGE_BONUS_RATE } from "./settings.js";
+import { getHat } from "../hats/hats.js";
+import { DEFAULT_BEE_ATTRIBUTES, DEFAULT_LEVEL_ATTRIBUTES, DEFAULT_SAMMY_ATTRIBUTE_MULTIPLIERS, GAME_SETTINGS, PRESTIGE_BONUS_RATE } from "../settings.js";
 import { StatisticsSet, TimeTrialStatistics } from "./statistics.js";
-import { today } from "./util.js";
+import { today } from "../core/util.js";
 
 const SAVE_KEY = "save";
 const SAVE_KEY_BACKUP = "save_bk";

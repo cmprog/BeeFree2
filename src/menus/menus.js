@@ -1,14 +1,14 @@
-import { AchievementsMenu } from "./menu-achievements.js";
-import { LevelSelectionMenu } from "./menu-level-selection.js";
-import { LevelSummaryMenu } from "./menu-level-summary.js";
-import { MainMenu } from "./menu-main.js";
-import { PrestigeMenu } from "./menu-prestige.js";
-import { SettingsMenu } from "./menu-settings.js";
-import { ShopMenu } from "./menu-shop.js";
-import { StatisticsMenu } from "./menu-statistics.js";
-import { WardrobeMenu } from "./menu-wardrobe.js";
-import { HatTuningMenu } from "./menu-hat-tuning.js";
-import { MENUS } from "./menu-registry.js";
+import { AchievementsMenu } from "./achievements.js";
+import { LevelSelectionMenu } from "./level-selection.js";
+import { LevelSummaryMenu } from "./level-summary.js";
+import { MainMenu } from "./main.js";
+import { PrestigeMenu } from "./prestige.js";
+import { SettingsMenu } from "./settings.js";
+import { ShopMenu } from "./shop.js";
+import { StatisticsMenu } from "./statistics.js";
+import { WardrobeMenu } from "./wardrobe.js";
+import { HatTuningMenu } from "./dev/hat-tuning.js";
+import { MENUS } from "./registry.js";
 
 export class MenuSet {
     constructor() {
@@ -57,7 +57,7 @@ export class MenuSet {
 }
 
 /**
- * Creates every menu and makes them available through MENUS in menu-registry.js.
+ * Creates every menu and makes them available through MENUS in menus/registry.js.
  */
 export function initMenus() {
     Object.assign(MENUS, new MenuSet());

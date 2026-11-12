@@ -1,4 +1,4 @@
-import { registerClick } from "./util.js";
+import { registerClick } from "../core/util.js";
 
 /**
  * @callback OnClickCallback

@@ -1,9 +1,9 @@
-import { AttributeSet } from './attributes.js';
-import { EntityType } from './entities.js';
-import { currentPlayer } from './player.js';
-import { DEFAULT_BIRD_ATTRIBUTES } from './settings.js';
-import { spriteAtlas } from "./sprites.js";
-import { isWellOutsideWorldBoundary, scaleTileSizeHeight } from "./util.js";
+import { AttributeSet } from '../player/attributes.js';
+import { EntityType } from './hud.js';
+import { currentPlayer } from '../player/player.js';
+import { DEFAULT_BIRD_ATTRIBUTES } from '../settings.js';
+import { spriteAtlas } from "../core/sprites.js";
+import { isWellOutsideWorldBoundary, scaleTileSizeHeight } from "../core/util.js";
 
 export class BulletFactory {
 

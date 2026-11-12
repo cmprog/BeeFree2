@@ -1,4 +1,4 @@
-import { logError } from "./logging.js";
+import { logError } from "../core/logging.js";
 import { StandardLevelStatistics } from "./statistics.js";
 
 export class PlayerLevel {

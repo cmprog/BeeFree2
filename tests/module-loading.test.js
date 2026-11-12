@@ -23,7 +23,10 @@ const SKIP = new Set(['game.js']);
 const srcDir = new URL('../src/', import.meta.url);
 const envUrl = new URL('./support/browser-env.js', import.meta.url).href;
 
-const modules = fs.readdirSync(srcDir).filter(name => name.endsWith('.js') && !SKIP.has(name));
+// Every .js file under src/, as paths relative to it (e.g. 'birds/bird.js').
+const modules = fs.readdirSync(srcDir, { recursive: true })
+    .map(name => String(name).replaceAll('\\', '/'))
+    .filter(name => name.endsWith('.js') && !SKIP.has(name));
 
 /**
  * Imports one module in a fresh process, then checks what importing it did.

@@ -1,5 +1,5 @@
-import { currentPlayer } from "./player.js";
-import { currentLevel } from "./levels.js";
+import { currentPlayer } from "../player/player.js";
+import { currentLevel } from "../levels/levels.js";
 
 export class MovementBehavior {
     update(obj) {

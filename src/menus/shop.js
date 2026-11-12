@@ -1,8 +1,8 @@
-import { appendChildHtml, queryElement } from './html.js';
+import { appendChildHtml, queryElement } from '../core/html.js';
 import { Menu } from './menu.js'
-import { currentPlayer } from './player.js';
-import { SHOP_ITEMS, ShopItemCategory, ShopItemDescriptor } from './shop-items.js';
-import { registerClick, Util } from './util.js';
+import { currentPlayer } from '../player/player.js';
+import { SHOP_ITEMS, ShopItemCategory, ShopItemDescriptor } from '../player/shop-items.js';
+import { registerClick, Util } from '../core/util.js';
 
 class ShopItem {
     constructor(shopMenu, key, data) {

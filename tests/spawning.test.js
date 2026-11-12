@@ -3,9 +3,9 @@ import './setup.js';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
-import { BirdTemplate } from '../src/birds.js';
-import { FormationCreationOptions, FormationDefinition } from '../src/spawning.js';
-import { LevelDefinition } from '../src/level-definition.js';
+import { BirdTemplate } from '../src/birds/bird.js';
+import { FormationCreationOptions, FormationDefinition } from '../src/levels/spawning.js';
+import { LevelDefinition } from '../src/levels/level-definition.js';
 
 const fred = new BirdTemplate('Fred', '');
 const bill = new BirdTemplate('Bill', '');

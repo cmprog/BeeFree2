@@ -1,6 +1,6 @@
-import { currentLevel } from "./levels.js";
-import { spriteAtlas } from "./sprites.js";
-import { getWorldSize, isWellOutsideWorldBoundary } from "./util.js";
+import { currentLevel } from "../levels/levels.js";
+import { spriteAtlas } from "../core/sprites.js";
+import { getWorldSize, isWellOutsideWorldBoundary } from "../core/util.js";
 
 export class CloudGenerator extends EngineObject {
 

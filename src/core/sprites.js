@@ -1,4 +1,4 @@
-import { HATS, HAT_ATLAS_TILE_SIZE, getHatAtlasCell } from "./hats.js";
+import { HATS, HAT_ATLAS_TILE_SIZE, getHatAtlasCell } from "../hats/hats.js";
 
 export class BorderInfo {
 

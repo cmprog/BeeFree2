@@ -1,7 +1,7 @@
-import { forEachAchievement } from './achievements.js';
-import { queryElement } from './html.js';
+import { forEachAchievement } from '../player/achievements.js';
+import { queryElement } from '../core/html.js';
 import { Menu } from './menu.js'
-import { currentPlayer } from './player.js';
+import { currentPlayer } from '../player/player.js';
 
 class AchievementListItem {
     constructor(achievement) {

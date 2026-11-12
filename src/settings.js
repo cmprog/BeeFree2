@@ -1,4 +1,4 @@
-import { AttributeSet, LevelAttributeSet } from "./attributes.js";
+import { AttributeSet, LevelAttributeSet } from "./player/attributes.js";
 
 class GeneralGameSettings {
     constructor() {
@@ -31,7 +31,7 @@ export const PERFECT_LEVEL_BONUS = 0.3;
 export const PRESTIGE_BONUS_RATE = 1 / 200;
 
 /**
- * Honeycomb prices for each hat tier in the wardrobe. See HatTier in hats.js.
+ * Honeycomb prices for each hat tier in the wardrobe. See HatTier in hats/hats.js.
  */
 export const HAT_PRICE_BASIC = 250;
 export const HAT_PRICE_FANCY = 1000;

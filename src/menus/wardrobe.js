@@ -1,8 +1,8 @@
-import { appendChildHtml, queryElement } from './html.js';
-import { HAT_ATLAS_COLUMNS, HAT_ATLAS_TILE_SIZE, HATS, HatTier, HatWearer, computeHatPlacement, getHat, getHatAtlasCell } from './hats.js';
+import { appendChildHtml, queryElement } from '../core/html.js';
+import { HAT_ATLAS_COLUMNS, HAT_ATLAS_TILE_SIZE, HATS, HatTier, HatWearer, computeHatPlacement, getHat, getHatAtlasCell } from '../hats/hats.js';
 import { Menu } from './menu.js';
-import { currentPlayer } from './player.js';
-import { registerClick, Util } from './util.js';
+import { currentPlayer } from '../player/player.js';
+import { registerClick, Util } from '../core/util.js';
 
 // These match how the bee is drawn in game (spriteAtlas.bee and the Bee entity size),
 // so the preview shows the hat exactly as it will look while playing.
@@ -93,7 +93,7 @@ export class WardrobeMenu extends Menu {
 
     /**
      * @param {HTMLElement} listEl
-     * @param {import('./hats.js').Hat | null} hat Null for the "no hat" tile.
+     * @param {import('../hats/hats.js').Hat | null} hat Null for the "no hat" tile.
      */
     createHatTile(listEl, hat) {
 

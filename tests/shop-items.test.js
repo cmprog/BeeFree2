@@ -3,8 +3,8 @@ import './setup.js';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
-import { Player } from '../src/player.js';
-import { SHOP_ITEMS } from '../src/shop-items.js';
+import { Player } from '../src/player/player.js';
+import { SHOP_ITEMS } from '../src/player/shop-items.js';
 
 const ITEMS = Object.entries(SHOP_ITEMS);
 

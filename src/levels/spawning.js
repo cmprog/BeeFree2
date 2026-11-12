@@ -1,6 +1,6 @@
-import { BirdTemplate } from "./birds.js";
+import { BirdTemplate } from "../birds/bird.js";
 import { currentLevel } from "./levels.js";
-import { logDebug } from "./logging.js";
+import { logDebug } from "../core/logging.js";
 
 export const SPAWN_REGIONS = {
 

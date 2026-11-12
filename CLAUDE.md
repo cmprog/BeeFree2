@@ -45,7 +45,7 @@ revamped because the author's daughter plays it. Deployed to GitHub Pages from t
   Each test file runs in its own process.
 - `tests/module-loading.test.js` loads every `src/` module on its own in a fresh process. If it fails,
   an import cycle is making a class load before the class it extends. Break the cycle (for example
-  with a small module that has no imports, like `menu-registry.js`) rather than relying on load order.
+  with a small module that has no imports, like `menus/registry.js`) rather than relying on load order.
 - Tests cover game logic, not visuals: shop math, attribute derivation, saves, prestige, hats,
   statistics, spawning. Drawing, menus and game feel are still verified by playing in the browser.
 - **Agents:** when you change or add game logic, add or update tests for it, using the same
@@ -69,47 +69,61 @@ revamped because the author's daughter plays it. Deployed to GitHub Pages from t
     caught by the type check.
   - Play through, including on a phone.
   - The package's `littlejs.d.ts` declares an importable module, not globals, so it isn't used here.
-- `src/game.js` is the entry point (`engineInit`, image list, init order).
-- Gameplay entities are on the canvas (`bee.js`, `birds.js`, `owl.js` = Sammy, `bullet.js`,
-  `honeycomb.js`, `entities.js` for HUD pieces). Bird behavior is split into templates
-  (the `BirdTemplate` builder in `birds.js`; every bird type is defined in `bird-templates.js`) with movement behaviors (`movement.js`) and shooting behaviors (`shooting.js`).
+- `src/` is organized by feature. Paths below are relative to `src/`:
+  - `game.js`: the entry point (`engineInit`, image list, init order). `index.html` loads it, so it
+    stays at the top.
+  - `settings.js`: balance constants, default attribute sets, dev flags.
+  - `core/`: shared helpers with no game rules: `util.js`, `html.js`, `logging.js`, `sprites.js`
+    (the sprite atlas), `sounds.js`, `layers.js`.
+  - `player/`: the save and progression: `player.js`, `player-level.js`, `statistics.js`,
+    `attributes.js`, `achievements.js`, `shop-items.js`.
+  - `birds/`: `bird.js` (`Bird` and the `BirdTemplate` builder), `templates.js` (every bird type),
+    `movement.js` and `shooting.js` (behaviors, also used by the bee).
+  - `levels/`: the level runtime, level list, formations and spawning (see below).
+  - `hats/`: `hats.js`, `adjustments.js` (generated placement tuning), `attachment.js`.
+  - `entities/`: everything else on the canvas: `bee.js`, `sammy.js`, `bullet.js`, `honeycomb.js`,
+    `cloud.js`, and `hud.js` (`ProgressBar`, `Score`, `LevelScoreTracker`, `EntityType`).
+  - `menus/`: one file per menu, plus `menu.js` (base class), `menus.js` (`initMenus`),
+    `registry.js` (`MENUS`) and `button.js`. `menus/dev/` holds localhost-only tools.
+  Put a new file in the folder of the feature it belongs to. Don't add `index.js` files that re-export
+  a folder: they make import cycles easy to create. Import the exact file instead.
 - Levels:
-  - `level-list.js` holds `LEVELS`, the scripted levels, written with the fluent `LevelDefinition`
-    builder (`level-definition.js`) and the reusable formations in `formations.js`. Spawn plumbing
-    (`FormationDefinition`, `FormationCreationOptions`, spawn regions) is in `spawning.js`.
-  - `levels.js` is the level runtime: `Level`, `StandardLevel` (scripted), `TimeTrialLevel`
+  - `levels/level-list.js` holds `LEVELS`, the scripted levels, written with the fluent `LevelDefinition`
+    builder (`levels/level-definition.js`) and the reusable formations in `levels/formations.js`. Spawn plumbing
+    (`FormationDefinition`, `FormationCreationOptions`, spawn regions) is in `levels/spawning.js`.
+  - `levels/levels.js` is the level runtime: `Level`, `StandardLevel` (scripted), `TimeTrialLevel`
     (endless, seeded by the date), and `currentLevel`. An exported `let` can only be reassigned by
     its own module, so anything that sets `currentLevel` (`startStandardLevel`, `startTimeTrial`)
-    must live in `levels.js`.
+    must live in `levels/levels.js`.
   - Don't move classes that other modules extend (such as `Level`) into a file that's part of an
     import cycle with their subclasses. ES modules evaluate cycles in load order, so a subclass can
     end up evaluated before its base class exists.
-- Menus are HTML/CSS overlays (`index.html` markup, `src/menu-*.js` behavior, `styles/menus-*.css`).
-  Each menu extends `Menu` in `menu.js` and is created in `menus.js` (`MenuSet`, `initMenus`).
-  To open another menu, import `MENUS` from `menu-registry.js`, never from `menus.js`: importing
-  `menus.js` from a menu creates an import cycle that can load a menu before `Menu` exists.
-- The shop is data-driven. `shop-items.js` defines `SHOP_ITEMS`: each `ShopItemDescriptor` has
-  cost/value growth params and an `apply(player, value)` callback. `menu-shop.js` is only the UI.
+- Menus are HTML/CSS overlays (`index.html` markup, `src/menus/*.js` behavior, `styles/menus-*.css`).
+  Each menu extends `Menu` in `menus/menu.js` and is created in `menus/menus.js` (`MenuSet`, `initMenus`).
+  To open another menu, import `MENUS` from `menus/registry.js`, never from `menus/menus.js`: importing
+  `menus/menus.js` from a menu creates an import cycle that can load a menu before `Menu` exists.
+- The shop is data-driven. `player/shop-items.js` defines `SHOP_ITEMS`: each `ShopItemDescriptor` has
+  cost/value growth params and an `apply(player, value)` callback. `menus/shop.js` is only the UI.
   `isForever` items (cosmetics) survive prestige. `SHOP_ITEMS` keys are persisted in saves, so don't
-  rename them. `shop-items.js` must not import `player.js`, because that would create an import cycle.
+  rename them. `player/shop-items.js` must not import `player/player.js`, because that would create an import cycle.
 - **Player attributes are derived, not stored.** `Player.rebuildAttributes()` resets the bee, Sammy and
   level attribute sets to the defaults in `settings.js`, then applies every shop item at its purchased
   level. Only the purchase levels (and the "highest ever" tracking) are saved. Call `rebuildAttributes()`
   after anything that changes purchases. Never set attributes directly from shop code.
-- **Hats** (cosmetic) are defined in `hats.js` (`HATS`, ordered to match `img/hats.png`, which is laid
+- **Hats** (cosmetic) are defined in `hats/hats.js` (`HATS`, ordered to match `img/hats.png`, which is laid
   out alphabetically by the file names in `img/hats/`). Hat ids are persisted in saves, so never rename
-  them. Placement tuning lives in `hat-adjustments.js`. That file is generated by the dev-only Hat
+  them. Placement tuning lives in `hats/adjustments.js`. That file is generated by the dev-only Hat
   Tuning view (Settings > Debug on localhost), so don't hand-edit it. Hats are drawn by
-  `HatAttachment` (`hat-attachment.js`), a child object of the wearer (the bee, birds or Sammy).
-  The wardrobe preview (`menu-wardrobe.js`) uses the same `computeHatPlacement` as the game.
+  `HatAttachment` (`hats/attachment.js`), a child object of the wearer (the bee, birds or Sammy).
+  The wardrobe preview (`menus/wardrobe.js`) uses the same `computeHatPlacement` as the game.
   The player saves owned hats in `ownedHats` and the worn hat in `equippedHat`. Prestige doesn't
   reset them.
 - Achievements extend the LittleJS `Medal` class (for the unlock pop-up) but are persisted in the
   player save, which is the only record: `Achievement.unlocked` is a getter that reads
   `currentPlayer.achievements`, so nothing needs reloading when the player is replaced.
   `Achievement.isLocal()` returns false so the engine's `medalsInit` never loads or saves their
-  state. Use `forEachAchievement` from `achievements.js`, not `medalsForEach`.
-- `src/player.js` holds `currentPlayer` and all persistent state, saved as JSON in `localStorage`
+  state. Use `forEachAchievement` from `player/achievements.js`, not `medalsForEach`.
+- `src/player/player.js` holds `currentPlayer` and all persistent state, saved as JSON in `localStorage`
   (`save` key, previous save copied to `save_bk`). `currentPlayer` is created and loaded by
   `initPlayer()` at the top of `game.js`, so it's `undefined` while modules are still loading.
 - Balance constants and default attribute sets live in `src/settings.js`.
@@ -121,7 +135,7 @@ revamped because the author's daughter plays it. Deployed to GitHub Pages from t
   UPPER_SNAKE_CASE constants and frozen enum-like objects. The author's global C# naming rules
   (`l`/`m` prefixes, `this.` qualification) do **not** apply to this repo.
 - Use JSDoc for types (`@type`, `@param`, `@returns`). The codebase relies on it for editor IntelliSense.
-- In menus, look up elements with `queryElement` / `queryAllElements` from `html.js` rather than
+- In menus, look up elements with `queryElement` / `queryAllElements` from `core/html.js` rather than
   `querySelector`, so the result is typed as an HTML element (pass e.g. `HTMLInputElement` as the
   third argument when you need `.value`). Plain objects can't use objects as keys; use a `Map`.
 - Keep the existing style: 4-space indentation, semicolons, single quotes or double quotes as in
@@ -152,7 +166,7 @@ revamped because the author's daughter plays it. Deployed to GitHub Pages from t
 
 - **Save compatibility:** Normally saves must keep loading (`loadSaveObj` should tolerate old/missing
   fields). Breaking a save is acceptable only when the author explicitly OKs it for a given change.
-  Save format version 3 (`SAVE_VERSION` in `player.js`) renamed misspelled fields without converting
+  Save format version 3 (`SAVE_VERSION` in `player/player.js`) renamed misspelled fields without converting
   older saves, with the author's OK. Don't add conversion code for versions before 3.
 - Level-end bonuses (no damage, no survivors, perfect) are meant to pay out honeycomb.
 - Shop upgrades of every category, including Sammy upgrades, are meant to affect gameplay.

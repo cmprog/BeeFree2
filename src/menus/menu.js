@@ -1,6 +1,6 @@
-import { queryElement } from "./html.js";
-import { MENUS } from "./menu-registry.js";
-import { registerClick } from "./util.js";
+import { queryElement } from "../core/html.js";
+import { MENUS } from "./registry.js";
+import { registerClick } from "../core/util.js";
 
 const CLASS_MENU_CLOSED = 'menu-closed'
 

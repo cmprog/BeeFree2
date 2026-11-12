@@ -1,20 +1,20 @@
-import { Bee } from "./bee.js";
-import { BIRD_TEMPLATES } from "./bird-templates.js";
-import { BirdTemplate } from "./birds.js";
-import { LevelScoreTracker, ProgressBar } from "./entities.js";
-import { RENDER_LAYERS } from "./layers.js";
-import { logDebug, logInfo } from "./logging.js";
+import { Bee } from "../entities/bee.js";
+import { BIRD_TEMPLATES } from "../birds/templates.js";
+import { BirdTemplate } from "../birds/bird.js";
+import { LevelScoreTracker, ProgressBar } from "../entities/hud.js";
+import { RENDER_LAYERS } from "../core/layers.js";
+import { logDebug, logInfo } from "../core/logging.js";
 import { LevelDefinition } from "./level-definition.js";
 import { LEVELS } from "./level-list.js";
-import { LevelSummaryMenu } from "./menu-level-summary.js";
-import { MENUS } from "./menu-registry.js";
-import { Owl } from "./owl.js";
-import { currentPlayer } from "./player.js";
-import { pickRandomHat } from "./hats.js";
-import { BASE_SAMMY_CHANCE, SAMMY_PARTY_SAMMY_HAT_CHANCE, STANDARD_LEVEL_EARNING_DECAY_BASE, NO_DAMAGE_TOKEN_LEVEL_BONUS, NO_SURVIVORS_LEVEL_BONUS, PERFECT_LEVEL_BONUS, STANDARD_LEVEL_FAILURE_EARN_RATE, TIME_TRIAL_LEVEL_EARNING_DECAY_BASE, TIME_TRIAL_PHASE_DURATION } from "./settings.js";
+import { LevelSummaryMenu } from "../menus/level-summary.js";
+import { MENUS } from "../menus/registry.js";
+import { Owl } from "../entities/sammy.js";
+import { currentPlayer } from "../player/player.js";
+import { pickRandomHat } from "../hats/hats.js";
+import { BASE_SAMMY_CHANCE, SAMMY_PARTY_SAMMY_HAT_CHANCE, STANDARD_LEVEL_EARNING_DECAY_BASE, NO_DAMAGE_TOKEN_LEVEL_BONUS, NO_SURVIVORS_LEVEL_BONUS, PERFECT_LEVEL_BONUS, STANDARD_LEVEL_FAILURE_EARN_RATE, TIME_TRIAL_LEVEL_EARNING_DECAY_BASE, TIME_TRIAL_PHASE_DURATION } from "../settings.js";
 import { SPAWN_REGIONS } from "./spawning.js";
-import { spriteAtlas } from "./sprites.js";
-import { FONTS, getWorldSize } from "./util.js";
+import { spriteAtlas } from "../core/sprites.js";
+import { FONTS, getWorldSize } from "../core/util.js";
 
 class Level extends EngineObject {
 

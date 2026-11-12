@@ -1,17 +1,17 @@
 'use strict';
 
-import { initSpriteAtlas, spriteAtlas } from "./sprites.js";
-import { initMenus } from "./menus.js";
-import { MENUS } from "./menu-registry.js";
-import { CloudGenerator } from "./cloud.js";
-import { initLevels } from "./level-list.js";
-import { currentLevel } from "./levels.js";
-import { initLogging, logDebug, logError, logInfo } from "./logging.js";
-import { initAchievements, tryUnlockAllAchievements } from "./achievements.js";
-import { initBirdTemplates } from "./bird-templates.js";
+import { initSpriteAtlas, spriteAtlas } from "./core/sprites.js";
+import { initMenus } from "./menus/menus.js";
+import { MENUS } from "./menus/registry.js";
+import { CloudGenerator } from "./entities/cloud.js";
+import { initLevels } from "./levels/level-list.js";
+import { currentLevel } from "./levels/levels.js";
+import { initLogging, logDebug, logError, logInfo } from "./core/logging.js";
+import { initAchievements, tryUnlockAllAchievements } from "./player/achievements.js";
+import { initBirdTemplates } from "./birds/templates.js";
 import { GAME_SETTINGS } from "./settings.js";
-import { initPlayer } from "./player.js";
-import { initHatTuning } from "./hats.js";
+import { initPlayer } from "./player/player.js";
+import { initHatTuning } from "./hats/hats.js";
 
 ///////////////////////////////////////////////////////////////////////////////
 // Startup

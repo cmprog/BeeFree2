@@ -24,7 +24,7 @@ globalThis.localStorage = {
 // LittleJS checks window.ontouchstart and creates its audio context when it loads.
 globalThis.window = globalThis;
 
-// Sounds made when a module loads (sounds.js) render their samples into a buffer.
+// Sounds made when a module loads (core/sounds.js) render their samples into a buffer.
 globalThis.AudioContext = class {
     constructor() {
         this.destination = {};

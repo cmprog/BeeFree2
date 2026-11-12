@@ -1,4 +1,4 @@
-import { currentLevel } from "./levels.js";
+import { currentLevel } from "../levels/levels.js";
 
 export class ShootingBehavior {
 

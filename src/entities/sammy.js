@@ -1,8 +1,8 @@
-import { CompositeEntityPart, EntityType } from "./entities.js";
-import { logDebug, logWarning } from "./logging.js";
-import { spriteAtlas } from "./sprites.js";
-import { attachHat } from "./hat-attachment.js";
-import { HatWearer } from "./hats.js";
+import { CompositeEntityPart, EntityType } from "./hud.js";
+import { logDebug, logWarning } from "../core/logging.js";
+import { spriteAtlas } from "../core/sprites.js";
+import { attachHat } from "../hats/attachment.js";
+import { HatWearer } from "../hats/hats.js";
 
 const BASE_OWL_SIZE = 1.5
 

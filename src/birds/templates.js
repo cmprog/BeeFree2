@@ -1,12 +1,12 @@
-import { BirdTemplate } from "./birds.js";
-import { BirdBulletFactory } from "./bullet.js";
+import { BirdTemplate } from "./bird.js";
+import { BirdBulletFactory } from "../entities/bullet.js";
 import { BeeAttractiveMovementBehavior, FixedVelocityMovement, WaveyMovement } from "./movement.js";
-import { DEFAULT_BIRD_ATTRIBUTES } from "./settings.js";
+import { DEFAULT_BIRD_ATTRIBUTES } from "../settings.js";
 import { MultiBulletShooting, SingleBulletShooting } from "./shooting.js";
-import { SPAWN_REGIONS } from "./spawning.js";
-import { rgb255 } from "./util.js";
+import { SPAWN_REGIONS } from "../levels/spawning.js";
+import { rgb255 } from "../core/util.js";
 
-// Every kind of bird in the game, built with the BirdTemplate fluent builder (birds.js).
+// Every kind of bird in the game, built with the BirdTemplate fluent builder (birds/bird.js).
 // Template keys are used by the levels and the time trial; the time trial picks from all of them.
 export class BirdTemplateSet {
 

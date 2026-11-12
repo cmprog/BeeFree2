@@ -1,8 +1,8 @@
-import { queryElement } from "./html.js";
+import { queryElement } from "../core/html.js";
 import { Menu } from "./menu.js";
-import { MENUS } from "./menu-registry.js";
-import { currentPlayer } from "./player.js";
-import { registerClick } from "./util.js";
+import { MENUS } from "./registry.js";
+import { currentPlayer } from "../player/player.js";
+import { registerClick } from "../core/util.js";
 
 export class PrestigeMenu extends Menu {
 

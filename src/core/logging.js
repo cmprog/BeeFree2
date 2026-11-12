@@ -1,4 +1,4 @@
-import { GAME_SETTINGS } from "./settings.js";
+import { GAME_SETTINGS } from "../settings.js";
 
 // Just defining something to use like an enum
 const LogLevel = Object.freeze({

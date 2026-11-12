@@ -1,5 +1,5 @@
 import { computeHatPlacement, getHat } from './hats.js';
-import { spriteAtlas } from './sprites.js';
+import { spriteAtlas } from '../core/sprites.js';
 
 /**
  * A hat worn by an entity. It is a child of the wearer so it follows the wearer's

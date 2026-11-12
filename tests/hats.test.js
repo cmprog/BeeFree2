@@ -7,9 +7,9 @@ import fs from 'node:fs';
 import {
     HATS, HatTier, HatWearer, HAT_ATLAS_COLUMNS, HAT_ATLAS_TILE_SIZE, computeHatPlacement, getHat,
     getHatAtlasCell, getHatWearerAnchor, serializeHatAdjustmentsFile,
-} from '../src/hats.js';
-import { HAT_ADJUSTMENTS } from '../src/hat-adjustments.js';
-import { computeHealthBarOffset } from '../src/hat-attachment.js';
+} from '../src/hats/hats.js';
+import { HAT_ADJUSTMENTS } from '../src/hats/adjustments.js';
+import { computeHealthBarOffset } from '../src/hats/attachment.js';
 
 const repoFile = (path) => new URL(`../${path}`, import.meta.url);
 
@@ -48,16 +48,16 @@ test('every hat fits inside the img/hats.png atlas', () => {
     }
 });
 
-test('every hat has an entry in hat-adjustments.js', () => {
+test('every hat has an entry in hats/adjustments.js', () => {
     for (const hat of HATS) {
         assert.ok(hat.id in HAT_ADJUSTMENTS, `${hat.id} is missing; regenerate the file from the hat tuning view`);
     }
 });
 
-test('hat-adjustments.js matches what the tuning view generates', () => {
+test('hats/adjustments.js matches what the tuning view generates', () => {
     // If this fails, the file was edited by hand or the generator changed. Regenerate the file
     // with "Copy adjustments file" in the hat tuning view.
-    const onDisk = fs.readFileSync(repoFile('src/hat-adjustments.js'), 'utf8').replace(/\r\n/g, '\n');
+    const onDisk = fs.readFileSync(repoFile('src/hats/adjustments.js'), 'utf8').replace(/\r\n/g, '\n');
     assert.equal(serializeHatAdjustmentsFile().replace(/\r\n/g, '\n'), onDisk);
 });
 

@@ -1,4 +1,4 @@
-import { BirdTemplate } from "./birds.js";
+import { BirdTemplate } from "../birds/bird.js";
 import { startStandardLevel } from "./levels.js";
 import { FormationCreationOptions, FormationDefinition, SpawnDefinition, SpawnerCollection } from "./spawning.js";
 

@@ -3,8 +3,8 @@ import './setup.js';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
-import { BIRD_TEMPLATES, initBirdTemplates } from '../src/bird-templates.js';
-import { BirdTemplate } from '../src/birds.js';
+import { BIRD_TEMPLATES, initBirdTemplates } from '../src/birds/templates.js';
+import { BirdTemplate } from '../src/birds/bird.js';
 
 initBirdTemplates();
 

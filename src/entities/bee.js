@@ -1,14 +1,14 @@
-import { EntityType, ProgressBar, Score } from './entities.js';
-import { MultiBulletShooting, SingleBulletShooting } from "./shooting.js";
-import { spriteAtlas } from "./sprites.js";
-import { currentLevel } from "./levels.js";
+import { EntityType, ProgressBar, Score } from './hud.js';
+import { MultiBulletShooting, SingleBulletShooting } from "../birds/shooting.js";
+import { spriteAtlas } from "../core/sprites.js";
+import { currentLevel } from "../levels/levels.js";
 import { BeeBulletFactory } from './bullet.js';
-import { logDebug } from './logging.js';
-import { AttributeSet } from './attributes.js';
-import { currentPlayer } from './player.js';
-import { GAME_SETTINGS } from './settings.js';
-import { attachHat, computeHealthBarOffset } from './hat-attachment.js';
-import { HatWearer } from './hats.js';
+import { logDebug } from '../core/logging.js';
+import { AttributeSet } from '../player/attributes.js';
+import { currentPlayer } from '../player/player.js';
+import { GAME_SETTINGS } from '../settings.js';
+import { attachHat, computeHealthBarOffset } from '../hats/attachment.js';
+import { HatWearer } from '../hats/hats.js';
 
 // Where the health bar sits above the bee, unless a hat pushes it higher.
 const HEALTH_BAR_OFFSET_Y = 1;
