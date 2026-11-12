@@ -21,6 +21,9 @@ What's next for BeeFree. Finished work is recorded in [changelog/](changelog/), 
 
 ## Ideas
 
+- Birds that fly right (Thing 3 and 4) still face left. Mirroring them would also need the hat
+  placement mirrored.
+- More per-type bird features beyond color: brows, crests, size.
 - Reflection chance attribute.
 - Double shot chance attribute. The statistics screen already lists a "double shot chance", so
   this may be partly built.

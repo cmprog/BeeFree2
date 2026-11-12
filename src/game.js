@@ -1,6 +1,6 @@
 'use strict';
 
-import { initSpriteAtlas, spriteAtlas } from "./core/sprites.js";
+import { IMAGE_SOURCES, initSpriteAtlas, spriteAtlas } from "./core/sprites.js";
 import { initMenus } from "./menus/menus.js";
 import { MENUS } from "./menus/registry.js";
 import { CloudGenerator } from "./entities/cloud.js";
@@ -102,18 +102,4 @@ function gameRenderPost()
 
 ///////////////////////////////////////////////////////////////////////////////
 // Startup LittleJS Engine
-const imagesSources = [
-    'img/bee.png',
-    'img/clouds.png',
-    'img/bird.png',
-    'img/misc.png',
-    'img/owl.png',
-    'img/honeycomb.png',
-    'img/gem_red.png',
-    'img/gem_blue.png',
-    'img/gem_gold.png',
-    'img/borders/Ram Border All.png',
-    'img/hats.png',
-];
-
-engineInit(gameInit, gameUpdate, gameUpdatePost, gameRender, gameRenderPost, imagesSources);
+engineInit(gameInit, gameUpdate, gameUpdatePost, gameRender, gameRenderPost, [...IMAGE_SOURCES]);

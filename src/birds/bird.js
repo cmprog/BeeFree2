@@ -2,7 +2,6 @@ import { logDebug } from "../core/logging.js";
 import { EntityType, ProgressBar } from '../entities/hud.js';
 import { MovementBehavior, StaticMovement } from "./movement.js";
 import { PassiveShooting, ShootingBehavior } from "./shooting.js";
-import { spriteAtlas } from "../core/sprites.js";
 import { Honeycomb } from "../entities/honeycomb.js";
 import { currentLevel } from "../levels/levels.js";
 import { DEFAULT_BIRD_ATTRIBUTES, SAMMY_PARTY_BIRD_HAT_CHANCE } from "../settings.js";
@@ -11,7 +10,7 @@ import { HatWearer, pickRandomHat } from "../hats/hats.js";
 import { isWellOutsideWorldBoundary } from "../core/util.js";
 import { AttributeSet } from "../player/attributes.js";
 import { currentPlayer } from "../player/player.js";
-import { BirdStyle } from "./art.js";
+import { BIRD_FRAME_SIZE, BirdAnimation, BirdStyle, getBirdSprites } from "./art.js";
 
 /**
  * @callback ShootingBehaviorFactory
@@ -139,62 +138,8 @@ export class BirdTemplate {
     }
 }
 
-// Where the health bar sits above the bird, unless a hat pushes it higher.
-const HEALTH_BAR_OFFSET_Y = 1;
-
-const BASE_BIRD_SIZE = 1.5
-
-function normalizeBirdPartSize(sourceSprite) {
-    const targetHeight = BASE_BIRD_SIZE * (sourceSprite.size.y / spriteAtlas.bird.body.size.y);    
-    const sourceAspectRatio = sourceSprite.size.x / sourceSprite.size.y;
-    const targetWidth = sourceAspectRatio * targetHeight;
-    const targetSize = vec2(targetWidth, targetHeight);
-    return targetSize;
-}
-
-class BirdPart extends EngineObject {
-    constructor(pos, bird, localPos, tileInfo) {
-        super(pos, normalizeBirdPartSize(tileInfo), tileInfo);
-        bird.addChild(this, localPos.scale(BASE_BIRD_SIZE))
-    }
-}
-
-class BirdFace extends BirdPart {
-    constructor(pos, bird) {
-        super(pos, bird, vec2(-0.90, 0), spriteAtlas.bird.face);   
-        this.renderOrder = 30;     
-    }
-}
-
-class BirdHead extends BirdPart {
-    constructor(pos, bird, color) {
-        super(pos, bird, vec2(-0.6, 0.0), spriteAtlas.bird.head);   
-        this.renderOrder = 20;    
-        this.color = color;
-    }
-}
-
-class BirdBody extends BirdPart {
-    constructor(pos, bird, color) {
-        super(pos, bird, vec2(0, 0), spriteAtlas.bird.body);   
-        this.renderOrder = 10;
-        this.color = color;
-    }
-}
-
-class BirdEyelids extends BirdPart {
-    constructor(pos, bird) {
-        super(pos, bird, vec2(-0.85, 0.15), spriteAtlas.bird.eyelids);  
-        this.renderOrder = 40;    
-    }
-}
-
-class BirdLegs extends BirdPart {
-    constructor(pos, bird) {
-        super(pos, bird, vec2(-0.1, -0.60), spriteAtlas.bird.legs); 
-        this.renderOrder = 0;     
-    }
-}
+// Where the health bar sits above the bird (clear of the raised wings), unless a hat pushes it higher.
+const HEALTH_BAR_OFFSET_Y = 1.5;
 
 export class Bird extends EngineObject
 {
@@ -214,11 +159,13 @@ export class Bird extends EngineObject
         this.healthBar = new ProgressBar();
         this.addChild(this.healthBar, vec2(0, HEALTH_BAR_OFFSET_Y));
 
-        this.face = new BirdFace(pos, this);
-        this.eyelids = new BirdEyelids(pos, this);
-        this.legs = new BirdLegs(pos, this);
-        this.body = new BirdBody(pos, this, template.style.body);
-        this.head = new BirdHead(pos, this, template.style.head);
+        // Drawn by render() from the sprite sheet for this bird's style.
+        this.sprites = getBirdSprites(template.style);
+        this.animation = new BirdAnimation(time);
+        this.renderOrder = 20;
+
+        /** Scales the drawing, for the Sammy party bounce. */
+        this.drawScale = 1;
 
         this.name = template.name;
 
@@ -243,7 +190,7 @@ export class Bird extends EngineObject
         if (this.hat) {
             this.hat.setHat(hatId);
         } else {
-            // Just above the eyelids, the top-most bird part.
+            // Above the bird.
             this.hat = attachHat(this, HatWearer.BIRD, hatId, 50);
         }
     }
@@ -256,12 +203,14 @@ export class Bird extends EngineObject
 
         if (currentLevel && currentLevel.isSammyPartyTime()) {
             this.angle = (-PI / 4) + oscillate(1, PI / 2, time - this.spawnTime);
+            this.drawScale = 0.8 + oscillate(1, 0.4, time - this.spawnTime);
             for (const child of this.children) {
-                child.drawSize = child.size.scale(0.8 + oscillate(1, 0.4, time - this.spawnTime));
+                child.drawSize = child.size.scale(this.drawScale);
             }
             
         } else {
             this.angle = 0;
+            this.drawScale = 1;
             for (const child of this.children) {
                 child.drawSize = undefined;
             }
@@ -280,7 +229,9 @@ export class Bird extends EngineObject
     }
 
     render() {
-        // Disables the default rendering
+        const { flapFrame, eyesClosed } = this.animation.getFrame(time);
+        const size = vec2(BIRD_FRAME_SIZE.x, BIRD_FRAME_SIZE.y).scale(this.drawScale);
+        drawTile(this.pos, size, this.sprites.getTile(flapFrame, eyesClosed), WHITE, this.angle);
     }
 
     applyDamage(amount) {

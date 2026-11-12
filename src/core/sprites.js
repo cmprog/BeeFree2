@@ -53,9 +53,9 @@ export class BorderInfo {
 
 class BorderSetInfo {
     /**
-     * @param {number} textureIndex Index of the border image in game.js's image list.
+     * @param {TextureInfo} borderTexture The loaded border image.
      */
-    constructor(textureIndex) {
+    constructor(borderTexture) {
 
         const borderTemplateSize = 64;
         const columnCount = 10;
@@ -68,7 +68,7 @@ class BorderSetInfo {
                 (iRow * borderTemplateSize),
             );
 
-            const tileInfo = new TileInfo(tilePos, vec2(borderTemplateSize), textureInfos[textureIndex]);
+            const tileInfo = new TileInfo(tilePos, vec2(borderTemplateSize), borderTexture);
 
             return new BorderInfo(tileInfo, 
                 borderSizeScale || (1 / 3), 
@@ -166,50 +166,70 @@ class BorderSetInfo {
     }
 }
 
-// Texture indexes match the order of the images in game.js (imagesSources).
+/**
+ * The images the engine loads at startup, by name. game.js passes IMAGE_SOURCES to engineInit, and
+ * the atlas looks textures up by name, so the order doesn't matter.
+ */
+const IMAGES = Object.freeze({
+    BEE: 'img/bee.png',
+    CLOUDS: 'img/clouds.png',
+    AMMO: 'img/misc.png',
+    SAMMY: 'img/owl.png',
+    HONEYCOMB: 'img/honeycomb.png',
+    GEM_RED: 'img/gem_red.png',
+    GEM_BLUE: 'img/gem_blue.png',
+    GEM_GOLD: 'img/gem_gold.png',
+    BORDERS: 'img/borders/Ram Border All.png',
+    HATS: 'img/hats.png',
+});
+
+/** Image paths in load order, for engineInit. */
+export const IMAGE_SOURCES = Object.freeze(Object.values(IMAGES));
+
+/**
+ * The loaded texture for an image.
+ * @param {keyof IMAGES} name
+ * @returns {TextureInfo}
+ */
+function texture(name) {
+    return textureInfos[IMAGE_SOURCES.indexOf(IMAGES[name])];
+}
+
 class SpriteAtlas {
     constructor() {
         
-        this.bee = new TileInfo(vec2(0, 0), vec2(75, 59), textureInfos[0]);
+        this.bee = new TileInfo(vec2(0, 0), vec2(75, 59), texture('BEE'));
 
         this.clouds = [
-            new TileInfo(vec2(7, 12), vec2(62, 37), textureInfos[1]),
-            new TileInfo(vec2(8, 55), vec2(34, 23), textureInfos[1]),
-            new TileInfo(vec2(16, 86), vec2(41, 28), textureInfos[1]),
-            new TileInfo(vec2(81, 24), vec2(30, 20), textureInfos[1]),
-            new TileInfo(vec2(67, 55), vec2(50, 29), textureInfos[1]),
-            new TileInfo(vec2(72, 92), vec2(31, 24), textureInfos[1]),
+            new TileInfo(vec2(7, 12), vec2(62, 37), texture('CLOUDS')),
+            new TileInfo(vec2(8, 55), vec2(34, 23), texture('CLOUDS')),
+            new TileInfo(vec2(16, 86), vec2(41, 28), texture('CLOUDS')),
+            new TileInfo(vec2(81, 24), vec2(30, 20), texture('CLOUDS')),
+            new TileInfo(vec2(67, 55), vec2(50, 29), texture('CLOUDS')),
+            new TileInfo(vec2(72, 92), vec2(31, 24), texture('CLOUDS')),
         ];
 
-        this.bird = {
-            body: new TileInfo(vec2(2, 22), vec2(51, 40), textureInfos[2]),
-            head: new TileInfo(vec2(0, 0), vec2(18, 21), textureInfos[2]),
-            face: new TileInfo(vec2(23, 2), vec2(13, 13), textureInfos[2]),
-            eyelids: new TileInfo(vec2(24, 18), vec2(11, 4), textureInfos[2]),
-            legs: new TileInfo(vec2(39, 0), vec2(29, 19), textureInfos[2]),            
-        };
-
         this.ammo = {
-            bee: new TileInfo(vec2(0, 0), vec2(15, 12), textureInfos[3]),
-            bird: new TileInfo(vec2(17, 1), vec2(15, 10), textureInfos[3]),
+            bee: new TileInfo(vec2(0, 0), vec2(15, 12), texture('AMMO')),
+            bird: new TileInfo(vec2(17, 1), vec2(15, 10), texture('AMMO')),
         };
 
         this.owl = {
-            body: new TileInfo(vec2(0, 0), vec2(190, 200), textureInfos[4]),
-            frontWing: new TileInfo(vec2(189, 2), vec2(100, 110), textureInfos[4]),
-            backWing: new TileInfo(vec2(292, 11), vec2(85, 75), textureInfos[4]),
+            body: new TileInfo(vec2(0, 0), vec2(190, 200), texture('SAMMY')),
+            frontWing: new TileInfo(vec2(189, 2), vec2(100, 110), texture('SAMMY')),
+            backWing: new TileInfo(vec2(292, 11), vec2(85, 75), texture('SAMMY')),
         };
 
-        this.honeycomb = new TileInfo(vec2(0, 0), vec2(45, 39), textureInfos[5]);
+        this.honeycomb = new TileInfo(vec2(0, 0), vec2(45, 39), texture('HONEYCOMB'));
 
         this.gems = {
-            red: new TileInfo(vec2(0, 0), vec2(16), textureInfos[6]),
-            blue: new TileInfo(vec2(0, 0), vec2(16), textureInfos[7]),
-            gold: new TileInfo(vec2(0, 0), vec2(16), textureInfos[8]),
+            red: new TileInfo(vec2(0, 0), vec2(16), texture('GEM_RED')),
+            blue: new TileInfo(vec2(0, 0), vec2(16), texture('GEM_BLUE')),
+            gold: new TileInfo(vec2(0, 0), vec2(16), texture('GEM_GOLD')),
         };
 
         this.borders = {
-            flat: new BorderSetInfo(9),
+            flat: new BorderSetInfo(texture('BORDERS')),
         };
 
         /**
@@ -222,7 +242,7 @@ class SpriteAtlas {
             this.hats[hat.id] = new TileInfo(
                 vec2(column, row).scale(HAT_ATLAS_TILE_SIZE),
                 vec2(HAT_ATLAS_TILE_SIZE),
-                textureInfos[10]);
+                texture('HATS'));
         }
     }
 }

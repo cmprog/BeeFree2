@@ -149,22 +149,22 @@ function drawTail(ctx, style) {
 
 function drawLegs(ctx, style) {
     ctx.save();
-    for (const [hipX, footX] of [[-0.35, -0.55], [-0.05, -0.2]]) {
-        const footY = -1.0;
+    // Tucked up and trailing back under the body while flying, like the original art.
+    for (const [hipX, footX, footY] of [[-0.35, 0.05, -1.02], [-0.05, 0.38, -0.95]]) {
 
         // Leg: an outlined thick line.
         ctx.beginPath();
-        ctx.moveTo(hipX, -0.35);
+        ctx.moveTo(hipX, -0.4);
         ctx.lineTo(footX, footY);
-        ctx.lineWidth = 0.16;
+        ctx.lineWidth = 0.18;
         ctx.strokeStyle = OUTLINE_COLOR;
         ctx.stroke();
-        ctx.lineWidth = 0.08;
+        ctx.lineWidth = 0.1;
         ctx.strokeStyle = style.legs.toString();
         ctx.stroke();
 
-        // Three toes curling down and back.
-        for (const toeAngle of [-2.2, -1.75, -1.3]) {
+        // Three toes pointing back.
+        for (const toeAngle of [-0.55, -0.1, 0.35]) {
             ctx.beginPath();
             ctx.moveTo(footX, footY);
             ctx.lineTo(footX + Math.cos(toeAngle) * 0.2, footY + Math.sin(toeAngle) * 0.2);

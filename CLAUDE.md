@@ -70,11 +70,12 @@ revamped because the author's daughter plays it. Deployed to GitHub Pages from t
   - Play through, including on a phone.
   - The package's `littlejs.d.ts` declares an importable module, not globals, so it isn't used here.
 - `src/` is organized by feature. Paths below are relative to `src/`:
-  - `game.js`: the entry point (`engineInit`, image list, init order). `index.html` loads it, so it
+  - `game.js`: the entry point (`engineInit`, init order). `index.html` loads it, so it
     stays at the top.
   - `settings.js`: balance constants, default attribute sets, dev flags.
   - `core/`: shared helpers with no game rules: `util.js`, `html.js`, `logging.js`, `sprites.js`
-    (the sprite atlas), `sounds.js`, `layers.js`.
+    (the images to load, by name, and the sprite atlas), `sounds.js`, `layers.js`. To add an image,
+    add it to `IMAGES` in `sprites.js` and look its texture up by name.
   - `player/`: the save and progression: `player.js`, `player-level.js`, `statistics.js`,
     `attributes.js`, `achievements.js`, `shop-items.js`.
   - `birds/`: `bird.js` (`Bird` and the `BirdTemplate` builder), `templates.js` (every bird type),
@@ -124,8 +125,10 @@ revamped because the author's daughter plays it. Deployed to GitHub Pages from t
   required; the rest default to shades of it. `initBirdArt()` draws each distinct style once at
   startup into a sprite sheet (a canvas made into an engine texture): one row of flap frames with eyes
   open, one with eyes closed. `BirdAnimation` picks the frame for each bird. Settings > Debug >
-  Bird Preview (localhost) shows every type animated, large and at game size. The head is kept
-  where the old art had it so the BIRD hat anchor still fits.
+  Bird Preview (localhost) shows every type animated, large and at game size. A `Bird` draws its
+  current frame in `render()`. The head is kept where the old art had it so the BIRD hat anchor
+  still fits. The original bird image is kept for reference in `img/originals/bird.png`; the game
+  doesn't load it.
 - Achievements extend the LittleJS `Medal` class (for the unlock pop-up) but are persisted in the
   player save, which is the only record: `Achievement.unlocked` is a getter that reads
   `currentPlayer.achievements`, so nothing needs reloading when the player is replaced.
