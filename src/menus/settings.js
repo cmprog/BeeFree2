@@ -37,6 +37,11 @@ export class SettingsMenu extends Menu {
             MENUS.HAT_TUNING.open();
         });
 
+        registerClick('#settings-debug-bird-preview', () => {
+            this.close();
+            MENUS.BIRD_PREVIEW.open();
+        });
+
         this.beeDamageButton = queryElement(this.element, '#settings-debug-bee-damage');
         registerClick(this.beeDamageButton, this.toggleBeeDamage.bind(this));
         this.refreshBeeDamageButton();

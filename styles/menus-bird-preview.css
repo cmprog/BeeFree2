@@ -1,0 +1,23 @@
+@import url('./variables.css');
+@import url('./menus-common.css');
+
+/* Dev-only view of the bird art. */
+#menu-bird-preview {
+  font-family: sans-serif;
+  font-size: 14px;
+
+  .menu-title {
+    font-family: 'Dokdo';
+  }
+
+  .header label {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .content {
+    overflow-y: auto;
+    background: #0ff; /* the sky color, so the birds look like they do in game */
+  }
+}

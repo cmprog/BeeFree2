@@ -41,8 +41,8 @@ class HatTuningScene extends EngineObject {
         const beeHat = attachHat(this.bee, HatWearer.BEE, hatId, 410);
 
         // Default templates neither move nor shoot.
-        const birdTemplate = new BirdTemplate('Hat Model', '')
-            .withColors(BIRD_TEMPLATES.fred.bodyColor, BIRD_TEMPLATES.fred.headColor);
+        const birdTemplate = new BirdTemplate('Hat Model', '');
+        birdTemplate.style = BIRD_TEMPLATES.fred.style;
         this.bird = new Bird(vec2(-1.5, 0), birdTemplate);
         this.bird.wearHat(hatId);
 

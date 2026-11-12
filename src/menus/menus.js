@@ -8,6 +8,7 @@ import { ShopMenu } from "./shop.js";
 import { StatisticsMenu } from "./statistics.js";
 import { WardrobeMenu } from "./wardrobe.js";
 import { HatTuningMenu } from "./dev/hat-tuning.js";
+import { BirdPreviewMenu } from "./dev/bird-preview.js";
 import { MENUS } from "./registry.js";
 
 export class MenuSet {
@@ -53,6 +54,11 @@ export class MenuSet {
          * @type {HatTuningMenu}
          */
         this.HAT_TUNING = new HatTuningMenu();
+        /**
+         * Dev-only view of the bird art.
+         * @type {BirdPreviewMenu}
+         */
+        this.BIRD_PREVIEW = new BirdPreviewMenu();
     }
 }
 

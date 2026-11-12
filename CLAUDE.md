@@ -9,7 +9,7 @@ revamped because the author's daughter plays it. Deployed to GitHub Pages from t
 - No build step and no package manager. Plain ES modules served statically.
 - `run_local.bat` starts `python -m http.server 8080` and opens `http://localhost:8080`.
 - Running on `localhost` enables dev-only behavior: the on-screen log panel, the LittleJS watermark,
-  and the Debug section of the Settings menu (unlock all levels, hat tuning, turn bee damage off, grant honeycomb). See
+  and the Debug section of the Settings menu (unlock all levels, hat tuning, bird preview, turn bee damage off, grant honeycomb). See
   `GAME_SETTINGS.IS_LOCAL_DEV_ENVIRONMENT` in `src/settings.js`.
 - The on-screen log panel exists to see output on devices without dev tools (it was built to debug
   iOS/mobile Safari touch issues). Keep it working. `initLogging()` (called first thing in `game.js`)
@@ -78,7 +78,8 @@ revamped because the author's daughter plays it. Deployed to GitHub Pages from t
   - `player/`: the save and progression: `player.js`, `player-level.js`, `statistics.js`,
     `attributes.js`, `achievements.js`, `shop-items.js`.
   - `birds/`: `bird.js` (`Bird` and the `BirdTemplate` builder), `templates.js` (every bird type),
-    `movement.js` and `shooting.js` (behaviors, also used by the bee).
+    `movement.js` and `shooting.js` (behaviors, also used by the bee), `art.js` (bird art drawn in
+    code; see below).
   - `levels/`: the level runtime, level list, formations and spawning (see below).
   - `hats/`: `hats.js`, `adjustments.js` (generated placement tuning), `attachment.js`.
   - `entities/`: everything else on the canvas: `bee.js`, `sammy.js`, `bullet.js`, `honeycomb.js`,
@@ -118,6 +119,13 @@ revamped because the author's daughter plays it. Deployed to GitHub Pages from t
   The wardrobe preview (`menus/wardrobe.js`) uses the same `computeHatPlacement` as the game.
   The player saves owned hats in `ownedHats` and the worn hat in `equippedHat`. Prestige doesn't
   reset them.
+- **Bird art is drawn in code** (`birds/art.js`), not loaded from an image. Each bird type sets its
+  colors with `withStyle({ body, head, belly, wing, tail, beak, legs, eyelid })`. Only `body` is
+  required; the rest default to shades of it. `initBirdArt()` draws each distinct style once at
+  startup into a sprite sheet (a canvas made into an engine texture): one row of flap frames with eyes
+  open, one with eyes closed. `BirdAnimation` picks the frame for each bird. Settings > Debug >
+  Bird Preview (localhost) shows every type animated, large and at game size. The head is kept
+  where the old art had it so the BIRD hat anchor still fits.
 - Achievements extend the LittleJS `Medal` class (for the unlock pop-up) but are persisted in the
   player save, which is the only record: `Achievement.unlocked` is a getter that reads
   `currentPlayer.achievements`, so nothing needs reloading when the player is replaced.

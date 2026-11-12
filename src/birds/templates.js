@@ -26,7 +26,7 @@ export class BirdTemplateSet {
             })
             .withSpawnRegion(SPAWN_REGIONS.RIGHT_UPPER)
             .withSpawnRegion(SPAWN_REGIONS.RIGHT_LOWER)
-            .withColors(RED, RED);
+            .withStyle({ body: rgb255(222, 45, 45), belly: rgb255(255, 175, 155) });
 
         /** 
          * The most basic aggressive bird. Simple movement and shots forward.
@@ -49,7 +49,7 @@ export class BirdTemplateSet {
             })            
             .withSpawnRegion(SPAWN_REGIONS.RIGHT_UPPER)
             .withSpawnRegion(SPAWN_REGIONS.RIGHT_LOWER)
-            .withColors(BLUE, BLUE);
+            .withStyle({ body: rgb255(45, 110, 220), belly: rgb255(240, 165, 105) });
 
         /** 
          * Twin to Thing 2 - this bird moves up and to the left while shooting.
@@ -73,7 +73,7 @@ export class BirdTemplateSet {
             .withTimeTrialPhase(1)     
             .withSpawnRegion(SPAWN_REGIONS.RIGHT_LOWER)
             .withSpawnRegion(SPAWN_REGIONS.BOTTOM_RIGHT)
-            .withColors(BLUE, RED);
+            .withStyle({ body: rgb255(40, 90, 200), head: rgb255(222, 45, 45), belly: rgb255(235, 235, 245), tail: rgb255(250, 210, 50) });
 
         /** 
          * The twin to Thing 1 - this bird moves down and to the left while shooting.
@@ -99,7 +99,7 @@ export class BirdTemplateSet {
             .withTimeTrialPhase(1)
             .withSpawnRegion(SPAWN_REGIONS.RIGHT_UPPER)
             .withSpawnRegion(SPAWN_REGIONS.TOP_RIGHT)           
-            .withColors(BLUE, RED);
+            .withStyle({ body: rgb255(40, 90, 200), head: rgb255(222, 45, 45), belly: rgb255(235, 235, 245), tail: rgb255(60, 200, 90) });
 
         /**
          * The twin to Thing 4, this bird moves up and to the right while shooting.
@@ -125,7 +125,7 @@ export class BirdTemplateSet {
             })         
             .withSpawnRegion(SPAWN_REGIONS.BOTTOM_LEFT)
             .withSpawnRegion(SPAWN_REGIONS.LEFT_LOWER)      
-            .withColors(BLUE, RED);
+            .withStyle({ body: rgb255(40, 90, 200), head: rgb255(222, 45, 45), belly: rgb255(235, 235, 245), tail: rgb255(250, 140, 30) });
 
         /**
          * @type {BirdTemplate}
@@ -154,7 +154,7 @@ export class BirdTemplateSet {
             })
             .withSpawnRegion(SPAWN_REGIONS.TOP_LEFT)
             .withSpawnRegion(SPAWN_REGIONS.LEFT_UPPER)          
-            .withColors(BLUE, RED);
+            .withStyle({ body: rgb255(40, 90, 200), head: rgb255(222, 45, 45), belly: rgb255(235, 235, 245), tail: rgb255(165, 85, 225) });
 
         /**
          * (GREEN) Greg is a simple bird who is a little drunk.
@@ -171,7 +171,7 @@ export class BirdTemplateSet {
             .withTimeTrialPhase(2)
             .withSpawnRegion(SPAWN_REGIONS.RIGHT_UPPER)
             .withSpawnRegion(SPAWN_REGIONS.RIGHT_LOWER)        
-            .withColors(GREEN, GREEN);
+            .withStyle({ body: rgb255(60, 185, 60), belly: rgb255(205, 240, 145) });
 
         /**
          * (YELLOW) Frank is Greg's friend but he flings poo.
@@ -197,7 +197,7 @@ export class BirdTemplateSet {
             }) 
             .withSpawnRegion(SPAWN_REGIONS.RIGHT_UPPER)
             .withSpawnRegion(SPAWN_REGIONS.RIGHT_LOWER)
-            .withColors(YELLOW, YELLOW);
+            .withStyle({ body: rgb255(250, 215, 40), wing: rgb255(220, 160, 20), belly: rgb255(255, 245, 195) });
 
         /**
          * (PURPLE) Harry has mastered the ability to throw two pieces of poop at once.
@@ -225,7 +225,7 @@ export class BirdTemplateSet {
             .withTimeTrialPhase(4)
             .withSpawnRegion(SPAWN_REGIONS.RIGHT_UPPER)
             .withSpawnRegion(SPAWN_REGIONS.RIGHT_LOWER)
-            .withColors(rgb255(85, 26, 139), rgb255(125, 38, 205));
+            .withStyle({ body: rgb255(85, 26, 139), head: rgb255(125, 38, 205), belly: rgb255(200, 170, 235) });
 
         /**
          * (GRAY / BLACK) Kathy is a little extreme when it comes to stalking bees
@@ -250,7 +250,7 @@ export class BirdTemplateSet {
             .withTimeTrialPhase(4)
             .withSpawnRegion(SPAWN_REGIONS.RIGHT_UPPER)
             .withSpawnRegion(SPAWN_REGIONS.RIGHT_LOWER)
-            .withColors(GRAY, BLACK);
+            .withStyle({ body: rgb255(130, 130, 135), head: rgb255(35, 35, 40), wing: rgb255(90, 90, 95), belly: WHITE });
 
         /**
          * (LIME GREEN) Whitney has managed to throw poo in such a way as to track bees!
@@ -279,7 +279,7 @@ export class BirdTemplateSet {
             .withSpawnRegion(SPAWN_REGIONS.RIGHT_UPPER)
             .withSpawnRegion(SPAWN_REGIONS.RIGHT_LOWER)
             // Very lime green
-            .withColors(rgb255(0, 255, 0), rgb255(152, 251, 152));
+            .withStyle({ body: rgb255(40, 210, 60), head: rgb255(152, 251, 152), belly: rgb255(225, 255, 225) });
 
         /**
          * (LIME GREEN) Whitney has managed to throw poo in such a way as to track bees!
@@ -308,7 +308,7 @@ export class BirdTemplateSet {
             .withSpawnRegion(SPAWN_REGIONS.BOTTOM_RIGHT)
             .withSpawnRegion(SPAWN_REGIONS.RIGHT_LOWER)
             // Very lime green
-            .withColors(rgb255(0, 255, 0), rgb255(152, 251, 152));
+            .withStyle({ body: rgb255(40, 210, 60), head: rgb255(152, 251, 152), belly: rgb255(225, 255, 225) });
 
         /**
          * (LIME GREEN) Whitney has managed to throw poo in such a way as to track bees!
@@ -337,7 +337,7 @@ export class BirdTemplateSet {
             .withSpawnRegion(SPAWN_REGIONS.RIGHT_UPPER)
             .withSpawnRegion(SPAWN_REGIONS.TOP_RIGHT)
             // Very lime green
-            .withColors(rgb255(0, 255, 0), rgb255(152, 251, 152));
+            .withStyle({ body: rgb255(40, 210, 60), head: rgb255(152, 251, 152), belly: rgb255(225, 255, 225) });
 
         /**
          * (DARK RED) A more resiliant basic passive bird.
@@ -356,7 +356,7 @@ export class BirdTemplateSet {
             .withSpawnRegion(SPAWN_REGIONS.RIGHT_UPPER)
             .withSpawnRegion(SPAWN_REGIONS.RIGHT_LOWER)
             // Darker red than fred
-            .withColors(rgb255(139, 26, 26), rgb255(238, 44, 44));
+            .withStyle({ body: rgb255(139, 26, 26), head: rgb255(238, 44, 44), belly: rgb255(240, 150, 110) });
     }
 
 }

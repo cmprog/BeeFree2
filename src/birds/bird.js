@@ -11,6 +11,7 @@ import { HatWearer, pickRandomHat } from "../hats/hats.js";
 import { isWellOutsideWorldBoundary } from "../core/util.js";
 import { AttributeSet } from "../player/attributes.js";
 import { currentPlayer } from "../player/player.js";
+import { BirdStyle } from "./art.js";
 
 /**
  * @callback ShootingBehaviorFactory
@@ -56,8 +57,8 @@ export class BirdTemplate {
             return new StaticMovement();
         };
 
-        this.bodyColor = WHITE;
-        this.headColor = WHITE;
+        /** How the bird looks. */
+        this.style = new BirdStyle({ body: WHITE });
 
         // Defines the valid spawn regions for the bird.        
         this.spawnRegions = [];
@@ -96,9 +97,13 @@ export class BirdTemplate {
         return this;
     }
 
-    withColors(bodyColor, headColor) {
-        this.bodyColor = bodyColor;
-        this.headColor = headColor;
+    /**
+     * Sets the bird's colors. Only `body` is required; see BirdColors in art.js for the rest.
+     * @param {import('./art.js').BirdColors} colors
+     * @returns {BirdTemplate}
+     */
+    withStyle(colors) {
+        this.style = new BirdStyle(colors);
         return this;
     }
 
@@ -212,8 +217,8 @@ export class Bird extends EngineObject
         this.face = new BirdFace(pos, this);
         this.eyelids = new BirdEyelids(pos, this);
         this.legs = new BirdLegs(pos, this);
-        this.body = new BirdBody(pos, this, template.bodyColor);
-        this.head = new BirdHead(pos, this, template.headColor);
+        this.body = new BirdBody(pos, this, template.style.body);
+        this.head = new BirdHead(pos, this, template.style.head);
 
         this.name = template.name;
 
