@@ -28,6 +28,9 @@ initAchievements(); // after the player: each achievement reads its unlocked sta
 if (isTouchDevice) {
     logDebug("Touch device detected, initializing touch gamepad.");
     touchGamepadEnable = true;
+    // The bee only uses the left stick (move) and button 0 (fire), so show one large fire button
+    // instead of the default four.
+    setTouchGamepadButtonCount(1);
     // touchGamepadSize is in screen (CSS) pixels since LittleJS 1.2x. The default of 100 matches the
     // size the old setting of 200 canvas pixels came out to on a phone.
 }

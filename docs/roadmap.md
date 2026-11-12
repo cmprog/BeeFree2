@@ -21,7 +21,6 @@ What's next for BeeFree. Finished work is recorded in [changelog/](changelog/), 
 
 ## Ideas
 
-- Remove unused gamepad buttons.
 - Reflection chance attribute.
 - Double shot chance attribute. The statistics screen already lists a "double shot chance", so
   this may be partly built.

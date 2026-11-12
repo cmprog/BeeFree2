@@ -11,6 +11,7 @@ A cleanup batch after the hats release:
 
 - "Achivements" is now spelled "Achievements", and other visible spelling fixes ("damange", "achived").
 - The four "failed a level" achievements were titled "... Level Complete"; they're now "... Level Failed".
+- The phone controls show one large fire button instead of four buttons, three of which did nothing.
 - **Saves from before this change reset these values:**
   - achievements (they unlock again, and pay out their honeycomb again)
   - level "no damage" badges
@@ -45,4 +46,4 @@ A cleanup batch after the hats release:
 
 ## Follow-ups
 
-None.
+Check the single fire button on a real phone.
