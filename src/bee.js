@@ -160,7 +160,13 @@ export class Bee extends EngineObject {
         let direction;
         let holdingFire = false;
 
-        if (isUsingGamepad) {
+        // On a touch device the touch gamepad is the only control during a level. Don't fall back
+        // to chasing the mouse: the tap that started the level can leave the engine's mouse button
+        // stuck down (the level starts on touchend, which turns the gamepad on before the engine
+        // sees that touchend), and the bee would fly to where that tap was.
+        const useGamepad = isUsingGamepad || (isTouchDevice && touchGamepadEnable);
+
+        if (useGamepad) {
 
             direction = gamepadStick(0);            
             holdingFire = gamepadIsDown(0);
