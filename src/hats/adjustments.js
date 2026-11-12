@@ -10,7 +10,7 @@
  */
 export const HAT_WEARER_ANCHORS = {
     BEE: { x: 0.6, y: 0.7, size: 1 },
-    BIRD: { x: -0.9, y: 0.55, size: 0.75 },
+    BIRD: { x: -0.72, y: 0.44, size: 0.6 },
     SAMMY: { x: 0.3, y: 0.75, size: 0.8 },
 };
 

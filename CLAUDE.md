@@ -126,8 +126,8 @@ revamped because the author's daughter plays it. Deployed to GitHub Pages from t
   startup into a sprite sheet (a canvas made into an engine texture): one row of flap frames with eyes
   open, one with eyes closed. `BirdAnimation` picks the frame for each bird. Settings > Debug >
   Bird Preview (localhost) shows every type animated, large and at game size. A `Bird` draws its
-  current frame in `render()`. The head is kept where the old art had it so the BIRD hat anchor
-  still fits. The original bird image is kept for reference in `img/originals/bird.png`; the game
+  current frame in `render()`. `BIRD_ART_SCALE` sets how big birds are in the game; when changing
+  it, scale the BIRD hat anchor in `hats/adjustments.js` by the same factor. The original bird image is kept for reference in `img/originals/bird.png`; the game
   doesn't load it.
 - Achievements extend the LittleJS `Medal` class (for the unlock pop-up) but are persisted in the
   player save, which is the only record: `Achievement.unlocked` is a getter that reads

@@ -10,7 +10,7 @@ import { HatWearer, pickRandomHat } from "../hats/hats.js";
 import { isWellOutsideWorldBoundary } from "../core/util.js";
 import { AttributeSet } from "../player/attributes.js";
 import { currentPlayer } from "../player/player.js";
-import { BIRD_FRAME_SIZE, BirdAnimation, BirdStyle, getBirdSprites } from "./art.js";
+import { BIRD_ART_SCALE, BIRD_FRAME_SIZE, BirdAnimation, BirdStyle, getBirdSprites } from "./art.js";
 
 /**
  * @callback ShootingBehaviorFactory
@@ -139,7 +139,7 @@ export class BirdTemplate {
 }
 
 // Where the health bar sits above the bird (clear of the raised wings), unless a hat pushes it higher.
-const HEALTH_BAR_OFFSET_Y = 1.5;
+const HEALTH_BAR_OFFSET_Y = 1.5 * BIRD_ART_SCALE;
 
 export class Bird extends EngineObject
 {
@@ -150,6 +150,7 @@ export class Bird extends EngineObject
      */
     constructor(pos, template)
     {
+        // The collision box roughly covers the body and head (the same size as with the old art).
         super(pos, vec2(2, 2));
         
         this.entityType = EntityType.BIRD;

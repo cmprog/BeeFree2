@@ -2,17 +2,29 @@
 // turned into an engine texture), with a frame for every wing position, eyes open and closed.
 // In game a bird is then drawn like any other sprite.
 //
-// The drawing works in the bird's own world units: the bird faces left (-x), +y is up, and (0, 0)
-// is the bird's position. The head is kept where the old art had it, so hats still fit
-// (the BIRD anchor in hats/adjustments.js).
+// The drawing works in "art units": the bird faces left (-x), +y is up, and (0, 0) is the bird's
+// position. BIRD_ART_SCALE turns art units into world units.
 
 /** Number of wing positions in one flap. */
 export const BIRD_FLAP_FRAME_COUNT = 6;
 
-/** Area each frame covers, in world units, centered on the bird's position. */
-export const BIRD_FRAME_SIZE = Object.freeze({ x: 3.8, y: 3.0 });
+/**
+ * World units per art unit: makes every bird bigger or smaller. When changing it, scale the BIRD
+ * hat anchor in hats/adjustments.js by the same factor so hats stay on the head (the head is
+ * drawn at (-0.9, 0.15) art units, radius 0.45).
+ */
+export const BIRD_ART_SCALE = 0.8;
 
-/** Sprite sheet pixels per world unit. About 2.5x what the game shows, so it stays sharp on phones. */
+/** Area each frame covers, in art units, centered on the bird's position. */
+const ART_FRAME_SIZE = Object.freeze({ x: 3.8, y: 3.0 });
+
+/** Area each frame covers in the game, in world units, centered on the bird's position. */
+export const BIRD_FRAME_SIZE = Object.freeze({
+    x: ART_FRAME_SIZE.x * BIRD_ART_SCALE,
+    y: ART_FRAME_SIZE.y * BIRD_ART_SCALE,
+});
+
+/** Sprite sheet pixels per art unit. Well above what the game shows, so it stays sharp on phones. */
 const PIXELS_PER_UNIT = 80;
 
 const OUTLINE_COLOR = '#222';
@@ -297,13 +309,13 @@ function drawWing(ctx, color, shoulder, lift, sweep) {
  * @param {BirdStyle} style
  * @param {number} cellX Left edge of the cell, in pixels.
  * @param {number} cellY Top edge of the cell, in pixels.
- * @param {number} pixelsPerUnit
+ * @param {number} pixelsPerUnit Pixels per art unit.
  * @param {number} flapFrame
  * @param {boolean} eyesClosed
  */
 export function drawBirdFrame(ctx, style, cellX, cellY, pixelsPerUnit, flapFrame, eyesClosed) {
     ctx.save();
-    ctx.translate(cellX + BIRD_FRAME_SIZE.x * pixelsPerUnit / 2, cellY + BIRD_FRAME_SIZE.y * pixelsPerUnit / 2);
+    ctx.translate(cellX + ART_FRAME_SIZE.x * pixelsPerUnit / 2, cellY + ART_FRAME_SIZE.y * pixelsPerUnit / 2);
     ctx.scale(pixelsPerUnit, -pixelsPerUnit); // +y up, like the game world
     drawBird(ctx, style, wingLiftForFrame(flapFrame), eyesClosed);
     ctx.restore();
@@ -318,8 +330,8 @@ export class BirdSprites {
      * @param {BirdStyle} style
      */
     constructor(style) {
-        const cellWidth = Math.ceil(BIRD_FRAME_SIZE.x * PIXELS_PER_UNIT);
-        const cellHeight = Math.ceil(BIRD_FRAME_SIZE.y * PIXELS_PER_UNIT);
+        const cellWidth = Math.ceil(ART_FRAME_SIZE.x * PIXELS_PER_UNIT);
+        const cellHeight = Math.ceil(ART_FRAME_SIZE.y * PIXELS_PER_UNIT);
 
         /** @type {BirdStyle} */
         this.style = style;
