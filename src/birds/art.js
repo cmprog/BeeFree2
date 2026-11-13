@@ -5,6 +5,10 @@
 // The drawing works in "art units": the bird faces left (-x), +y is up, and (0, 0) is the bird's
 // position. BIRD_ART_SCALE turns art units into world units.
 
+import {
+    drawSilhouette, ellipse, FlapBlinkAnimation, FrameSheet, OUTLINE_COLOR, OUTLINE_WIDTH, shade,
+} from '../core/art.js';
+
 /** Number of wing positions in one flap. */
 export const BIRD_FLAP_FRAME_COUNT = 6;
 
@@ -26,9 +30,6 @@ export const BIRD_FRAME_SIZE = Object.freeze({
 
 /** Sprite sheet pixels per art unit. Well above what the game shows, so it stays sharp on phones. */
 const PIXELS_PER_UNIT = 80;
-
-const OUTLINE_COLOR = '#222';
-const OUTLINE_WIDTH = 0.05;
 
 /**
  * The colors of a bird. Only `body` is required; every other part defaults to a shade of the body
@@ -76,16 +77,6 @@ export class BirdStyle {
 }
 
 /**
- * Lightens (positive amount) or darkens (negative amount) a color.
- * @param {Color} color
- * @param {number} amount -1 to 1.
- * @returns {Color}
- */
-export function shade(color, amount) {
-    return amount >= 0 ? color.lerp(WHITE, amount) : color.lerp(BLACK, -amount);
-}
-
-/**
  * How far up the wings are for a frame of the flap: 1 is fully up, -1 fully down. The wings flip
  * from up to down by squashing through the middle, the classic flat-art flap.
  * @param {number} frame 0 to BIRD_FLAP_FRAME_COUNT - 1.
@@ -97,7 +88,7 @@ export function wingLiftForFrame(frame) {
 
 /**
  * Draws one bird into a 2D context whose transform is already set up in bird units
- * (see drawBirdFrame). Facing left, +y up.
+ * (see BirdSprites). Facing left, +y up.
  * @param {CanvasRenderingContext2D} ctx
  * @param {BirdStyle} style
  * @param {number} wingLift 1 (up) to -1 (down); see wingLiftForFrame.
@@ -117,35 +108,6 @@ export function drawBird(ctx, style, wingLift, eyesClosed) {
     drawBody(ctx, style);
     drawHead(ctx, style, eyesClosed);
     drawWing(ctx, style.wing, vec2(0.05, 0.25), wingLift, 0.3);
-}
-
-/**
- * Draws a list of shapes as one outlined silhouette: every shape is outlined first, then every
- * shape is filled, so the fills cover the outlines where the shapes overlap.
- * @param {CanvasRenderingContext2D} ctx
- * @param {Color} color
- * @param {Array<(ctx: CanvasRenderingContext2D) => void>} shapes Each adds a path to the context.
- */
-function drawSilhouette(ctx, color, shapes) {
-    ctx.save();
-    ctx.lineWidth = OUTLINE_WIDTH * 2;
-    for (const shape of shapes) {
-        ctx.beginPath();
-        shape(ctx);
-        ctx.stroke();
-    }
-    ctx.fillStyle = color.toString();
-    for (const shape of shapes) {
-        ctx.beginPath();
-        shape(ctx);
-        ctx.fill();
-    }
-    ctx.restore();
-}
-
-/** @returns {(ctx: CanvasRenderingContext2D) => void} */
-function ellipse(x, y, radiusX, radiusY, rotation = 0) {
-    return ctx => ctx.ellipse(x, y, radiusX, radiusY, rotation, 0, 2 * Math.PI);
 }
 
 function drawTail(ctx, style) {
@@ -304,115 +266,37 @@ function drawWing(ctx, color, shoulder, lift, sweep) {
 }
 
 /**
- * Draws one frame of a bird into a canvas cell, setting up the bird-unit transform.
- * @param {CanvasRenderingContext2D} ctx
- * @param {BirdStyle} style
- * @param {number} cellX Left edge of the cell, in pixels.
- * @param {number} cellY Top edge of the cell, in pixels.
- * @param {number} pixelsPerUnit Pixels per art unit.
- * @param {number} flapFrame
- * @param {boolean} eyesClosed
- */
-export function drawBirdFrame(ctx, style, cellX, cellY, pixelsPerUnit, flapFrame, eyesClosed) {
-    ctx.save();
-    ctx.translate(cellX + ART_FRAME_SIZE.x * pixelsPerUnit / 2, cellY + ART_FRAME_SIZE.y * pixelsPerUnit / 2);
-    ctx.scale(pixelsPerUnit, -pixelsPerUnit); // +y up, like the game world
-    drawBird(ctx, style, wingLiftForFrame(flapFrame), eyesClosed);
-    ctx.restore();
-}
-
-/**
  * A style drawn into a sprite sheet: one row of flap frames with eyes open, one with eyes closed.
  */
-export class BirdSprites {
+export class BirdSprites extends FrameSheet {
 
     /**
      * @param {BirdStyle} style
      */
     constructor(style) {
-        const cellWidth = Math.ceil(ART_FRAME_SIZE.x * PIXELS_PER_UNIT);
-        const cellHeight = Math.ceil(ART_FRAME_SIZE.y * PIXELS_PER_UNIT);
+        super(ART_FRAME_SIZE, PIXELS_PER_UNIT, BIRD_FLAP_FRAME_COUNT,
+            (ctx, frame, eyesClosed) => drawBird(ctx, style, wingLiftForFrame(frame), eyesClosed));
 
         /** @type {BirdStyle} */
         this.style = style;
-
-        /** The drawn sheet, also handy for previews outside the engine. */
-        this.canvas = document.createElement('canvas');
-        this.canvas.width = cellWidth * BIRD_FLAP_FRAME_COUNT;
-        this.canvas.height = cellHeight * 2;
-
-        const ctx = this.canvas.getContext('2d');
-        for (let row = 0; row < 2; row++) {
-            for (let frame = 0; frame < BIRD_FLAP_FRAME_COUNT; frame++) {
-                drawBirdFrame(ctx, style, frame * cellWidth, row * cellHeight, PIXELS_PER_UNIT, frame, row === 1);
-            }
-        }
-
-        // Smooth, not pixelated: the art is drawn at a higher resolution than it's shown.
-        const texture = new TextureInfo(this.canvas, true, false, false);
-
-        /**
-         * Tiles by [eyesClosed ? 1 : 0][flapFrame].
-         * @type {TileInfo[][]}
-         */
-        this.tiles = [0, 1].map(row =>
-            Array.from({ length: BIRD_FLAP_FRAME_COUNT }, (_, frame) =>
-                new TileInfo(vec2(frame * cellWidth, row * cellHeight), vec2(cellWidth, cellHeight), texture, 0)));
-
-        /** Cell size in pixels. */
-        this.cellSize = vec2(cellWidth, cellHeight);
-    }
-
-    /**
-     * @param {number} flapFrame
-     * @param {boolean} eyesClosed
-     * @returns {TileInfo}
-     */
-    getTile(flapFrame, eyesClosed) {
-        return this.tiles[eyesClosed ? 1 : 0][flapFrame];
     }
 }
 
 /** Wing frames shown per second while flapping. */
 export const BIRD_FLAPS_FRAMES_PER_SECOND = 12;
 
-/** Seconds between blinks, picked at random in this range for each blink. */
-const BLINK_INTERVAL = Object.freeze({ min: 2, max: 6 });
-
-/** Seconds the eyes stay closed for a blink. */
-const BLINK_DURATION = 0.15;
-
 /**
  * Tracks one bird's flap and blinks. Each bird starts at a random point in the flap and blinks
  * on its own schedule, so a flock doesn't move in lockstep.
  */
-export class BirdAnimation {
+export class BirdAnimation extends FlapBlinkAnimation {
 
     /**
      * @param {number} startTime The current time, in seconds.
      */
     constructor(startTime) {
-        this.flapOffset = Math.random() * BIRD_FLAP_FRAME_COUNT;
-        this.nextBlinkTime = startTime + randomBlinkInterval();
+        super(BIRD_FLAP_FRAME_COUNT, BIRD_FLAPS_FRAMES_PER_SECOND, startTime);
     }
-
-    /**
-     * @param {number} currentTime In seconds.
-     * @returns {{ flapFrame: number, eyesClosed: boolean }}
-     */
-    getFrame(currentTime) {
-        if (currentTime > this.nextBlinkTime + BLINK_DURATION) {
-            this.nextBlinkTime = currentTime + randomBlinkInterval();
-        }
-        return {
-            flapFrame: Math.floor(currentTime * BIRD_FLAPS_FRAMES_PER_SECOND + this.flapOffset) % BIRD_FLAP_FRAME_COUNT,
-            eyesClosed: currentTime >= this.nextBlinkTime,
-        };
-    }
-}
-
-function randomBlinkInterval() {
-    return BLINK_INTERVAL.min + Math.random() * (BLINK_INTERVAL.max - BLINK_INTERVAL.min);
 }
 
 /** Sheets by style key, so birds with the same colors share one. */

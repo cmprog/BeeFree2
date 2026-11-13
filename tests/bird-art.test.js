@@ -4,8 +4,9 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 
 import {
-    BIRD_FLAP_FRAME_COUNT, BIRD_FLAPS_FRAMES_PER_SECOND, BirdAnimation, BirdStyle, shade, wingLiftForFrame,
+    BIRD_FLAP_FRAME_COUNT, BIRD_FLAPS_FRAMES_PER_SECOND, BirdAnimation, BirdStyle, wingLiftForFrame,
 } from '../src/birds/art.js';
+import { shade } from '../src/core/art.js';
 import { BIRD_TEMPLATES, initBirdTemplates } from '../src/birds/templates.js';
 
 initBirdTemplates();

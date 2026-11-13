@@ -10,6 +10,7 @@ import { initLogging, logDebug, logError, logInfo } from "./core/logging.js";
 import { initAchievements, tryUnlockAllAchievements } from "./player/achievements.js";
 import { BIRD_TEMPLATES, initBirdTemplates } from "./birds/templates.js";
 import { initBirdArt } from "./birds/art.js";
+import { initBeeArt } from "./entities/bee-art.js";
 import { GAME_SETTINGS } from "./settings.js";
 import { initPlayer } from "./player/player.js";
 import { initHatTuning } from "./hats/hats.js";
@@ -55,6 +56,7 @@ function gameInit() {
     initSpriteAtlas();   // needs the loaded images
     initBirdTemplates();
     initBirdArt(Object.values(BIRD_TEMPLATES)); // draws each bird type's sprite sheet
+    initBeeArt(); // draws the bee's sprite sheet
     initLevels();        // after the bird templates: levels are built from them
     initMenus();         // last: menus read the player, levels and sprites
 

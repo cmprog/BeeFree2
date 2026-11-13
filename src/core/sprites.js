@@ -171,7 +171,6 @@ class BorderSetInfo {
  * the atlas looks textures up by name, so the order doesn't matter.
  */
 const IMAGES = Object.freeze({
-    BEE: 'img/bee.png',
     CLOUDS: 'img/clouds.png',
     AMMO: 'img/misc.png',
     SAMMY: 'img/owl.png',
@@ -197,8 +196,6 @@ function texture(name) {
 
 class SpriteAtlas {
     constructor() {
-        
-        this.bee = new TileInfo(vec2(0, 0), vec2(75, 59), texture('BEE'));
 
         this.clouds = [
             new TileInfo(vec2(7, 12), vec2(62, 37), texture('CLOUDS')),

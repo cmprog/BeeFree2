@@ -11,7 +11,7 @@ import { logInfo } from '../../core/logging.js';
 import { Menu } from '../menu.js';
 import { MENUS } from '../registry.js';
 import { Owl } from '../../entities/sammy.js';
-import { spriteAtlas } from '../../core/sprites.js';
+import { BeeAnimation, drawBeeFrame } from '../../entities/bee-art.js';
 import { registerClick } from '../../core/util.js';
 
 // The camera zooms in on the models while tuning, and is restored afterwards.
@@ -24,6 +24,27 @@ const GUIDE_COLOR = rgb(1, 0, 1);
  * A static bee, bird and Sammy all wearing the same hat, drawn with the real game
  * rendering so what you see while tuning is exactly what shows up in game.
  */
+/** The bee, drawn as in game, without a Bee's controls and shooting. */
+class BeeModel extends EngineObject {
+
+    /**
+     * @param {Vector2} pos
+     */
+    constructor(pos) {
+        super(pos, vec2(2)); // the Bee's hitbox size
+        this.renderOrder = 400;
+        this.animation = new BeeAnimation(time);
+    }
+
+    update() {
+        // Purposefully not calling super, the model doesn't move.
+    }
+
+    render() {
+        drawBeeFrame(this.pos, this.animation);
+    }
+}
+
 class HatTuningScene extends EngineObject {
 
     /**
@@ -36,8 +57,7 @@ class HatTuningScene extends EngineObject {
         this.showGuides = true;
 
         // A plain object rather than a Bee, which would chase the mouse and shoot.
-        this.bee = new EngineObject(vec2(-5, 0), vec2(2), spriteAtlas.bee);
-        this.bee.renderOrder = 400;
+        this.bee = new BeeModel(vec2(-5, 0));
         const beeHat = attachHat(this.bee, HatWearer.BEE, hatId, 410);
 
         // Default templates neither move nor shoot.

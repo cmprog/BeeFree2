@@ -1,6 +1,6 @@
 import { EntityType, ProgressBar, Score } from './hud.js';
 import { MultiBulletShooting, SingleBulletShooting } from "../birds/shooting.js";
-import { spriteAtlas } from "../core/sprites.js";
+import { BeeAnimation, drawBeeFrame } from "./bee-art.js";
 import { currentLevel } from "../levels/levels.js";
 import { BeeBulletFactory } from './bullet.js';
 import { logDebug } from '../core/logging.js';
@@ -21,6 +21,7 @@ export class Bee extends EngineObject {
      */
     constructor(attributes) {
 
+        // The hitbox. The art is drawn a little larger (BEE_FRAME_SIZE) so the wings and antennae fit.
         super(vec2(0, 0), vec2(2, 2)); 
         this.entityType = EntityType.BEE;
 
@@ -31,6 +32,7 @@ export class Bee extends EngineObject {
         this.addChild(this.healthBar, vec2(0, HEALTH_BAR_OFFSET_Y));
 
         this.renderOrder = 400;
+        this.animation = new BeeAnimation(time);
 
         this.setCollision();
         
@@ -204,9 +206,7 @@ export class Bee extends EngineObject {
     }
 
     render() {        
-        const frame = (time * 4) % 4 | 0;
-        this.tileInfo = spriteAtlas.bee.frame(frame)
-        super.render();
+        drawBeeFrame(this.pos, this.animation);
     }
 
     applyDamage(amount) {

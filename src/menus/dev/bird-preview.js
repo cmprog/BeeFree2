@@ -2,6 +2,7 @@ import { queryElement } from "../../core/html.js";
 import { registerClick } from "../../core/util.js";
 import { BIRD_FRAME_SIZE, BirdAnimation, getBirdSprites } from "../../birds/art.js";
 import { BIRD_TEMPLATES } from "../../birds/templates.js";
+import { BEE_FRAME_SIZE, BeeAnimation, getBeeSprites } from "../../entities/bee-art.js";
 import { Menu } from "../menu.js";
 import { MENUS } from "../registry.js";
 
@@ -9,8 +10,8 @@ import { MENUS } from "../registry.js";
 const LARGE_SCALE = 70;
 
 /**
- * Dev-only view (Settings > Debug on localhost) showing every bird type's art, flapping and
- * blinking: large, and at the size it appears in game. It draws straight from the generated sprite
+ * Dev-only view (Settings > Debug on localhost) showing the bee and every bird type's art, flapping
+ * and blinking: large, and at the size it appears in game. It draws straight from the generated sprite
  * sheets onto its own canvas, without the engine.
  */
 export class BirdPreviewMenu extends Menu {
@@ -32,17 +33,30 @@ export class BirdPreviewMenu extends Menu {
     }
 
     onOpening() {
-        // One entry per distinct look; the Whitneys share one, for example.
+        const now = performance.now() / 1000;
+        /**
+         * @type {Array<{ name: string, frameSize: { x: number, y: number },
+         *   sprites: import('../../core/art.js').FrameSheet,
+         *   animation: import('../../core/art.js').FlapBlinkAnimation }>}
+         */
+        this.entries = [{
+            name: 'Bee',
+            frameSize: BEE_FRAME_SIZE,
+            sprites: getBeeSprites(),
+            animation: new BeeAnimation(now),
+        }];
+
+        // One entry per distinct bird look; the Whitneys share one, for example.
         const seen = new Set();
-        this.entries = [];
         for (const template of Object.values(BIRD_TEMPLATES)) {
             const key = template.style.key();
             if (seen.has(key)) continue;
             seen.add(key);
             this.entries.push({
                 name: template.name,
+                frameSize: BIRD_FRAME_SIZE,
                 sprites: getBirdSprites(template.style),
-                animation: new BirdAnimation(performance.now() / 1000),
+                animation: new BirdAnimation(now),
             });
         }
     }
@@ -63,11 +77,16 @@ export class BirdPreviewMenu extends Menu {
         }
     }
 
-    /** Sizes the canvas for the current bird size, in a grid that fits the menu's width. */
+    /** Sizes the canvas for the current scale, in a grid that fits the menu's width. */
     layout() {
         const scale = this.getScale();
-        this.cellWidth = BIRD_FRAME_SIZE.x * scale;
-        this.cellHeight = BIRD_FRAME_SIZE.y * scale + 24; // room for the name
+        const largestFrame = {
+            x: Math.max(...this.entries.map(entry => entry.frameSize.x)),
+            y: Math.max(...this.entries.map(entry => entry.frameSize.y)),
+        };
+        this.cellWidth = largestFrame.x * scale;
+        this.frameAreaHeight = largestFrame.y * scale;
+        this.cellHeight = this.frameAreaHeight + 24; // room for the name
         const width = Math.max(this.canvas.parentElement.clientWidth, this.cellWidth);
         this.columns = Math.max(1, Math.floor(width / this.cellWidth));
         const rows = Math.ceil(this.entries.length / this.columns);
@@ -93,8 +112,6 @@ export class BirdPreviewMenu extends Menu {
 
         const now = performance.now() / 1000;
         const scale = this.getScale();
-        const birdWidth = BIRD_FRAME_SIZE.x * scale;
-        const birdHeight = BIRD_FRAME_SIZE.y * scale;
 
         ctx.font = '14px sans-serif';
         ctx.textAlign = 'center';
@@ -106,10 +123,13 @@ export class BirdPreviewMenu extends Menu {
             const { flapFrame, eyesClosed } = entry.animation.getFrame(now);
             const tile = entry.sprites.getTile(flapFrame, eyesClosed);
 
+            // Centered in the cell, so every entry is shown at the same scale.
+            const width = entry.frameSize.x * scale;
+            const height = entry.frameSize.y * scale;
             ctx.drawImage(entry.sprites.canvas,
                 tile.pos.x, tile.pos.y, tile.size.x, tile.size.y,
-                x, y, birdWidth, birdHeight);
-            ctx.fillText(entry.name, x + this.cellWidth / 2, y + birdHeight + 16);
+                x + (this.cellWidth - width) / 2, y + (this.frameAreaHeight - height) / 2, width, height);
+            ctx.fillText(entry.name, x + this.cellWidth / 2, y + this.frameAreaHeight + 16);
         });
     }
 }

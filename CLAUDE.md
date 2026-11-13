@@ -9,7 +9,7 @@ revamped because the author's daughter plays it. Deployed to GitHub Pages from t
 - No build step and no package manager. Plain ES modules served statically.
 - `run_local.bat` starts `python -m http.server 8080` and opens `http://localhost:8080`.
 - Running on `localhost` enables dev-only behavior: the on-screen log panel, the LittleJS watermark,
-  and the Debug section of the Settings menu (unlock all levels, hat tuning, bird preview, turn bee damage off, grant honeycomb). See
+  and the Debug section of the Settings menu (unlock all levels, hat tuning, art preview, turn bee damage off, grant honeycomb). See
   `GAME_SETTINGS.IS_LOCAL_DEV_ENVIRONMENT` in `src/settings.js`.
 - The on-screen log panel exists to see output on devices without dev tools (it was built to debug
   iOS/mobile Safari touch issues). Keep it working. `initLogging()` (called first thing in `game.js`)
@@ -74,7 +74,8 @@ revamped because the author's daughter plays it. Deployed to GitHub Pages from t
     stays at the top.
   - `settings.js`: balance constants, default attribute sets, dev flags.
   - `core/`: shared helpers with no game rules: `util.js`, `html.js`, `logging.js`, `sprites.js`
-    (the images to load, by name, and the sprite atlas), `sounds.js`, `layers.js`. To add an image,
+    (the images to load, by name, and the sprite atlas), `art.js` (helpers for art drawn in code),
+    `sounds.js`, `layers.js`. To add an image,
     add it to `IMAGES` in `sprites.js` and look its texture up by name.
   - `player/`: the save and progression: `player.js`, `player-level.js`, `statistics.js`,
     `attributes.js`, `achievements.js`, `shop-items.js`.
@@ -83,7 +84,7 @@ revamped because the author's daughter plays it. Deployed to GitHub Pages from t
     code; see below).
   - `levels/`: the level runtime, level list, formations and spawning (see below).
   - `hats/`: `hats.js`, `adjustments.js` (generated placement tuning), `attachment.js`.
-  - `entities/`: everything else on the canvas: `bee.js`, `sammy.js`, `bullet.js`, `honeycomb.js`,
+  - `entities/`: everything else on the canvas: `bee.js`, `bee-art.js`, `sammy.js`, `bullet.js`, `honeycomb.js`,
     `cloud.js`, and `hud.js` (`ProgressBar`, `Score`, `LevelScoreTracker`, `EntityType`).
   - `menus/`: one file per menu, plus `menu.js` (base class), `menus.js` (`initMenus`),
     `registry.js` (`MENUS`) and `button.js`. `menus/dev/` holds localhost-only tools.
@@ -120,15 +121,22 @@ revamped because the author's daughter plays it. Deployed to GitHub Pages from t
   The wardrobe preview (`menus/wardrobe.js`) uses the same `computeHatPlacement` as the game.
   The player saves owned hats in `ownedHats` and the worn hat in `equippedHat`. Prestige doesn't
   reset them.
-- **Bird art is drawn in code** (`birds/art.js`), not loaded from an image. Each bird type sets its
+- **Bird and bee art is drawn in code**, not loaded from an image. The shared pieces (outlined
+  shapes, `shade`, the `FrameSheet` sprite sheet and `FlapBlinkAnimation`) are in `core/art.js`.
+- **Birds** (`birds/art.js`): each bird type sets its
   colors with `withStyle({ body, head, belly, wing, tail, beak, legs, eyelid })`. Only `body` is
   required; the rest default to shades of it. `initBirdArt()` draws each distinct style once at
   startup into a sprite sheet (a canvas made into an engine texture): one row of flap frames with eyes
   open, one with eyes closed. `BirdAnimation` picks the frame for each bird. Settings > Debug >
-  Bird Preview (localhost) shows every type animated, large and at game size. A `Bird` draws its
+  Art Preview (localhost) shows the bee and every bird type animated, large and at game size. A `Bird` draws its
   current frame in `render()`. `BIRD_ART_SCALE` sets how big birds are in the game; when changing
   it, scale the BIRD hat anchor in `hats/adjustments.js` by the same factor. The original bird image is kept for reference in `img/originals/bird.png`; the game
   doesn't load it.
+- **The bee** (`entities/bee-art.js`) is drawn in world units, facing right: a fast wing buzz and a
+  blink. Its hitbox stays 2 x 2; the art is drawn a little larger (`BEE_FRAME_SIZE`) so the wings and
+  antennae fit. The head sits under the BEE hat anchor, so if the head moves, retune that anchor in
+  Hat Tuning. The game, the wardrobe preview and Hat Tuning all draw the bee from the same sheet. The
+  original image is kept in `img/originals/bee.png`; the game doesn't load it.
 - Achievements extend the LittleJS `Medal` class (for the unlock pop-up) but are persisted in the
   player save, which is the only record: `Achievement.unlocked` is a getter that reads
   `currentPlayer.achievements`, so nothing needs reloading when the player is replaced.

@@ -3,13 +3,8 @@ import { HAT_ATLAS_COLUMNS, HAT_ATLAS_TILE_SIZE, HATS, HatTier, HatWearer, compu
 import { Menu } from './menu.js';
 import { currentPlayer } from '../player/player.js';
 import { registerClick, Util } from '../core/util.js';
+import { BEE_FRAME_SIZE, BeeAnimation, getBeeSprites } from '../entities/bee-art.js';
 
-// These match how the bee is drawn in game (spriteAtlas.bee and the Bee entity size),
-// so the preview shows the hat exactly as it will look while playing.
-const BEE_FRAME_WIDTH = 75;
-const BEE_FRAME_HEIGHT = 59;
-const BEE_FRAME_COUNT = 4;
-const BEE_WORLD_SIZE = 2;
 
 /** How many world units fit across the preview canvas. */
 const PREVIEW_WORLD_WIDTH = 4;
@@ -35,8 +30,9 @@ export class WardrobeMenu extends Menu {
         this.actionButton = queryElement(this.element, '.preview-action', HTMLButtonElement);
         this.availableHoneycombEl = queryElement(this.element, '.available-honeycomb');
 
-        this.beeImage = new Image();
-        this.beeImage.src = 'img/bee.png';
+        // The bee is drawn from the same sprite sheet and at the same size as in game, so the
+        // preview shows the hat exactly as it will look while playing.
+        this.beeAnimation = new BeeAnimation(performance.now() / 1000);
         this.hatsImage = new Image();
         this.hatsImage.src = 'img/hats.png';
 
@@ -313,14 +309,15 @@ export class WardrobeMenu extends Menu {
         const beeX = canvas.width * 0.45;
         const beeY = canvas.height * 0.6;
 
-        if (this.beeImage.complete) {
-            const frame = Math.floor(performance.now() / 250) % BEE_FRAME_COUNT;
-            const beeSize = BEE_WORLD_SIZE * scale;
-            context.drawImage(
-                this.beeImage,
-                frame * BEE_FRAME_WIDTH, 0, BEE_FRAME_WIDTH, BEE_FRAME_HEIGHT,
-                beeX - (beeSize / 2), beeY - (beeSize / 2), beeSize, beeSize);
-        }
+        const sprites = getBeeSprites();
+        const { flapFrame, eyesClosed } = this.beeAnimation.getFrame(performance.now() / 1000);
+        const tile = sprites.getTile(flapFrame, eyesClosed);
+        const beeWidth = BEE_FRAME_SIZE.x * scale;
+        const beeHeight = BEE_FRAME_SIZE.y * scale;
+        context.drawImage(
+            sprites.canvas,
+            tile.pos.x, tile.pos.y, tile.size.x, tile.size.y,
+            beeX - (beeWidth / 2), beeY - (beeHeight / 2), beeWidth, beeHeight);
 
         const hat = getHat(this.getPreviewHatId());
         if (hat && this.hatsImage.complete) {
